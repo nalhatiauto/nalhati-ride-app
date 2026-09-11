@@ -3,32 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Nalhati Ride</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+box-sizing:border-box;
+}
 
 body{
 margin:0;
 font-family:Arial,sans-serif;
 background:#f3f4f6;
-color:#111827
+color:#111827;
 }
 
 header{
 background:#111827;
 color:white;
-padding:24px 18px;
-text-align:center
+padding:25px 18px;
+text-align:center;
 }
 
-header h1{margin:0;font-size:29px}
-header p{margin:7px 0;color:#d1d5db}
+header h1{
+margin:0;
+font-size:30px;
+}
+
+header p{
+margin:8px 0 0;
+color:#d1d5db;
+}
 
 .container{
-max-width:500px;
+max-width:520px;
 margin:auto;
-padding:18px
+padding:18px;
 }
 
 .card{
@@ -36,13 +47,13 @@ background:white;
 padding:20px;
 border-radius:18px;
 margin-bottom:18px;
-box-shadow:0 4px 15px #0001
+box-shadow:0 4px 16px #00000012;
 }
 
 label{
 display:block;
 font-weight:bold;
-margin:14px 0 7px
+margin:14px 0 7px;
 }
 
 select{
@@ -50,208 +61,411 @@ width:100%;
 padding:14px;
 border:1px solid #ddd;
 border-radius:10px;
-font-size:16px
+font-size:16px;
 }
 
 .fare{
 text-align:center;
 font-size:30px;
 font-weight:bold;
-margin:22px
+margin:20px;
 }
 
 button{
 width:100%;
-padding:15px;
+padding:14px;
 border:0;
 border-radius:12px;
-font-size:17px;
+font-size:16px;
 font-weight:bold;
-margin-top:10px
+margin-top:10px;
+cursor:pointer;
 }
 
-.book{
+.green{
 background:#16a34a;
-color:white
+color:white;
 }
 
-.driver{
+.blue{
 background:#2563eb;
-color:white
+color:white;
 }
 
-.status{
+.orange{
+background:#f59e0b;
+color:white;
+}
+
+.red{
+background:#dc2626;
+color:white;
+}
+
+.gray{
+background:#6b7280;
+color:white;
+}
+
+.status-card{
 display:none;
-padding:14px;
-margin-top:15px;
-border-radius:12px;
-background:#ecfdf5;
-color:#166534;
 text-align:center;
-font-weight:bold
+border:2px solid #16a34a;
+}
+
+.status-icon{
+font-size:45px;
+}
+
+.status-title{
+font-size:23px;
+font-weight:bold;
+margin:10px 0;
+}
+
+.status-text{
+color:#4b5563;
+line-height:1.6;
+}
+
+.driver-area{
+display:none;
 }
 
 .ride{
 border:1px solid #ddd;
+border-radius:14px;
 padding:15px;
-border-radius:12px;
-margin-top:12px
+margin-top:12px;
 }
 
-.hidden{display:none}
+.ride-title{
+font-size:18px;
+font-weight:bold;
+}
 
 .small{
 text-align:center;
-color:#6b7280
+color:#6b7280;
 }
+
+.hidden{
+display:none;
+}
+
+hr{
+border:0;
+border-top:1px solid #ddd;
+margin:20px 0;
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
+
 <h1>🚕 Nalhati Ride</h1>
+
 <p>আপনার যাত্রা, আপনার গাড়ি</p>
+
 </header>
 
+
 <div class="container">
+
+
+<!-- PASSENGER -->
 
 <div class="card">
 
 <h2>🚖 Auto Book করুন</h2>
 
+
 <label>📍 কোথা থেকে যাবেন?</label>
 
 <select id="from">
+
 <option>Nalhati</option>
+
 <option>Murarai</option>
+
 </select>
+
 
 <label>🎯 কোথায় যাবেন?</label>
 
 <select id="to">
+
 <option>Murarai</option>
+
 <option>Nalhati</option>
+
 </select>
 
-<div class="fare">₹25</div>
 
-<button class="book" onclick="bookRide()">
-🚕 Auto Book করুন
-</button>
+<div class="fare">
 
-<div id="bookingStatus" class="status"></div>
+₹25
 
 </div>
 
+
+<button class="green" onclick="bookRide()">
+
+🚕 Auto Book করুন
+
+</button>
+
+</div>
+
+
+<!-- BOOKING STATUS -->
+
+<div id="statusCard" class="card status-card">
+
+<div id="statusIcon" class="status-icon">
+
+🔎
+
+</div>
+
+<div id="statusTitle" class="status-title">
+
+Driver খোঁজা হচ্ছে...
+
+</div>
+
+<div id="statusText" class="status-text">
+
+আপনার Booking Request পাঠানো হয়েছে।<br>
+
+কাছাকাছি Driver খোঁজা হচ্ছে...
+
+</div>
+
+
+<button
+id="cancelButton"
+class="red"
+onclick="cancelRide()">
+
+❌ Booking Cancel করুন
+
+</button>
+
+</div>
+
+
+<!-- DRIVER -->
 
 <div class="card">
 
 <h2>👨‍✈️ Driver Mode</h2>
 
 <p class="small">
-Driver-এর নতুন Ride Request এখানে দেখা যাবে।
+
+Driver হিসেবে Ride Request দেখতে এখানে চাপুন।
+
 </p>
 
-<button class="driver" onclick="showDriver()">
-Driver Mode চালু করুন
+
+<button
+class="blue"
+onclick="showDriver()">
+
+👨‍✈️ Driver Mode চালু করুন
+
 </button>
 
-<div id="driverArea" class="hidden">
+
+<div id="driverArea" class="driver-area">
 
 <hr>
 
 <h3>🚨 Ride Requests</h3>
 
 <div id="rides">
-<p class="small">কোনো নতুন Ride নেই।</p>
-</div>
+
+<p class="small">
+
+কোনো নতুন Ride নেই।
+
+</p>
 
 </div>
 
 </div>
+
+</div>
+
 
 </div>
 
 
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
+
+initializeApp
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+
+import {
+
 getAuth,
+
 signInAnonymously
+
 }
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+from
+
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
 
 import {
+
 getFirestore,
+
 collection,
+
 addDoc,
+
+doc,
+
+updateDoc,
+
 onSnapshot,
+
 query,
+
 orderBy
+
 }
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+from
+
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+
+/* FIREBASE CONFIG */
 
 
 const firebaseConfig = {
 
-apiKey:"AIzaSyD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
+apiKey:
+"AIzaSyD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
 
-authDomain:"nalhati-ride.firebaseapp.com",
+authDomain:
+"nalhati-ride.firebaseapp.com",
 
-projectId:"nalhati-ride",
+projectId:
+"nalhati-ride",
 
-storageBucket:"nalhati-ride.firebasestorage.app",
+storageBucket:
+"nalhati-ride.firebasestorage.app",
 
-messagingSenderId:"1077953215118",
+messagingSenderId:
+"1077953215118",
 
-appId:"1:1077953215118:web:7d73eac073d30523dda7df",
+appId:
+"1:1077953215118:web:7d73eac073d30523dda7df",
 
-measurementId:"G-BPZT7JKDH7"
+measurementId:
+"G-BPZT7JKDH7"
 
 };
 
 
-const app=initializeApp(firebaseConfig);
 
-const auth=getAuth(app);
-
-const db=getFirestore(app);
+/* FIREBASE START */
 
 
-let currentUser=null;
+const app =
+initializeApp(firebaseConfig);
+
+const auth =
+getAuth(app);
+
+const db =
+getFirestore(app);
+
+
+let currentUser = null;
+
+let currentRideId = null;
+
+let stopPassengerListener = null;
+
+
+
+/* ANONYMOUS LOGIN */
 
 
 signInAnonymously(auth)
 
-.then(userCredential=>{
+.then((result)=>{
 
-currentUser=userCredential.user;
+currentUser =
+result.user;
 
-console.log("Firebase connected");
+console.log(
+"Firebase connected"
+);
 
 })
 
-.catch(error=>{
+.catch((error)=>{
 
 console.error(error);
+
+alert(
+"Firebase Login Error"
+);
 
 });
 
 
-window.bookRide=async function(){
 
-const from=document.getElementById("from").value;
-
-const to=document.getElementById("to").value;
+/* BOOK RIDE */
 
 
-if(from===to){
+window.bookRide = async function(){
 
-alert("Pickup এবং Destination আলাদা হতে হবে।");
+
+const from =
+document.getElementById("from").value;
+
+
+const to =
+document.getElementById("to").value;
+
+
+if(from === to){
+
+alert(
+"Pickup এবং Destination আলাদা হতে হবে।"
+);
+
+return;
+
+}
+
+
+if(!currentUser){
+
+alert(
+"Firebase connection হচ্ছে। একটু অপেক্ষা করুন।"
+);
 
 return;
 
@@ -260,110 +474,507 @@ return;
 
 try{
 
-await addDoc(collection(db,"rides"),{
 
-from:from,
+const rideData = {
 
-to:to,
+from: from,
 
-fare:25,
+to: to,
 
-status:"requested",
+fare: 25,
 
-createdAt:new Date(),
+status: "searching",
 
-passengerId:currentUser ? currentUser.uid : "anonymous"
+passengerId:
+currentUser.uid,
 
-});
+driverId: "",
+
+createdAt:
+new Date()
+
+};
 
 
-const status=document.getElementById("bookingStatus");
+const rideRef =
+await addDoc(
 
-status.style.display="block";
+collection(db,"rides"),
 
-status.innerHTML=
-"✅ Ride Request পাঠানো হয়েছে!<br>"+
-"🚕 কাছাকাছি Driver খোঁজা হচ্ছে...";
+rideData
+
+);
+
+
+currentRideId =
+rideRef.id;
+
+
+/* SHOW STATUS */
+
+showBookingStatus(
+"searching"
+);
+
+
+/* LISTEN FOR STATUS CHANGES */
+
+listenToMyRide(
+currentRideId
+);
+
 
 }
 
 catch(error){
 
-alert("Booking করা যায়নি। Firebase connection পরীক্ষা করুন।");
-
 console.error(error);
+
+alert(
+"Booking করা যায়নি। Firebase Rules পরীক্ষা করুন।"
+);
 
 }
 
 };
 
 
-window.showDriver=function(){
 
-document.getElementById("driverArea").classList.remove("hidden");
-
-loadRides();
-
-};
+/* PASSENGER STATUS LISTENER */
 
 
-function loadRides(){
-
-const ridesRef=collection(db,"rides");
-
-const q=query(ridesRef,orderBy("createdAt","desc"));
+function listenToMyRide(rideId){
 
 
-onSnapshot(q,snapshot=>{
+if(stopPassengerListener){
 
-const rides=document.getElementById("rides");
+stopPassengerListener();
 
-rides.innerHTML="";
+}
 
 
-if(snapshot.empty){
+const rideRef =
+doc(db,"rides",rideId);
 
-rides.innerHTML="<p class='small'>কোনো নতুন Ride নেই।</p>";
+
+stopPassengerListener =
+
+onSnapshot(
+
+rideRef,
+
+(snapshot)=>{
+
+
+if(!snapshot.exists()){
 
 return;
 
 }
 
 
-snapshot.forEach(doc=>{
+const ride =
+snapshot.data();
 
-const ride=doc.data();
 
-const div=document.createElement("div");
+showBookingStatus(
+ride.status,
+ride
+);
 
-div.className="ride";
 
-div.innerHTML=
+}
 
-"<b>📍 "+ride.from+" → "+ride.to+"</b>"+
-
-"<p>💰 ভাড়া: ₹"+ride.fare+"</p>"+
-
-"<p>📋 Status: "+ride.status+"</p>"+
-
-"<button class='book' onclick='acceptRide(\""+doc.id+"\")'>"+
-"✅ Ride Accept করুন"+
-"</button>";
-
-rides.appendChild(div);
-
-});
-
-});
+);
 
 }
 
 
-window.acceptRide=function(id){
 
-alert("Ride Accepted! Ride ID: "+id);
+/* SHOW PASSENGER STATUS */
+
+
+function showBookingStatus(
+status,
+ride = {}
+){
+
+
+const card =
+document.getElementById(
+"statusCard"
+);
+
+
+const icon =
+document.getElementById(
+"statusIcon"
+);
+
+
+const title =
+document.getElementById(
+"statusTitle"
+);
+
+
+const text =
+document.getElementById(
+"statusText"
+);
+
+
+const cancel =
+document.getElementById(
+"cancelButton"
+);
+
+
+card.style.display =
+"block";
+
+
+if(status === "searching"){
+
+icon.innerHTML = "🔎";
+
+title.innerHTML =
+"Driver খোঁজা হচ্ছে...";
+
+text.innerHTML =
+"আপনার Booking Request পাঠানো হয়েছে।<br>"+
+"কাছাকাছি Driver খোঁজা হচ্ছে...";
+
+cancel.style.display =
+"block";
+
+}
+
+
+else if(status === "accepted"){
+
+icon.innerHTML = "🎉";
+
+title.innerHTML =
+"Driver পাওয়া গেছে!";
+
+text.innerHTML =
+"আপনার Ride Confirmed।<br>"+
+"📍 "+ride.from+" → "+ride.to+
+"<br>💰 ভাড়া: ₹"+ride.fare;
+
+cancel.style.display =
+"none";
+
+}
+
+
+else if(status === "started"){
+
+icon.innerHTML = "🚕";
+
+title.innerHTML =
+"Ride শুরু হয়েছে";
+
+text.innerHTML =
+"আপনার যাত্রা চলছে।<br>"+
+"📍 "+ride.from+" → "+ride.to;
+
+cancel.style.display =
+"none";
+
+}
+
+
+else if(status === "completed"){
+
+icon.innerHTML = "🏁";
+
+title.innerHTML =
+"Ride Completed";
+
+text.innerHTML =
+"আপনার যাত্রা সম্পূর্ণ হয়েছে।<br>"+
+"ধন্যবাদ Nalhati Ride ব্যবহার করার জন্য।";
+
+cancel.style.display =
+"none";
+
+}
+
+
+else if(status === "cancelled"){
+
+icon.innerHTML = "❌";
+
+title.innerHTML =
+"Ride Cancelled";
+
+text.innerHTML =
+"এই Booking বাতিল করা হয়েছে।";
+
+cancel.style.display =
+"none";
+
+}
+
+}
+
+
+
+/* CANCEL RIDE */
+
+
+window.cancelRide = async function(){
+
+
+if(!currentRideId){
+
+return;
+
+}
+
+
+try{
+
+
+await updateDoc(
+
+doc(
+db,
+"rides",
+currentRideId
+),
+
+{
+
+status:
+"cancelled"
+
+}
+
+);
+
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert(
+"Booking Cancel করা যায়নি।"
+);
+
+}
 
 };
+
+
+
+/* DRIVER MODE */
+
+
+window.showDriver = function(){
+
+
+document.getElementById(
+"driverArea"
+).style.display =
+"block";
+
+
+loadDriverRides();
+
+};
+
+
+
+/* DRIVER RIDE LIST */
+
+
+function loadDriverRides(){
+
+
+const ridesRef =
+collection(db,"rides");
+
+
+const q =
+query(
+
+ridesRef,
+
+orderBy(
+"createdAt",
+"desc"
+)
+
+);
+
+
+onSnapshot(
+
+q,
+
+(snapshot)=>{
+
+
+const rides =
+document.getElementById(
+"rides"
+);
+
+
+rides.innerHTML = "";
+
+
+let count = 0;
+
+
+snapshot.forEach(
+
+(docSnap)=>{
+
+
+const ride =
+docSnap.data();
+
+
+if(
+ride.status !== "searching"
+){
+
+return;
+
+}
+
+
+count++;
+
+
+const box =
+document.createElement(
+"div"
+);
+
+
+box.className =
+"ride";
+
+
+box.innerHTML = `
+
+<div class="ride-title">
+
+📍 ${ride.from} → ${ride.to}
+
+</div>
+
+<p>💰 ভাড়া: ₹${ride.fare}</p>
+
+<p>🔎 Driver-এর জন্য অপেক্ষা করছে</p>
+
+<button
+class="green"
+onclick="acceptRide('${docSnap.id}')">
+
+✅ Ride Accept করুন
+
+</button>
+
+`;
+
+
+rides.appendChild(box);
+
+
+}
+
+);
+
+
+if(count === 0){
+
+rides.innerHTML =
+
+"<p class='small'>"+
+"কোনো নতুন Ride নেই।"+
+"</p>";
+
+}
+
+}
+
+);
+
+}
+
+
+
+/* DRIVER ACCEPT */
+
+
+window.acceptRide = async function(
+rideId
+){
+
+
+if(!currentUser){
+
+alert(
+"Driver login হচ্ছে।"
+);
+
+return;
+
+}
+
+
+try{
+
+
+await updateDoc(
+
+doc(
+db,
+"rides",
+rideId
+),
+
+{
+
+status:
+"accepted",
+
+driverId:
+currentUser.uid
+
+}
+
+);
+
+
+alert(
+"✅ Ride Accepted হয়েছে!"
+);
+
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert(
+"Ride Accept করা যায়নি।"
+);
+
+}
+
+};
+
+
 
 </script>
 
