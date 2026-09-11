@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nalhati Ride - Driver</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6f9;
+      color: #222;
+    }
+
+    .header {
+      background: #111827;
+      color: white;
+      padding: 22px 15px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 27px;
+    }
+
+    .header p {
+      margin: 7px 0 0;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 550px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .online {
+      background: #eaf8ef;
+      border: 2px solid #38a169;
+      color: #176b35;
+      text-align: center;
+      border-radius: 12px;
+      padding: 13px;
+      font-weight: bold;
+    }
+
+    .ride {
+      border: 2px solid #e5e7eb;
+      border-radius: 15px;
+      padding: 16px;
+      margin-top: 15px;
+    }
+
+    .ride h3 {
+      margin-top: 0;
+      color: #111827;
+    }
+
+    .info {
+      line-height: 1.9;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .accept {
+      background: #0b7a3b;
+      color: white;
+    }
+
+    .start {
+      background: #2563eb;
+      color: white;
+    }
+
+    .complete {
+      background: #7c3aed;
+      color: white;
+    }
+
+    .empty {
+      text-align: center;
+      color: #666;
+      padding: 25px 10px;
+    }
+
+    .accepted {
+      background: #eaf8ef;
+      border-color: #38a169;
+    }
+
+    .started {
+      background: #eaf4ff;
+      border-color: #3182ce;
+    }
+
+    .completed {
+      background: #f0eaff;
+      border-color: #7c3aed;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>🚖 Nalhati Ride</h1>
+    <p>Driver App</p>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <div class="online">
+        🟢 Driver Online
+      </div>
+    </div>
+
+    <div class="card">
+
+      <h2>🔔 New Bookings</h2>
+
+      <div id="loading" class="loading">
+        ⏳ Booking খোঁজা হচ্ছে...
+      </div>
+
+      <div id="rideList"></div>
+
+    </div>
+
+  </div>
+
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      query,
+      orderBy,
+      onSnapshot,
+      doc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+    // Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
+      authDomain: "nalhati-ride.firebaseapp.com",
+      projectId: "nalhati-ride",
+      storageBucket: "nalhati-ride.firebasestorage.app",
+      messagingSenderId: "1077953215118",
+      appId: "1:1077953215118:web:7d73eac073d30523dda7df",
+      measurementId: "G-BPZT7JKDH7"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+    let driverUser = null;
+
+
+    // Driver login
+    signInAnonymously(auth)
+      .then((result) => {
+
+        driverUser = result.user;
+
+        console.log("Driver connected:", driverUser.uid);
+
+        loadRides();
+
+      })
+      .catch((error) => {
+
+        console.error(error);
+
+        document.getElementById("loading").innerText =
+          "❌ Driver App Firebase-এর সঙ্গে সংযোগ করতে পারেনি।";
+
+      });
+
+
+    // Load rides
+    function loadRides() {
+
+      const ridesRef = collection(db, "rides");
+
+      const ridesQuery = query(
+        ridesRef,
+        orderBy("createdAt", "desc")
+      );
+
+
+      onSnapshot(
+        ridesQuery,
+
+        (snapshot) => {
+
+          const rideList =
+            document.getElementById("rideList");
+
+          const loading =
+            document.getElementById("loading");
+
+
+          loading.classList.add("hidden");
+
+          rideList.innerHTML = "";
+
+
+          let found = false;
+
+
+          snapshot.forEach((rideDoc) => {
+
+            const ride = rideDoc.data();
+
+            const rideId = rideDoc.id;
+
+
+            // Searching rides only
+            if (ride.status === "searching") {
+
+              found = true;
+
+              showRide(
+                rideList,
+                rideId,
+                ride
+              );
+
+            }
+
+          });
+
+
+          if (!found) {
+
+            rideList.innerHTML = `
+              <div class="empty">
+                <div style="font-size:45px;">🚖</div>
+                <h3>এখন কোনো নতুন Booking নেই</h3>
+                <p>Passenger Booking করলে এখানে দেখা যাবে।</p>
+              </div>
+            `;
+
+          }
+
+        },
+
+        (error) => {
+
+          console.error(error);
+
+          document.getElementById("loading").innerText =
+            "❌ Booking load করা যায়নি।";
+
+        }
+
+      );
+
+    }
+
+
+    // Show ride
+    function showRide(container, rideId, ride) {
+
+      const div = document.createElement("div");
+
+      div.className = "ride";
+
+
+      div.innerHTML = `
+
+        <h3>🔔 নতুন Booking</h3>
+
+        <div class="info">
+
+          📍 <b>Pickup:</b>
+          ${ride.from || "-"}
+          <br>
+
+          🏁 <b>Destination:</b>
+          ${ride.to || "-"}
+          <br>
+
+          💰 <b>Fare:</b>
+          ₹${ride.fare || 25}
+
+        </div>
+
+        <button
+          class="accept"
+          onclick="acceptRide('${rideId}')">
+          ✅ Ride Accept করুন
+        </button>
+
+      `;
+
+
+      container.appendChild(div);
+
+    }
+
+
+    // Accept ride
+    window.acceptRide = async function(rideId) {
+
+      if (!driverUser) {
+
+        alert("Driver App প্রস্তুত হয়নি।");
+
+        return;
+
+      }
+
+
+      try {
+
+        await updateDoc(
+          doc(db, "rides", rideId),
+          {
+
+            status: "accepted",
+
+            driverId: driverUser.uid
+
+          }
+        );
+
+
+        alert("🎉 Ride Accepted হয়েছে!");
+
+
+        showAcceptedRide(rideId);
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "❌ Ride Accept করা যায়নি।"
+        );
+
+      }
+
+    };
+
+
+    // Accepted ride screen
+    function showAcceptedRide(rideId) {
+
+      const rideList =
+        document.getElementById("rideList");
+
+
+      rideList.innerHTML = `
+
+        <div class="ride accepted">
+
+          <h3>🎉 Ride Accepted</h3>
+
+          <div class="info">
+
+            Passenger-কে জানানো হয়েছে যে
+            Driver পাওয়া গেছে।
+
+          </div>
+
+          <button
+            class="start"
+            onclick="startRide('${rideId}')">
+
+            🟢 Ride Start করুন
+
+          </button>
+
+        </div>
+
+      `;
+
+    }
+
+
+    // Start ride
+    window.startRide = async function(rideId) {
+
+      try {
+
+        await updateDoc(
+          doc(db, "rides", rideId),
+          {
+            status: "started"
+          }
+        );
+
+
+        const rideList =
+          document.getElementById("rideList");
+
+
+        rideList.innerHTML = `
+
+          <div class="ride started">
+
+            <h3>🟢 Ride Started</h3>
+
+            <p>
+              Passenger-এর Ride শুরু হয়েছে।
+            </p>
+
+            <button
+              class="complete"
+              onclick="completeRide('${rideId}')">
+
+              ✅ Ride Complete করুন
+
+            </button>
+
+          </div>
+
+        `;
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Ride Start করা যায়নি।"
+        );
+
+      }
+
+    };
+
+
+    // Complete ride
+    window.completeRide = async function(rideId) {
+
+      try {
+
+        await updateDoc(
+          doc(db, "rides", rideId),
+          {
+            status: "completed"
+          }
+        );
+
+
+        const rideList =
+          document.getElementById("rideList");
+
+
+        rideList.innerHTML = `
+
+          <div class="ride completed">
+
+            <h3>✅ Ride Completed</h3>
+
+            <p>
+              এই Ride সফলভাবে সম্পূর্ণ হয়েছে।
+            </p>
+
+          </div>
+
+        `;
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Ride Complete করা যায়নি।"
+        );
+
+      }
+
+    };
+
+  </script>
+
+</body>
+</html>
