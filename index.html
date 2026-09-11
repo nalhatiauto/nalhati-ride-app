@@ -9,113 +9,110 @@
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f3f4f6;
-  color:#111827;
+margin:0;
+font-family:Arial,sans-serif;
+background:#f3f4f6;
+color:#111827
 }
 
-.header{
-  background:#111827;
-  color:white;
-  padding:25px 20px;
-  text-align:center;
+header{
+background:#111827;
+color:white;
+padding:24px 18px;
+text-align:center
 }
 
-.header h1{
-  margin:0;
-  font-size:30px;
-}
-
-.header p{
-  margin:8px 0 0;
-  color:#d1d5db;
-}
+header h1{margin:0;font-size:29px}
+header p{margin:7px 0;color:#d1d5db}
 
 .container{
-  max-width:500px;
-  margin:auto;
-  padding:18px;
+max-width:500px;
+margin:auto;
+padding:18px
 }
 
 .card{
-  background:white;
-  padding:20px;
-  border-radius:18px;
-  margin-bottom:18px;
-  box-shadow:0 5px 18px #00000015;
+background:white;
+padding:20px;
+border-radius:18px;
+margin-bottom:18px;
+box-shadow:0 4px 15px #0001
 }
 
 label{
-  display:block;
-  font-weight:bold;
-  margin:15px 0 7px;
+display:block;
+font-weight:bold;
+margin:14px 0 7px
 }
 
 select{
-  width:100%;
-  padding:14px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  font-size:16px;
+width:100%;
+padding:14px;
+border:1px solid #ddd;
+border-radius:10px;
+font-size:16px
 }
 
 .fare{
-  text-align:center;
-  font-size:30px;
-  font-weight:bold;
-  margin:22px 0;
+text-align:center;
+font-size:30px;
+font-weight:bold;
+margin:22px
 }
 
 button{
-  width:100%;
-  padding:15px;
-  border:0;
-  border-radius:12px;
-  font-size:17px;
-  font-weight:bold;
-  cursor:pointer;
+width:100%;
+padding:15px;
+border:0;
+border-radius:12px;
+font-size:17px;
+font-weight:bold;
+margin-top:10px
 }
 
 .book{
-  background:#16a34a;
-  color:white;
+background:#16a34a;
+color:white
 }
 
 .driver{
-  background:#2563eb;
-  color:white;
+background:#2563eb;
+color:white
 }
 
 .status{
-  display:none;
-  margin-top:15px;
-  padding:15px;
-  background:#ecfdf5;
-  color:#166534;
-  border-radius:12px;
-  text-align:center;
-  font-weight:bold;
+display:none;
+padding:14px;
+margin-top:15px;
+border-radius:12px;
+background:#ecfdf5;
+color:#166534;
+text-align:center;
+font-weight:bold
 }
 
-.driverBox{
-  display:none;
-  margin-top:20px;
+.ride{
+border:1px solid #ddd;
+padding:15px;
+border-radius:12px;
+margin-top:12px
 }
+
+.hidden{display:none}
 
 .small{
-  color:#6b7280;
-  text-align:center;
+text-align:center;
+color:#6b7280
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h1>🚕 Nalhati Ride</h1>
-  <p>আপনার যাত্রা, আপনার গাড়ি</p>
-</div>
+<header>
+<h1>🚕 Nalhati Ride</h1>
+<p>আপনার যাত্রা, আপনার গাড়ি</p>
+</header>
 
 <div class="container">
 
@@ -143,37 +140,32 @@ button{
 🚕 Auto Book করুন
 </button>
 
-<div id="status" class="status">
-✅ Ride Request পাঠানো হয়েছে!<br>
-Driver খোঁজা হচ্ছে...
-</div>
+<div id="bookingStatus" class="status"></div>
 
 </div>
+
 
 <div class="card">
 
 <h2>👨‍✈️ Driver Mode</h2>
 
 <p class="small">
-Driver হিসেবে Ride Request গ্রহণ করুন
+Driver-এর নতুন Ride Request এখানে দেখা যাবে।
 </p>
 
-<button class="driver" onclick="driverMode()">
+<button class="driver" onclick="showDriver()">
 Driver Mode চালু করুন
 </button>
 
-<div id="driverBox" class="driverBox">
+<div id="driverArea" class="hidden">
 
 <hr>
 
-<h3>🚨 নতুন Ride Request</h3>
+<h3>🚨 Ride Requests</h3>
 
-<p>📍 Nalhati → Murarai</p>
-<p>💰 ভাড়া: ₹25</p>
-
-<button class="book" onclick="acceptRide()">
-✅ Ride Accept করুন
-</button>
+<div id="rides">
+<p class="small">কোনো নতুন Ride নেই।</p>
+</div>
 
 </div>
 
@@ -181,35 +173,197 @@ Driver Mode চালু করুন
 
 </div>
 
-<script>
 
-function bookRide(){
+<script type="module">
 
-document.getElementById("status").style.display="block";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import {
+getAuth,
+signInAnonymously
+}
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+onSnapshot,
+query,
+orderBy
+}
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
+
+authDomain:"nalhati-ride.firebaseapp.com",
+
+projectId:"nalhati-ride",
+
+storageBucket:"nalhati-ride.firebasestorage.app",
+
+messagingSenderId:"1077953215118",
+
+appId:"1:1077953215118:web:7d73eac073d30523dda7df",
+
+measurementId:"G-BPZT7JKDH7"
+
+};
+
+
+const app=initializeApp(firebaseConfig);
+
+const auth=getAuth(app);
+
+const db=getFirestore(app);
+
+
+let currentUser=null;
+
+
+signInAnonymously(auth)
+
+.then(userCredential=>{
+
+currentUser=userCredential.user;
+
+console.log("Firebase connected");
+
+})
+
+.catch(error=>{
+
+console.error(error);
+
+});
+
+
+window.bookRide=async function(){
+
+const from=document.getElementById("from").value;
+
+const to=document.getElementById("to").value;
+
+
+if(from===to){
+
+alert("Pickup এবং Destination আলাদা হতে হবে।");
+
+return;
 
 }
 
-function driverMode(){
 
-document.getElementById("driverBox").style.display="block";
+try{
+
+await addDoc(collection(db,"rides"),{
+
+from:from,
+
+to:to,
+
+fare:25,
+
+status:"requested",
+
+createdAt:new Date(),
+
+passengerId:currentUser ? currentUser.uid : "anonymous"
+
+});
+
+
+const status=document.getElementById("bookingStatus");
+
+status.style.display="block";
+
+status.innerHTML=
+"✅ Ride Request পাঠানো হয়েছে!<br>"+
+"🚕 কাছাকাছি Driver খোঁজা হচ্ছে...";
 
 }
 
-function acceptRide(){
+catch(error){
 
-document.getElementById("driverBox").innerHTML=
+alert("Booking করা যায়নি। Firebase connection পরীক্ষা করুন।");
 
-"<h3>✅ Ride Accepted</h3>"+
-"<p>Passenger-এর Ride আপনি গ্রহণ করেছেন।</p>"+
-"<button class='driver' onclick='callPassenger()'>📞 Passenger-কে Call করুন</button>";
+console.error(error);
 
 }
 
-function callPassenger(){
+};
 
-alert("Passenger-এর সঙ্গে যোগাযোগের ব্যবস্থা পরে যোগ করা হবে।");
+
+window.showDriver=function(){
+
+document.getElementById("driverArea").classList.remove("hidden");
+
+loadRides();
+
+};
+
+
+function loadRides(){
+
+const ridesRef=collection(db,"rides");
+
+const q=query(ridesRef,orderBy("createdAt","desc"));
+
+
+onSnapshot(q,snapshot=>{
+
+const rides=document.getElementById("rides");
+
+rides.innerHTML="";
+
+
+if(snapshot.empty){
+
+rides.innerHTML="<p class='small'>কোনো নতুন Ride নেই।</p>";
+
+return;
 
 }
+
+
+snapshot.forEach(doc=>{
+
+const ride=doc.data();
+
+const div=document.createElement("div");
+
+div.className="ride";
+
+div.innerHTML=
+
+"<b>📍 "+ride.from+" → "+ride.to+"</b>"+
+
+"<p>💰 ভাড়া: ₹"+ride.fare+"</p>"+
+
+"<p>📋 Status: "+ride.status+"</p>"+
+
+"<button class='book' onclick='acceptRide(\""+doc.id+"\")'>"+
+"✅ Ride Accept করুন"+
+"</button>";
+
+rides.appendChild(div);
+
+});
+
+});
+
+}
+
+
+window.acceptRide=function(id){
+
+alert("Ride Accepted! Ride ID: "+id);
+
+};
 
 </script>
 
