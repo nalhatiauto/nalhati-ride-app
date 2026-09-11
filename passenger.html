@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nalhati Ride - Passenger</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6f9;
+      color: #222;
+    }
+
+    .header {
+      background: #0b7a3b;
+      color: white;
+      padding: 22px 15px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 7px 0 0;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 7px;
+    }
+
+    select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      background: white;
+    }
+
+    .fare {
+      background: #eef8f1;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 18px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #087536;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    .book-btn {
+      background: #0b7a3b;
+      color: white;
+    }
+
+    .cancel-btn {
+      background: #dc3545;
+      color: white;
+    }
+
+    .status {
+      text-align: center;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 15px;
+      background: #fff8df;
+      border: 2px solid #ffd65a;
+    }
+
+    .status-icon {
+      font-size: 45px;
+      margin-bottom: 8px;
+    }
+
+    .status-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .details {
+      text-align: left;
+      background: white;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 15px;
+      line-height: 1.8;
+    }
+
+    .success {
+      background: #eaf8ef;
+      border-color: #38a169;
+    }
+
+    .started {
+      background: #eaf4ff;
+      border-color: #3182ce;
+    }
+
+    .completed {
+      background: #eaf8ef;
+      border-color: #38a169;
+    }
+
+    .cancelled {
+      background: #fff0f0;
+      border-color: #e53e3e;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .booking-id {
+      font-size: 13px;
+      color: #666;
+      margin-top: 12px;
+      word-break: break-all;
+    }
+
+    .loading {
+      text-align: center;
+      color: #555;
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>🚖 Nalhati Ride</h1>
+    <p>আপনার যাত্রা, আপনার গাড়ি</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Booking Form -->
+    <div class="card" id="bookingCard">
+
+      <h2>🚖 অটো বুক করুন</h2>
+
+      <label>📍 কোথা থেকে যাবেন?</label>
+      <select id="from">
+        <option value="">Pickup নির্বাচন করুন</option>
+        <option value="Nalhati">Nalhati</option>
+        <option value="Murarai">Murarai</option>
+      </select>
+
+      <label>🏁 কোথায় যাবেন?</label>
+      <select id="to">
+        <option value="">Destination নির্বাচন করুন</option>
+        <option value="Nalhati">Nalhati</option>
+        <option value="Murarai">Murarai</option>
+      </select>
+
+      <div class="fare">
+        💰 ভাড়া: ₹25
+      </div>
+
+      <button class="book-btn" onclick="bookRide()">
+        🚖 অটো বুক করুন
+      </button>
+
+      <div id="message" class="loading"></div>
+
+    </div>
+
+
+    <!-- Booking Status -->
+    <div class="card hidden" id="statusCard">
+
+      <div id="statusBox" class="status">
+
+        <div id="statusIcon" class="status-icon">🔎</div>
+
+        <div id="statusTitle" class="status-title">
+          বুকিং নেওয়া হচ্ছে...
+        </div>
+
+        <div id="statusText">
+          অনুগ্রহ করে একটু অপেক্ষা করুন।
+        </div>
+
+        <div class="details">
+
+          <div>📍 <b>Pickup:</b> <span id="showFrom">-</span></div>
+
+          <div>🏁 <b>Destination:</b> <span id="showTo">-</span></div>
+
+          <div>💰 <b>ভাড়া:</b> ₹25</div>
+
+          <div class="booking-id">
+            🆔 Booking ID:
+            <span id="bookingId">-</span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <button
+        id="cancelBtn"
+        class="cancel-btn"
+        onclick="cancelRide()">
+        ❌ বুকিং বাতিল করুন
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      doc,
+      onSnapshot,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
+      authDomain: "nalhati-ride.firebaseapp.com",
+      projectId: "nalhati-ride",
+      storageBucket: "nalhati-ride.firebasestorage.app",
+      messagingSenderId: "1077953215118",
+      appId: "1:1077953215118:web:7d73eac073d30523dda7df",
+      measurementId: "G-BPZT7JKDH7"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let currentRideId = null;
+
+
+    // Anonymous Login
+    signInAnonymously(auth)
+      .then((result) => {
+
+        currentUser = result.user;
+
+        console.log("Passenger connected:", currentUser.uid);
+
+      })
+      .catch((error) => {
+
+        console.error(error);
+
+        document.getElementById("message").innerText =
+          "⚠️ App connection সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+
+      });
+
+
+    // BOOK RIDE
+    window.bookRide = async function () {
+
+      const from = document.getElementById("from").value;
+
+      const to = document.getElementById("to").value;
+
+      const message = document.getElementById("message");
+
+
+      if (!from || !to) {
+
+        message.innerText =
+          "⚠️ Pickup এবং Destination দুটোই নির্বাচন করুন।";
+
+        return;
+      }
+
+
+      if (from === to) {
+
+        message.innerText =
+          "⚠️ Pickup এবং Destination একই হতে পারে না।";
+
+        return;
+      }
+
+
+      if (!currentUser) {
+
+        message.innerText =
+          "⏳ App প্রস্তুত হচ্ছে। একটু অপেক্ষা করুন...";
+
+        return;
+      }
+
+
+      try {
+
+        message.innerText =
+          "⏳ আপনার বুকিং নেওয়া হচ্ছে...";
+
+
+        const rideRef = await addDoc(
+          collection(db, "rides"),
+          {
+
+            from: from,
+
+            to: to,
+
+            fare: 25,
+
+            status: "searching",
+
+            passengerId: currentUser.uid,
+
+            driverId: "",
+
+            createdAt: new Date()
+
+          }
+        );
+
+
+        currentRideId = rideRef.id;
+
+
+        // Show booking screen
+        document.getElementById("bookingCard")
+          .classList.add("hidden");
+
+        document.getElementById("statusCard")
+          .classList.remove("hidden");
+
+
+        document.getElementById("showFrom").innerText = from;
+
+        document.getElementById("showTo").innerText = to;
+
+        document.getElementById("bookingId").innerText =
+          rideRef.id.substring(0, 10).toUpperCase();
+
+
+        showSearching();
+
+
+        // Listen for driver/status changes
+        listenToRide(currentRideId);
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.innerText =
+          "❌ বুকিং করা যায়নি। আবার চেষ্টা করুন।";
+
+      }
+
+    };
+
+
+    // LISTEN TO RIDE
+    function listenToRide(rideId) {
+
+      const rideRef = doc(db, "rides", rideId);
+
+
+      onSnapshot(rideRef, (snapshot) => {
+
+        if (!snapshot.exists()) return;
+
+
+        const ride = snapshot.data();
+
+
+        console.log("Ride status:", ride.status);
+
+
+        if (ride.status === "searching") {
+
+          showSearching();
+
+        }
+
+        else if (ride.status === "accepted") {
+
+          showAccepted();
+
+        }
+
+        else if (ride.status === "started") {
+
+          showStarted();
+
+        }
+
+        else if (ride.status === "completed") {
+
+          showCompleted();
+
+        }
+
+        else if (ride.status === "cancelled") {
+
+          showCancelled();
+
+        }
+
+      });
+
+    }
+
+
+    // SEARCHING
+    function showSearching() {
+
+      const box = document.getElementById("statusBox");
+
+      box.className = "status";
+
+
+      document.getElementById("statusIcon").innerText = "🔎";
+
+      document.getElementById("statusTitle").innerText =
+        "Booking Confirmed!";
+
+      document.getElementById("statusText").innerText =
+        "✅ আপনার বুকিং নেওয়া হয়েছে। এখন Driver খোঁজা হচ্ছে...";
+
+      document.getElementById("cancelBtn")
+        .classList.remove("hidden");
+
+    }
+
+
+    // ACCEPTED
+    function showAccepted() {
+
+      const box = document.getElementById("statusBox");
+
+      box.className = "status success";
+
+
+      document.getElementById("statusIcon").innerText = "🎉";
+
+      document.getElementById("statusTitle").innerText =
+        "Driver পাওয়া গেছে!";
+
+      document.getElementById("statusText").innerText =
+        "🚖 আপনার জন্য একটি অটো বুকিং গ্রহণ করেছে। Driver আপনার কাছে আসছেন।";
+
+
+      document.getElementById("cancelBtn")
+        .classList.add("hidden");
+
+    }
+
+
+    // STARTED
+    function showStarted() {
+
+      const box = document.getElementById("statusBox");
+
+      box.className = "status started";
+
+
+      document.getElementById("statusIcon").innerText = "🟢";
+
+      document.getElementById("statusTitle").innerText =
+        "Ride Started";
+
+      document.getElementById("statusText").innerText =
+        "🚖 আপনার যাত্রা শুরু হয়েছে। শুভযাত্রা!";
+
+
+      document.getElementById("cancelBtn")
+        .classList.add("hidden");
+
+    }
+
+
+    // COMPLETED
+    function showCompleted() {
+
+      const box = document.getElementById("statusBox");
+
+      box.className = "status completed";
+
+
+      document.getElementById("statusIcon").innerText = "✅";
+
+      document.getElementById("statusTitle").innerText =
+        "Ride Completed";
+
+      document.getElementById("statusText").innerText =
+        "🎉 আপনার যাত্রা সম্পূর্ণ হয়েছে। Nalhati Ride ব্যবহার করার জন্য ধন্যবাদ!";
+
+
+      document.getElementById("cancelBtn")
+        .classList.add("hidden");
+
+    }
+
+
+    // CANCELLED
+    function showCancelled() {
+
+      const box = document.getElementById("statusBox");
+
+      box.className = "status cancelled";
+
+
+      document.getElementById("statusIcon").innerText = "❌";
+
+      document.getElementById("statusTitle").innerText =
+        "Booking Cancelled";
+
+      document.getElementById("statusText").innerText =
+        "আপনার বুকিং বাতিল হয়েছে।";
+
+
+      document.getElementById("cancelBtn")
+        .classList.add("hidden");
+
+    }
+
+
+    // CANCEL RIDE
+    window.cancelRide = async function () {
+
+      if (!currentRideId) return;
+
+
+      try {
+
+        await updateDoc(
+          doc(db, "rides", currentRideId),
+          {
+            status: "cancelled"
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert("Booking cancel করা যায়নি।");
+
+      }
+
+    };
+
+  </script>
+
+</body>
+</html>
