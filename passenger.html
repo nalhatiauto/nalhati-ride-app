@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Nalhati Ride - Passenger</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -15,53 +18,54 @@
       color: #222;
     }
 
-    .header {
-      background: #111827;
+    header {
+      background: #1565c0;
       color: white;
-      padding: 20px;
       text-align: center;
+      padding: 18px 10px;
     }
 
-    .header h1 {
+    header h1 {
       margin: 0;
-      font-size: 27px;
+      font-size: 28px;
     }
 
-    .header p {
-      margin: 6px 0 0;
-      color: #d1d5db;
+    header p {
+      margin: 5px 0 0;
     }
 
     .container {
-      max-width: 600px;
+      max-width: 650px;
       margin: auto;
-      padding: 16px;
+      padding: 15px;
     }
 
     .card {
       background: white;
+      border-radius: 14px;
       padding: 18px;
-      border-radius: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.08);
+      margin-bottom: 15px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
     }
 
-    h2 { margin-top: 0; }
+    h2 {
+      margin-top: 0;
+      color: #1565c0;
+    }
 
     label {
       display: block;
+      margin-top: 12px;
       font-weight: bold;
-      margin-top: 14px;
-      margin-bottom: 6px;
     }
 
-    select, input, textarea {
+    input, select, textarea {
       width: 100%;
-      padding: 13px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 9px;
       font-size: 16px;
-      background: white;
     }
 
     textarea {
@@ -69,1172 +73,1351 @@
       resize: vertical;
     }
 
-    .offer-box {
-      background: #fff7ed;
-      border: 2px solid #fb923c;
-      padding: 15px;
-      border-radius: 14px;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    .offer-title {
-      color: #ea580c;
-      font-size: 21px;
-      font-weight: bold;
-    }
-
-    .offer-price {
-      font-size: 18px;
-      margin-top: 7px;
-    }
-
-    .type-buttons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .type-btn {
-      flex: 1;
-      padding: 14px 8px;
-      border: 2px solid #d1d5db;
-      background: white;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .type-btn.active {
-      border-color: #2563eb;
-      background: #eff6ff;
-      color: #1d4ed8;
-    }
-
-    .main-btn {
-      width: 100%;
-      padding: 15px;
-      margin-top: 20px;
-      border: none;
-      border-radius: 12px;
-      background: #2563eb;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-    }
-
-    .main-btn:disabled {
-      background: #9ca3af;
-    }
-
-    .call-btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      margin-top: 14px;
-      border: none;
-      border-radius: 12px;
-      background: #16a34a;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      text-align: center;
-      text-decoration: none;
-    }
-
-    .driver-box {
-      background: #eff6ff;
-      border: 1px solid #93c5fd;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 15px;
-      text-align: left;
-      line-height: 1.8;
-    }
-
-    .summary {
-      background: #f0fdf4;
-      border: 1px solid #86efac;
-      padding: 15px;
-      border-radius: 12px;
-      line-height: 1.8;
-    }
-
-    .discount-box {
-      background: #ecfdf5;
-      border: 1px solid #6ee7b7;
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 12px;
-      color: #047857;
-      font-weight: bold;
-    }
-
-    .status-box {
-      text-align: center;
-    }
-
-    .success {
-      color: #15803d;
-      font-size: 23px;
-      font-weight: bold;
-    }
-
-    .booking-id {
-      background: #f3f4f6;
-      padding: 10px;
-      border-radius: 8px;
-      word-break: break-all;
-      font-size: 13px;
-    }
-
-    .cancel-btn {
+    button {
       width: 100%;
       padding: 13px;
       margin-top: 12px;
       border: none;
-      border-radius: 10px;
-      background: #dc2626;
+      border-radius: 9px;
+      background: #1565c0;
       color: white;
-      font-size: 16px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    .secondary {
+      background: #757575;
+    }
+
+    .green {
+      background: #2e7d32;
+    }
+
+    .red {
+      background: #c62828;
+    }
+
+    .orange {
+      background: #ef6c00;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .offer {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 13px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      text-align: center;
       font-weight: bold;
     }
 
-    .hidden { display: none; }
-
-    .price-note {
-      color: #6b7280;
-      font-size: 13px;
-      margin-top: 5px;
+    .summary {
+      background: #f1f8ff;
+      padding: 15px;
+      border-radius: 10px;
+      line-height: 1.8;
     }
 
-    .distance-box {
-      background: #eff6ff;
-      border: 1px solid #93c5fd;
-      padding: 14px;
+    .fare {
+      font-size: 25px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    .status {
+      padding: 15px;
       border-radius: 10px;
+      background: #e3f2fd;
+      line-height: 1.8;
+    }
+
+    .call {
+      display: block;
       text-align: center;
+      text-decoration: none;
+      color: white;
+      background: #2e7d32;
+      padding: 13px;
+      border-radius: 9px;
+      margin-top: 12px;
       font-size: 17px;
+      font-weight: bold;
+    }
+
+    .small {
+      color: #666;
+      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="header">
-    <h1>🚖 Nalhati Ride</h1>
-    <p>Passenger App</p>
-  </div>
-
-  <div class="container">
-
-    <div class="offer-box">
-      <div class="offer-title">🎉 প্রথম অনলাইন বুকিং অফার!</div>
-      <div class="offer-price">
-        Normal Ride ₹25 → <strong>মাত্র ₹15</strong>
-      </div>
-      <div>💰 প্রথম বুকিংয়ে ₹10 ছাড়</div>
-    </div>
-
-    <div class="card" id="bookingCard">
-
-      <h2>👤 যাত্রীর তথ্য</h2>
-
-      <label>আপনার নাম</label>
-
-      <input
-        type="text"
-        id="passengerName"
-        placeholder="আপনার নাম লিখুন"
-        maxlength="50"
-      >
-
-      <label>📱 মোবাইল নম্বর</label>
-
-      <input
-        type="tel"
-        id="passengerPhone"
-        placeholder="10 সংখ্যার মোবাইল নম্বর"
-        maxlength="10"
-        inputmode="numeric"
-      >
-
-      <p class="price-note">
-        📌 সঠিক মোবাইল নম্বর দিন। Booking-এর প্রয়োজনে Driver এই নম্বরে যোগাযোগ করতে পারবেন।
-      </p>
-
-      <h2 style="margin-top:22px;">আপনি কীভাবে যাবেন?</h2>
-
-      <div class="type-buttons">
-
-        <button class="type-btn active" id="normalBtn">
-          🚖 Normal Ride
-        </button>
-
-        <button class="type-btn" id="reserveBtn">
-          🚕 Reserve Auto
-        </button>
-
-      </div>
-
-
-      <!-- NORMAL RIDE -->
-
-      <div id="normalForm">
-
-        <label>📍 কোথা থেকে যাবেন?</label>
-
-        <select id="normalFrom">
-
-          <option value="">
-            Pickup নির্বাচন করুন
-          </option>
-
-          <option value="Nalhati">
-            Nalhati
-          </option>
-
-          <option value="Murarai">
-            Murarai
-          </option>
-
-        </select>
-
-
-        <label>🏁 কোথায় যাবেন?</label>
-
-        <select id="normalTo">
-
-          <option value="">
-            Destination নির্বাচন করুন
-          </option>
-
-          <option value="Nalhati">
-            Nalhati
-          </option>
-
-          <option value="Murarai">
-            Murarai
-          </option>
-
-        </select>
-
-
-        <div class="summary" style="margin-top:15px;">
-
-          💰 সাধারণ ভাড়া:
-          <strong>₹25</strong>
-
-          <div class="discount-box">
-            🎁 প্রথম অনলাইন বুকিং হলে
-            <br>
-            ₹10 ছাড় → <strong>₹15</strong>
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- RESERVE AUTO -->
-
-      <div id="reserveForm" class="hidden">
-
-        <label>📍 Pickup Location</label>
-
-        <input
-          type="text"
-          id="reserveFrom"
-          placeholder="যেখান থেকে গাড়ি নিতে চান"
-        >
-
-
-        <label>🏁 Destination</label>
-
-        <input
-          type="text"
-          id="reserveTo"
-          placeholder="যেখানে যেতে চান"
-        >
-
-
-        <label>📏 Distance</label>
-
-        <div
-          class="distance-box"
-          id="distanceBox"
-        >
-          Pickup ও Destination লিখুন
-        </div>
-
-
-        <label>💰 প্রতি কিলোমিটার ভাড়া</label>
-
-        <input
-          type="number"
-          id="ratePerKm"
-          value="20"
-          min="1"
-        >
-
-        <div class="price-note">
-          বর্তমান হিসাব: ₹20 প্রতি কিলোমিটার
-        </div>
-
-
-        <div class="summary" style="margin-top:15px;">
-
-          💵 মোট আনুমানিক ভাড়া:
-          <strong id="calculatedFare">
-            ₹0
-          </strong>
-
-          <div class="discount-box">
-            🎁 প্রথম অনলাইন বুকিংয়ে ₹10 ছাড় প্রযোজ্য
-          </div>
-
-        </div>
-
-
-        <label>👥 যাত্রী সংখ্যা</label>
-
-        <select id="passengers">
-
-          <option value="">
-            যাত্রী সংখ্যা নির্বাচন করুন
-          </option>
-
-          <option value="1">1 জন</option>
-          <option value="2">2 জন</option>
-          <option value="3">3 জন</option>
-          <option value="4">4 জন</option>
-          <option value="5">5 জন</option>
-          <option value="6">6 জন</option>
-          <option value="7">7 জন</option>
-          <option value="8">8 জন</option>
-
-        </select>
-
-
-        <label>📅 যাওয়ার তারিখ</label>
-
-        <input
-          type="date"
-          id="reserveDate"
-        >
-
-
-        <label>⏰ যাওয়ার সময়</label>
-
-        <input
-          type="time"
-          id="reserveTime"
-        >
-
-
-        <label>📝 অতিরিক্ত কথা (ঐচ্ছিক)</label>
-
-        <textarea
-          id="reserveNote"
-          placeholder="যেমন: ফেরার সময় অপেক্ষা করতে হবে"
-        ></textarea>
-
-      </div>
-
-
-      <button
-        class="main-btn"
-        id="reviewBtn"
-      >
-        বুকিংয়ের তথ্য দেখুন
-      </button>
-
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <div
-      class="card hidden"
-      id="summaryCard"
+<header>
+  <h1>🚕 Nalhati Ride</h1>
+  <p>Passenger App</p>
+</header>
+
+<div class="container">
+
+  <!-- Passenger Information -->
+  <div class="card">
+    <h2>👤 Passenger Information</h2>
+
+    <label>Passenger Name</label>
+    <input
+      id="passengerName"
+      type="text"
+      placeholder="আপনার নাম লিখুন"
+      maxlength="50"
     >
 
-      <h2>📋 Booking Summary</h2>
-
-      <div
-        class="summary"
-        id="summaryText"
-      ></div>
-
-
-      <button
-        class="main-btn"
-        id="confirmBtn"
-      >
-        ✅ Confirm Booking
-      </button>
-
-
-      <button
-        class="main-btn"
-        id="editBtn"
-        style="background:#6b7280;"
-      >
-        ✏️ Edit
-      </button>
-
-    </div>
-
-
-    <!-- STATUS -->
-
-    <div
-      class="card hidden"
-      id="statusCard"
+    <label>Phone Number</label>
+    <input
+      id="passengerPhone"
+      type="tel"
+      inputmode="numeric"
+      placeholder="10 digit mobile number"
+      maxlength="10"
     >
 
-      <div class="status-box">
-
-        <div
-          class="success"
-          id="statusTitle"
-        >
-          Booking Confirmed!
-        </div>
-
-
-        <p id="statusMessage">
-          আপনার বুকিং নেওয়া হয়েছে।
-        </p>
-
-
-        <div id="statusDetails"></div>
-
-
-        <p>
-          <strong>Booking ID</strong>
-        </p>
-
-
-        <div
-          class="booking-id"
-          id="bookingId"
-        ></div>
-
-
-        <button
-          class="cancel-btn"
-          id="cancelBtn"
-        >
-          ❌ Booking Cancel করুন
-        </button>
-
-      </div>
-
-    </div>
-
+    <p class="small">
+      বুকিং যাচাই করার জন্য আপনার নাম ও মোবাইল নম্বর প্রয়োজন।
+    </p>
   </div>
+
+  <!-- Ride Type -->
+  <div class="card">
+    <h2>🚕 Ride Type</h2>
+
+    <button id="normalBtn">🚕 Normal Ride</button>
+
+    <button id="reserveBtn" class="orange">
+      📅 Reserve Auto
+    </button>
+  </div>
+
+  <!-- Offer -->
+  <div class="offer">
+    🎉 প্রথম অনলাইন বুকিং অফার!<br>
+    Normal Ride ₹25 → <b>₹15</b><br>
+    প্রথম বুকিংয়ে ₹10 ছাড়
+  </div>
+
+  <!-- Normal Ride -->
+  <div id="normalSection" class="card hidden">
+    <h2>🚕 Normal Ride</h2>
+
+    <label>Pickup</label>
+    <select id="normalFrom">
+      <option value="">Pickup নির্বাচন করুন</option>
+      <option value="Nalhati">Nalhati</option>
+      <option value="Murarai">Murarai</option>
+    </select>
+
+    <label>Destination</label>
+    <select id="normalTo">
+      <option value="">Destination নির্বাচন করুন</option>
+      <option value="Nalhati">Nalhati</option>
+      <option value="Murarai">Murarai</option>
+    </select>
+
+    <p>
+      ভাড়া: <b>₹25</b><br>
+      প্রথম অনলাইন বুকিং হলে: <b>₹15</b>
+    </p>
+
+    <button id="normalReviewBtn">
+      Review Booking
+    </button>
+  </div>
+
+  <!-- Reserve Ride -->
+  <div id="reserveSection" class="card hidden">
+    <h2>📅 Reserve Auto</h2>
+
+    <label>Pickup Location</label>
+    <input
+      id="reserveFrom"
+      type="text"
+      placeholder="যেমন: Nalhati Railway Station"
+    >
+
+    <label>Destination</label>
+    <input
+      id="reserveTo"
+      type="text"
+      placeholder="যেমন: Rampurhat"
+    >
+
+    <label>Passengers</label>
+    <select id="reservePassengers">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+    </select>
+
+    <label>Date</label>
+    <input id="reserveDate" type="date">
+
+    <label>Time</label>
+    <input id="reserveTime" type="time">
+
+    <label>Rate per KM</label>
+    <input
+      id="reserveRate"
+      type="number"
+      value="20"
+      min="1"
+    >
+
+    <label>Note (Optional)</label>
+    <textarea
+      id="reserveNote"
+      placeholder="অতিরিক্ত কোনো কথা থাকলে লিখুন"
+    ></textarea>
+
+    <button id="calculateBtn" class="orange">
+      📍 Calculate Distance
+    </button>
+
+    <div id="distanceResult" class="summary hidden"></div>
+
+    <button id="reserveReviewBtn">
+      Review Reserve Booking
+    </button>
+  </div>
+
+  <!-- Review -->
+  <div id="reviewSection" class="card hidden">
+    <h2>📋 Booking Summary</h2>
+
+    <div id="reviewContent" class="summary"></div>
+
+    <button id="confirmBtn" class="green">
+      ✅ Confirm Booking
+    </button>
+
+    <button id="editBtn" class="secondary">
+      ✏️ Edit
+    </button>
+  </div>
+
+  <!-- Status -->
+  <div id="statusSection" class="card hidden">
+    <h2>📌 Booking Status</h2>
+
+    <div id="statusContent" class="status"></div>
+
+    <button id="cancelBtn" class="red">
+      ❌ Cancel Booking
+    </button>
+  </div>
+
+</div>
 
 
 <script type="module">
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import {
-  getAuth,
-  signInAnonymously,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+  import {
+    getAuth,
+    signInAnonymously,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  onSnapshot,
-  query,
-  where,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
-
-  authDomain:
-    "nalhati-ride.firebaseapp.com",
-
-  projectId:
-    "nalhati-ride",
-
-  storageBucket:
-    "nalhati-ride.firebasestorage.app",
-
-  messagingSenderId:
-    "1077953215118",
-
-  appId:
-    "1:1077953215118:web:7d73eac073d30523dda7df",
-
-  measurementId:
-    "G-BPZT7JKDH7"
-
-};
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    doc,
+    updateDoc,
+    onSnapshot,
+    query,
+    where,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-const app =
-  initializeApp(firebaseConfig);
+  // =========================
+  // FIREBASE
+  // =========================
 
-const auth =
-  getAuth(app);
-
-const db =
-  getFirestore(app);
-
-
-let currentUser = null;
-
-let currentRideId = null;
-
-let unsubscribeRide = null;
-
-let bookingType = "normal";
-
-let reserveDistanceKm = 0;
-
-let reserveFare = 0;
-
-let discountAmount = 0;
-
-let finalFare = 0;
-
-let isFirstBooking = false;
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
+    authDomain: "nalhati-ride.firebaseapp.com",
+    projectId: "nalhati-ride",
+    storageBucket: "nalhati-ride.firebasestorage.app",
+    messagingSenderId: "1077953215118",
+    appId: "1:1077953215118:web:7d73eac073d30523dda7df",
+    measurementId: "G-BPZT7JKDH7"
+  };
 
 
-signInAnonymously(auth);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
 
-onAuthStateChanged(
-  auth,
-  (user) => {
+  let currentUser = null;
+  let currentRideId = null;
+  let unsubscribeRide = null;
+
+  let selectedRide = null;
+  let reserveDistanceKm = 0;
+  let reserveFare = 0;
+
+  let isFirstBooking = false;
+  let discountAmount = 0;
+  let finalFare = 0;
+
+
+  // =========================
+  // HTML ELEMENTS
+  // =========================
+
+  const normalBtn = document.getElementById("normalBtn");
+  const reserveBtn = document.getElementById("reserveBtn");
+
+  const normalSection = document.getElementById("normalSection");
+  const reserveSection = document.getElementById("reserveSection");
+
+  const normalFrom = document.getElementById("normalFrom");
+  const normalTo = document.getElementById("normalTo");
+
+  const reserveFrom = document.getElementById("reserveFrom");
+  const reserveTo = document.getElementById("reserveTo");
+  const reservePassengers = document.getElementById("reservePassengers");
+  const reserveDate = document.getElementById("reserveDate");
+  const reserveTime = document.getElementById("reserveTime");
+  const reserveRate = document.getElementById("reserveRate");
+  const reserveNote = document.getElementById("reserveNote");
+
+  const calculateBtn = document.getElementById("calculateBtn");
+  const distanceResult = document.getElementById("distanceResult");
+
+  const normalReviewBtn = document.getElementById("normalReviewBtn");
+  const reserveReviewBtn = document.getElementById("reserveReviewBtn");
+
+  const reviewSection = document.getElementById("reviewSection");
+  const reviewContent = document.getElementById("reviewContent");
+
+  const confirmBtn = document.getElementById("confirmBtn");
+  const editBtn = document.getElementById("editBtn");
+
+  const statusSection = document.getElementById("statusSection");
+  const statusContent = document.getElementById("statusContent");
+  const cancelBtn = document.getElementById("cancelBtn");
+
+  const passengerName = document.getElementById("passengerName");
+  const passengerPhone = document.getElementById("passengerPhone");
+
+
+  // =========================
+  // ESCAPE HTML
+  // =========================
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+
+  // =========================
+  // FIREBASE LOGIN
+  // =========================
+
+  async function startAuth() {
+
+    try {
+
+      const result = await signInAnonymously(auth);
+
+      currentUser = result.user;
+
+      console.log("Firebase login successful:", currentUser.uid);
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Firebase connection হচ্ছে না।\n\n" +
+        "দয়া করে Internet connection পরীক্ষা করুন।"
+      );
+
+    }
+  }
+
+
+  onAuthStateChanged(auth, (user) => {
 
     if (user) {
       currentUser = user;
+      console.log("User ready:", user.uid);
     }
 
-  }
-);
+  });
 
 
-/* ELEMENTS */
+  startAuth();
 
-const normalBtn =
-  document.getElementById("normalBtn");
 
-const reserveBtn =
-  document.getElementById("reserveBtn");
+  // =========================
+  // SHOW NORMAL
+  // =========================
 
-const normalForm =
-  document.getElementById("normalForm");
+  normalBtn.addEventListener("click", () => {
 
-const reserveForm =
-  document.getElementById("reserveForm");
+    normalSection.classList.remove("hidden");
+    reserveSection.classList.add("hidden");
 
-const bookingCard =
-  document.getElementById("bookingCard");
+    reviewSection.classList.add("hidden");
 
-const summaryCard =
-  document.getElementById("summaryCard");
+    window.scrollTo({
+      top: normalSection.offsetTop - 10,
+      behavior: "smooth"
+    });
 
-const statusCard =
-  document.getElementById("statusCard");
+  });
 
-const reviewBtn =
-  document.getElementById("reviewBtn");
 
-const confirmBtn =
-  document.getElementById("confirmBtn");
+  // =========================
+  // SHOW RESERVE
+  // =========================
 
-const editBtn =
-  document.getElementById("editBtn");
+  reserveBtn.addEventListener("click", () => {
 
-const summaryText =
-  document.getElementById("summaryText");
+    reserveSection.classList.remove("hidden");
+    normalSection.classList.add("hidden");
 
-const statusTitle =
-  document.getElementById("statusTitle");
+    reviewSection.classList.add("hidden");
 
-const statusMessage =
-  document.getElementById("statusMessage");
+    window.scrollTo({
+      top: reserveSection.offsetTop - 10,
+      behavior: "smooth"
+    });
 
-const statusDetails =
-  document.getElementById("statusDetails");
+  });
 
-const bookingId =
-  document.getElementById("bookingId");
 
-const cancelBtn =
-  document.getElementById("cancelBtn");
+  // =========================
+  // VALIDATE PASSENGER
+  // =========================
 
-const reserveFrom =
-  document.getElementById("reserveFrom");
+  function validatePassenger() {
 
-const reserveTo =
-  document.getElementById("reserveTo");
-
-const ratePerKm =
-  document.getElementById("ratePerKm");
-
-const distanceBox =
-  document.getElementById("distanceBox");
-
-const calculatedFare =
-  document.getElementById("calculatedFare");
-
-const passengerName =
-  document.getElementById("passengerName");
-
-const passengerPhone =
-  document.getElementById("passengerPhone");
-
-
-/* NORMAL */
-
-normalBtn.addEventListener(
-  "click",
-  () => {
-
-    bookingType = "normal";
-
-    normalBtn.classList.add("active");
-
-    reserveBtn.classList.remove("active");
-
-    normalForm.classList.remove("hidden");
-
-    reserveForm.classList.add("hidden");
-
-  }
-);
-
-
-/* RESERVE */
-
-reserveBtn.addEventListener(
-  "click",
-  () => {
-
-    bookingType = "reserve";
-
-    reserveBtn.classList.add("active");
-
-    normalBtn.classList.remove("active");
-
-    normalForm.classList.add("hidden");
-
-    reserveForm.classList.remove("hidden");
-
-  }
-);
-
-
-/* CHECK FIRST BOOKING */
-
-async function checkFirstBooking() {
-
-  if (!currentUser) {
-    return false;
-  }
-
-  try {
-
-    const q =
-      query(
-        collection(db, "rides"),
-        where(
-          "passengerId",
-          "==",
-          currentUser.uid
-        )
-      );
-
-    const snapshot =
-      await getDocs(q);
-
-    return snapshot.empty;
-
-  } catch (error) {
-
-    console.error(
-      "First booking check error:",
-      error
-    );
-
-    return false;
-
-  }
-
-}
-
-
-/* PHONE VALIDATION */
-
-function validPhone(phone) {
-
-  return /^[6-9]\d{9}$/.test(phone);
-
-}
-
-
-/* DISTANCE */
-
-async function calculateDistance() {
-
-  const from =
-    reserveFrom.value.trim();
-
-  const to =
-    reserveTo.value.trim();
-
-
-  if (!from || !to) {
-
-    distanceBox.innerText =
-      "Pickup ও Destination লিখুন";
-
-    calculatedFare.innerText =
-      "₹0";
-
-    reserveDistanceKm = 0;
-
-    reserveFare = 0;
-
-    return;
-
-  }
-
-
-  distanceBox.innerText =
-    "📍 Distance হিসাব হচ্ছে...";
-
-
-  try {
-
-    const fromURL =
-      "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
-      encodeURIComponent(
-        from + ", West Bengal, India"
-      );
-
-
-    const toURL =
-      "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
-      encodeURIComponent(
-        to + ", West Bengal, India"
-      );
-
-
-    const fromResponse =
-      await fetch(fromURL);
-
-    const fromData =
-      await fromResponse.json();
-
-
-    const toResponse =
-      await fetch(toURL);
-
-    const toData =
-      await toResponse.json();
-
-
-    if (
-      !fromData.length ||
-      !toData.length
-    ) {
-
-      distanceBox.innerText =
-        "⚠️ Location পাওয়া যায়নি";
-
-      calculatedFare.innerText =
-        "₹0";
-
-      return;
-
-    }
-
-
-    const fromLat =
-      fromData[0].lat;
-
-    const fromLon =
-      fromData[0].lon;
-
-    const toLat =
-      toData[0].lat;
-
-    const toLon =
-      toData[0].lon;
-
-
-    const routeURL =
-      "https://router.project-osrm.org/route/v1/driving/" +
-      fromLon + "," + fromLat +
-      ";" +
-      toLon + "," + toLat +
-      "?overview=false";
-
-
-    const routeResponse =
-      await fetch(routeURL);
-
-    const routeData =
-      await routeResponse.json();
-
-
-    if (
-      !routeData.routes ||
-      !routeData.routes.length
-    ) {
-
-      distanceBox.innerText =
-        "⚠️ রাস্তার Distance পাওয়া যায়নি";
-
-      calculatedFare.innerText =
-        "₹0";
-
-      return;
-
-    }
-
-
-    reserveDistanceKm =
-      routeData.routes[0].distance / 1000;
-
-
-    reserveDistanceKm =
-      Math.ceil(
-        reserveDistanceKm * 10
-      ) / 10;
-
-
-    calculateFare();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    distanceBox.innerText =
-      "⚠️ Distance হিসাব করা যায়নি";
-
-    calculatedFare.innerText =
-      "₹0";
-
-  }
-
-}
-
-
-function calculateFare() {
-
-  const rate =
-    Number(ratePerKm.value) || 20;
-
-
-  reserveFare =
-    Math.ceil(
-      reserveDistanceKm * rate
-    );
-
-
-  distanceBox.innerHTML =
-    "📏 <strong>" +
-    reserveDistanceKm +
-    " km</strong>";
-
-
-  calculatedFare.innerText =
-    "₹" + reserveFare;
-
-}
-
-
-reserveFrom.addEventListener(
-  "change",
-  calculateDistance
-);
-
-reserveTo.addEventListener(
-  "change",
-  calculateDistance
-);
-
-ratePerKm.addEventListener(
-  "input",
-  calculateFare
-);
-
-
-/* REVIEW */
-
-reviewBtn.addEventListener(
-  "click",
-  async () => {
-
-    const name =
-      passengerName.value.trim();
-
-    const phone =
-      passengerPhone.value.trim();
-
+    const name = passengerName.value.trim();
+    const phone = passengerPhone.value.trim();
 
     if (!name) {
-
-      alert(
-        "আপনার নাম লিখুন।"
-      );
-
+      alert("আপনার নাম লিখুন।");
       passengerName.focus();
-
-      return;
-
+      return false;
     }
 
-
-    if (!validPhone(phone)) {
-
-      alert(
-        "সঠিক 10 সংখ্যার মোবাইল নম্বর দিন।"
-      );
-
+    if (!/^[0-9]{10}$/.test(phone)) {
+      alert("সঠিক 10 digit মোবাইল নম্বর লিখুন।");
       passengerPhone.focus();
-
-      return;
-
+      return false;
     }
 
+    return true;
+  }
+
+
+  // =========================
+  // CHECK FIRST BOOKING
+  // =========================
+
+  async function checkFirstBooking() {
 
     if (!currentUser) {
-
-      alert(
-        "অ্যাপ প্রস্তুত হচ্ছে। একটু পরে চেষ্টা করুন।"
-      );
-
-      return;
-
+      return false;
     }
 
+    try {
 
-    reviewBtn.disabled = true;
+      const q = query(
+        collection(db, "rides"),
+        where("passengerId", "==", currentUser.uid)
+      );
 
-    reviewBtn.innerText =
-      "তথ্য যাচাই হচ্ছে...";
+      const snapshot = await getDocs(q);
 
+      return snapshot.empty;
 
-    isFirstBooking =
-      await checkFirstBooking();
+    } catch (error) {
 
+      console.error("First booking check error:", error);
 
-    discountAmount =
-      isFirstBooking ? 10 : 0;
-
-
-    let html = "";
-
-
-    if (bookingType === "normal") {
-
-      const from =
-        document.getElementById(
-          "normalFrom"
-        ).value;
-
-      const to =
-        document.getElementById(
-          "normalTo"
-        ).value;
+      // Firebase query error হলেও booking বন্ধ হবে না
+      return false;
+    }
+  }
 
 
-      if (!from || !to) {
+  // =========================
+  // NORMAL REVIEW
+  // =========================
 
-        alert(
-          "Pickup এবং Destination নির্বাচন করুন।"
-        );
+  normalReviewBtn.addEventListener("click", async () => {
 
-        reviewBtn.disabled = false;
+    if (!validatePassenger()) {
+      return;
+    }
 
-        reviewBtn.innerText =
-          "বুকিংয়ের তথ্য দেখুন";
+    const from = normalFrom.value;
+    const to = normalTo.value;
 
-        return;
+    if (!from || !to) {
+      alert("Pickup এবং Destination নির্বাচন করুন।");
+      return;
+    }
 
+    if (from === to) {
+      alert("Pickup এবং Destination একই হতে পারে না।");
+      return;
+    }
+
+    if (!currentUser) {
+      alert("App এখনো প্রস্তুত হয়নি। কয়েক সেকেন্ড পরে আবার চেষ্টা করুন।");
+      return;
+    }
+
+    normalReviewBtn.disabled = true;
+    normalReviewBtn.textContent = "Checking...";
+
+    isFirstBooking = await checkFirstBooking();
+
+    discountAmount = isFirstBooking ? 10 : 0;
+    finalFare = 25 - discountAmount;
+
+    selectedRide = {
+      type: "normal",
+      from: from,
+      to: to,
+      passengers: 1,
+      fare: finalFare,
+      originalFare: 25,
+      discountAmount: discountAmount,
+      fareType: "fixed",
+      distanceKm: 0,
+      ratePerKm: 0,
+      date: "",
+      time: "",
+      note: ""
+    };
+
+    reviewContent.innerHTML = `
+
+      <b>🚕 Ride:</b> Normal Ride<br>
+
+      <b>📍 From:</b>
+      ${escapeHtml(from)}<br>
+
+      <b>📍 To:</b>
+      ${escapeHtml(to)}<br>
+
+      <b>👤 Passenger:</b>
+      ${escapeHtml(passengerName.value.trim())}<br>
+
+      <b>📱 Phone:</b>
+      ${escapeHtml(passengerPhone.value.trim())}<br>
+
+      <b>💰 Original Fare:</b>
+      ₹25<br>
+
+      <b>🎁 Discount:</b>
+      ₹${discountAmount}<br>
+
+      <div class="fare">
+        Final Fare: ₹${finalFare}
+      </div>
+
+    `;
+
+    reviewSection.classList.remove("hidden");
+
+    normalReviewBtn.disabled = false;
+    normalReviewBtn.textContent = "Review Booking";
+
+    reviewSection.scrollIntoView({
+      behavior: "smooth"
+    });
+
+  });
+
+
+  // =========================
+  // GEOCODING
+  // =========================
+
+  async function geocode(place) {
+
+    const url =
+      "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
+      encodeURIComponent(place);
+
+    const response = await fetch(url, {
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Geocoding failed");
+    }
+
+    const data = await response.json();
+
+    if (!data.length) {
+      throw new Error("Location not found: " + place);
+    }
+
+    return {
+      lat: parseFloat(data[0].lat),
+      lon: parseFloat(data[0].lon)
+    };
+  }
+
+
+  // =========================
+  // CALCULATE DISTANCE
+  // =========================
+
+  async function calculateDistance() {
+
+    const from = reserveFrom.value.trim();
+    const to = reserveTo.value.trim();
+
+    if (!from || !to) {
+      alert("Pickup এবং Destination লিখুন।");
+      return false;
+    }
+
+    if (from.toLowerCase() === to.toLowerCase()) {
+      alert("Pickup এবং Destination একই হতে পারে না।");
+      return false;
+    }
+
+    calculateBtn.disabled = true;
+    calculateBtn.textContent = "📍 Calculating...";
+
+    distanceResult.classList.remove("hidden");
+
+    distanceResult.innerHTML =
+      "📍 Location খোঁজা হচ্ছে...";
+
+    try {
+
+      const start = await geocode(from);
+
+      distanceResult.innerHTML =
+        "📍 Destination খোঁজা হচ্ছে...";
+
+      const end = await geocode(to);
+
+      const routeUrl =
+        "https://router.project-osrm.org/route/v1/driving/" +
+        start.lon + "," + start.lat +
+        ";" +
+        end.lon + "," + end.lat +
+        "?overview=false";
+
+      const response = await fetch(routeUrl);
+
+      if (!response.ok) {
+        throw new Error("Route calculation failed");
       }
 
+      const data = await response.json();
 
-      if (from === to) {
-
-        alert(
-          "Pickup এবং Destination আলাদা হতে হবে।"
-        );
-
-        reviewBtn.disabled = false;
-
-        reviewBtn.innerText =
-          "বুকিংয়ের তথ্য দেখুন";
-
-        return;
-
+      if (
+        !data.routes ||
+        !data.routes.length
+      ) {
+        throw new Error("Route not found");
       }
 
+      reserveDistanceKm =
+        data.routes[0].distance / 1000;
 
-      const normalFare =
-        25;
+      reserveDistanceKm =
+        Math.round(reserveDistanceKm * 10) / 10;
 
-      finalFare =
-        Math.max(
-          0,
-          normalFare - discountAmount
-        );
+      const rate =
+        Number(reserveRate.value) || 20;
 
+      reserveFare =
+        Math.ceil(reserveDistanceKm * rate);
 
-      html = `
+      distanceResult.innerHTML = `
 
-        👤 <strong>Passenger Information</strong>
-        <br><br>
+        <b>📍 Distance:</b>
+        ${reserveDistanceKm} km<br>
 
-        👤 নাম:
-        <strong>${escapeHtml(name)}</strong>
-        <br>
+        <b>💰 Rate:</b>
+        ₹${rate}/km<br>
 
-        📱 মোবাইল:
-        <strong>${escapeHtml(phone)}</strong>
-
-        <hr>
-
-        🚖 <strong>Normal Ride</strong>
-        <br><br>
-
-        📍 Pickup:
-        <strong>${escapeHtml(from)}</strong>
-        <br>
-
-        🏁 Destination:
-        <strong>${escapeHtml(to)}</strong>
-        <br>
-
-        💰 সাধারণ ভাড়া:
-        <strong>₹25</strong>
-
-        ${
-          isFirstBooking
-            ? `
-              <br>
-              🎁 প্রথম বুকিং ছাড়:
-              <strong>₹10</strong>
-              <br>
-              💵 দিতে হবে:
-              <strong>₹${finalFare}</strong>
-            `
-            : `
-              <br>
-              💵 দিতে হবে:
-              <strong>₹25</strong>
-            `
-        }
+        <b>💵 Estimated Fare:</b>
+        ₹${reserveFare}
 
       `;
 
-    } else {
+      calculateBtn.textContent =
+        "✅ Distance Calculated";
 
-      const from =
-        reserveFrom.value.trim();
+      calculateBtn.disabled = false;
 
-      const to =
-        reserveTo.value.trim();
+      return true;
 
-      const passengers =
-        document.getElementById(
-          "passengers"
-        ).value;
+    } catch (error) {
 
-      const date =
-        document.getElementById(
-          "reserveDate"
-        ).value;
+      console.error(error);
 
-      const time =
-        document.getElementById(
-          "reserveTime"
-        ).value;
+      reserveDistanceKm = 0;
+      reserveFare = 0;
 
-      const note =
-        document.getElementById(
-          "reserveNote"
-        ).value.trim();
+      distanceResult.innerHTML =
+        "❌ Distance হিসাব করা যায়নি। Location-এর নাম একটু পরিষ্কার করে লিখুন।";
+
+      alert(
+        "Distance হিসাব করা যায়নি।\n\n" +
+        "উদাহরণ:\n" +
+        "Nalhati Railway Station\n" +
+        "Rampurhat Railway Station"
+      );
+
+      calculateBtn.disabled = false;
+      calculateBtn.textContent =
+        "📍 Calculate Distance";
+
+      return false;
+    }
+  }
 
 
-      if (!from || !to) {
+  calculateBtn.addEventListener(
+    "click",
+    calculateDistance
+  );
 
-        alert(
-          "Pickup এবং Destination লিখুন।"
-        );
 
-        reviewBtn.disabled = false;
+  // =========================
+  // RESERVE REVIEW
+  // =========================
 
-        reviewBtn.innerText =
-          "বুকিংয়ের তথ্য দেখুন";
+  reserveReviewBtn.addEventListener(
+    "click",
+    async () => {
 
+      if (!validatePassenger()) {
         return;
-
       }
 
+      const from = reserveFrom.value.trim();
+      const to = reserveTo.value.trim();
+
+      if (!from || !to) {
+        alert("Pickup এবং Destination লিখুন।");
+        return;
+      }
+
+      if (!reserveDate.value) {
+        alert("Date নির্বাচন করুন।");
+        return;
+      }
+
+      if (!reserveTime.value) {
+        alert("Time নির্বাচন করুন।");
+        return;
+      }
+
+      if (!currentUser) {
+        alert(
+          "App এখনো প্রস্তুত হয়নি। কয়েক সেকেন্ড পরে আবার চেষ্টা করুন।"
+        );
+        return;
+      }
+
+
+      // গুরুত্বপূর্ণ:
+      // Distance না থাকলে এখানেই অপেক্ষা করে হিসাব করবে
 
       if (!reserveDistanceKm) {
 
-        alert(
-          "আগে Distance হিসাব হতে দিন।"
-        );
+        reserveReviewBtn.disabled = true;
+        reserveReviewBtn.textContent =
+          "Distance হিসাব হচ্ছে...";
 
-        calculateDistance();
+        const success =
+          await calculateDistance();
 
-        reviewBtn.disabled = false;
+        reserveReviewBtn.disabled = false;
+        reserveReviewBtn.textContent =
+          "Review Reserve Booking";
 
-        reviewBtn.innerText =
-          "বুকিংয়ের তথ্য দেখুন";
+        if (!success || !reserveDistanceKm) {
+          return;
+        }
+      }
 
+
+      isFirstBooking =
+        await checkFirstBooking();
+
+
+      discountAmount =
+        isFirstBooking
+          ? Math.min(10, reserveFare)
+          : 0;
+
+
+      finalFare =
+        reserveFare - discountAmount;
+
+
+      selectedRide = {
+
+        type: "reserve",
+
+        from: from,
+
+        to: to,
+
+        passengers:
+          Number(reservePassengers.value),
+
+        fare: finalFare,
+
+        originalFare: reserveFare,
+
+        discountAmount:
+          discountAmount,
+
+        fareType: "per_km",
+
+        distanceKm:
+          reserveDistanceKm,
+
+        ratePerKm:
+          Number(reserveRate.value) || 20,
+
+        date:
+          reserveDate.value,
+
+        time:
+          reserveTime.value,
+
+        note:
+          reserveNote.value.trim()
+
+      };
+
+
+      reviewContent.innerHTML = `
+
+        <b>📅 Ride:</b> Reserve Auto<br>
+
+        <b>📍 Pickup:</b>
+        ${escapeHtml(from)}<br>
+
+        <b>📍 Destination:</b>
+        ${escapeHtml(to)}<br>
+
+        <b>👥 Passengers:</b>
+        ${selectedRide.passengers}<br>
+
+        <b>📅 Date:</b>
+        ${escapeHtml(selectedRide.date)}<br>
+
+        <b>⏰ Time:</b>
+        ${escapeHtml(selectedRide.time)}<br>
+
+        <b>📏 Distance:</b>
+        ${selectedRide.distanceKm} km<br>
+
+        <b>💰 Rate:</b>
+        ₹${selectedRide.ratePerKm}/km<br>
+
+        <b>💵 Original Fare:</b>
+        ₹${selectedRide.originalFare}<br>
+
+        <b>🎁 Discount:</b>
+        ₹${selectedRide.discountAmount}<br>
+
+        ${
+          selectedRide.note
+            ? `<b>📝 Note:</b>
+               ${escapeHtml(selectedRide.note)}<br>`
+            : ""
+        }
+
+        <div class="fare">
+          Final Fare: ₹${selectedRide.fare}
+        </div>
+
+      `;
+
+
+      reviewSection.classList.remove("hidden");
+
+      reviewSection.scrollIntoView({
+        behavior: "smooth"
+      });
+
+    }
+  );
+
+
+  // =========================
+  // EDIT
+  // =========================
+
+  editBtn.addEventListener("click", () => {
+
+    reviewSection.classList.add("hidden");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  });
+
+
+  // =========================
+  // CONFIRM BOOKING
+  // =========================
+
+  confirmBtn.addEventListener(
+    "click",
+    async () => {
+
+      if (!selectedRide) {
+        alert("আগে একটি ride নির্বাচন করুন।");
         return;
+      }
+
+      if (!validatePassenger()) {
+        return;
+      }
+
+      if (!currentUser) {
+        alert(
+          "Firebase connection এখনো প্রস্তুত হয়নি।"
+        );
+        return;
+      }
+
+
+      confirmBtn.disabled = true;
+      confirmBtn.textContent =
+        "Booking হচ্ছে...";
+
+
+      try {
+
+        const rideData = {
+
+          type:
+            selectedRide.type,
+
+          from:
+            selectedRide.from,
+
+          to:
+            selectedRide.to,
+
+          passengers:
+            selectedRide.passengers,
+
+          fare:
+            selectedRide.fare,
+
+          originalFare:
+            selectedRide.originalFare,
+
+          discountAmount:
+            selectedRide.discountAmount,
+
+          fareType:
+            selectedRide.fareType,
+
+          distanceKm:
+            selectedRide.distanceKm,
+
+          ratePerKm:
+            selectedRide.ratePerKm,
+
+          date:
+            selectedRide.date,
+
+          time:
+            selectedRide.time,
+
+          note:
+            selectedRide.note,
+
+          passengerId:
+            currentUser.uid,
+
+          passengerName:
+            passengerName.value.trim(),
+
+          passengerPhone:
+            passengerPhone.value.trim(),
+
+          driverId: "",
+
+          driverName: "",
+
+          driverPhone: "",
+
+          autoNumber: "",
+
+          status:
+            "searching",
+
+          createdAt:
+            new Date()
+
+        };
+
+
+        const docRef =
+          await addDoc(
+            collection(db, "rides"),
+            rideData
+          );
+
+
+        currentRideId =
+          docRef.id;
+
+
+        reviewSection.classList.add("hidden");
+
+        statusSection.classList.remove("hidden");
+
+
+        statusContent.innerHTML = `
+
+          <b>✅ Booking Successful!</b><br><br>
+
+          <b>Booking ID:</b><br>
+          ${escapeHtml(currentRideId)}<br><br>
+
+          <b>Ride:</b>
+          ${escapeHtml(selectedRide.from)}
+          →
+          ${escapeHtml(selectedRide.to)}<br><br>
+
+          <b>Fare:</b>
+          ₹${selectedRide.fare}<br><br>
+
+          🚕 Driver খোঁজা হচ্ছে...
+
+        `;
+
+
+        listenToRide(currentRideId);
+
+
+        statusSection.scrollIntoView({
+          behavior: "smooth"
+        });
+
+
+      } catch (error) {
+
+        console.error("Booking error:", error);
+
+        alert(
+          "Booking করা যাচ্ছে না।\n\n" +
+          "Internet connection অথবা Firebase সমস্যা হতে পারে।"
+        );
 
       }
 
 
-      if (!passengers) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent =
+        "✅ Confirm Booking";
 
-        alert(
-          "যাত্রী সংখ্যা নির্বাচন করুন।"
-        );
+    }
+  );
 
-        reviewBtn.disabled = false;
 
-        reviewBtn.innerText =
-          "বুকিংয়ের তথ্য দেখুন";
+  // =========================
+  // LISTEN TO RIDE STATUS
+  // =========================
 
+  function listenToRide(rideId) {
+
+    if (unsubscribeRide) {
+      unsubscribeRide();
+    }
+
+
+    const rideRef =
+      doc(db, "rides", rideId);
+
+
+    unsubscribeRide =
+      onSnapshot(
+        rideRef,
+        (snapshot) => {
+
+          if (!snapshot.exists()) {
+            return;
+          }
+
+          const ride =
+            snapshot.data();
+
+
+          showRideStatus(ride);
+
+        },
+
+        (error) => {
+
+          console.error(
+            "Status listener error:",
+            error
+          );
+
+        }
+      );
+
+  }
+
+
+  // =========================
+  // SHOW RIDE STATUS
+  // =========================
+
+  function showRideStatus(ride) {
+
+    let statusText =
+      "🔎 Driver খোঁজা হচ্ছে...";
+
+
+    if (ride.status === "accepted") {
+
+      statusText =
+        "✅ Driver আপনার booking গ্রহণ করেছেন।";
+
+    }
+
+    if (ride.status === "started") {
+
+      statusText =
+        "🚕 আপনার ride শুরু হয়েছে।";
+
+    }
+
+    if (ride.status === "completed") {
+
+      statusText =
+        "🏁 Ride completed।";
+
+    }
+
+    if (ride.status === "cancelled") {
+
+      statusText =
+        "❌ Booking cancelled।";
+
+    }
+
+
+    let driverInfo = "";
+
+
+    if (ride.driverName) {
+
+      driverInfo += `
+        <br>
+        <b>👨‍✈️ Driver:</b>
+        ${escapeHtml(ride.driverName)}
+      `;
+
+    }
+
+
+    if (ride.autoNumber) {
+
+      driverInfo += `
+        <br>
+        <b>🚕 Auto Number:</b>
+        ${escapeHtml(ride.autoNumber)}
+      `;
+
+    }
+
+
+    if (ride.driverPhone) {
+
+      driverInfo += `
+        <br>
+        <b>📱 Driver Phone:</b>
+        ${escapeHtml(ride.driverPhone)}
+
+        <a
+          class="call"
+          href="tel:${escapeHtml(ride.driverPhone)}"
+        >
+          📞 Call Driver
+        </a>
+      `;
+
+    }
+
+
+    statusContent.innerHTML = `
+
+      <b>${statusText}</b>
+
+      ${driverInfo}
+
+      <br><br>
+
+      <b>Booking ID:</b><br>
+      ${escapeHtml(currentRideId || "")}
+
+      <br><br>
+
+      <b>Fare:</b>
+      ₹${escapeHtml(ride.fare)}
+
+    `;
+
+
+    if (
+      ride.status === "completed" ||
+      ride.status === "cancelled"
+    ) {
+
+      cancelBtn.classList.add("hidden");
+
+    } else {
+
+      cancelBtn.classList.remove("hidden");
+
+    }
+
+  }
+
+
+  // =========================
+  // CANCEL
+  // =========================
+
+  cancelBtn.addEventListener(
+    "click",
+    async () => {
+
+      if (!currentRideId) {
         return;
-
       }
 
 
-      if (!date) {
-
-        alert(
-          "তারিখ নির্বাচন করুন।"
+      const yes =
+        confirm(
+          "আপনি কি booking cancel করতে চান?"
         );
 
-        reviewBtn.disabled = false;
 
-        revi
+      if (!yes) {
+        return;
+      }
+
+
+      try {
+
+        await updateDoc(
+          doc(
+            db,
+            "rides",
+            currentRideId
+          ),
+          {
+            status: "cancelled"
+          }
+        );
+
+
+        alert("Booking cancelled।");
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Booking cancel করা যাচ্ছে না।"
+        );
+
+      }
+
+    }
+  );
+
+
+  // =========================
+  // PHONE INPUT
+  // =========================
+
+  passengerPhone.addEventListener(
+    "input",
+    () => {
+
+      passengerPhone.value =
+        passengerPhone.value
+          .replace(/\D/g, "")
+          .slice(0, 10);
+
+    }
+  );
+
+
+  // =========================
+  // SET MIN DATE = TODAY
+  // =========================
+
+  const today =
+    new Date()
+      .toISOString()
+      .split("T")[0];
+
+  reserveDate.min = today;
+
+
+</script>
+
+</body>
+</html>
