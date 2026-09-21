@@ -244,20 +244,34 @@
   <!-- Reserve Ride -->
   <div id="reserveSection" class="card hidden">
     <h2>📅 Reserve Auto</h2>
+<label>📍 Pickup Location</label>
+<input
+  id="reserveFrom"
+  type="text"
+  placeholder="যেমন: Nalhati Railway Station"
+>
 
-    <label>Pickup Location</label>
-    <input
-      id="reserveFrom"
-      type="text"
-      placeholder="যেমন: Nalhati Railway Station"
-    >
+<button type="button" id="selectFromBtn" class="orange">
+  📍 Pickup Location খুঁজুন
+</button>
 
-    <label>Destination</label>
-    <input
-      id="reserveTo"
-      type="text"
-      placeholder="যেমন: Rampurhat"
-    >
+<div id="fromResults" class="summary hidden"></div>
+
+
+<label>📍 Destination</label>
+<input
+  id="reserveTo"
+  type="text"
+  placeholder="যেমন: Rampurhat Railway Station"
+>
+
+<button type="button" id="selectToBtn" class="orange">
+  📍 Destination খুঁজুন
+</button>
+
+<div id="toResults" class="summary hidden"></div>
+    <l
+  
 
     <label>Passengers</label>
     <select id="reservePassengers">
