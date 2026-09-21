@@ -684,15 +684,40 @@
   });
 
 
-  // =========================
-  // GEOCODING
-  // =========================
+// =========================
+// LOCATION SEARCH & SELECTION
+// =========================
 
-  async function geocode(place) {
+let selectedFromLocation = null;
+let selectedToLocation = null;
+
+const selectFromBtn = document.getElementById("selectFromBtn");
+const selectToBtn = document.getElementById("selectToBtn");
+
+const fromResults = document.getElementById("fromResults");
+const toResults = document.getElementById("toResults");
+
+
+async function searchLocation(place, resultBox, type) {
+
+  if (!place.trim()) {
+    alert("আগে জায়গার নাম লিখুন।");
+    return;
+  }
+
+  resultBox.classList.remove("hidden");
+  resultBox.innerHTML = "📍 জায়গা খোঁজা হচ্ছে...";
+
+  try {
 
     const url =
-      "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
-      encodeURIComponent(place);
+      "https://nominatim.openstreetmap.org/search?" +
+      "format=json" +
+      "&q=" + encodeURIComponent(place) +
+      "&format=json" +
+      "&addressdetails=1" +
+      "&limit=5" +
+      "&countrycodes=in";
 
     const response = await fetch(url, {
       headers: {
@@ -701,20 +726,106 @@
     });
 
     if (!response.ok) {
-      throw new Error("Geocoding failed");
+      throw new Error("Search failed");
     }
 
     const data = await response.json();
 
     if (!data.length) {
-      throw new Error("Location not found: " + place);
+      resultBox.innerHTML =
+        "❌ কোনো জায়গা পাওয়া যায়নি। নামটি একটু পরিষ্কার করে লিখুন।";
+      return;
     }
 
-    return {
-      lat: parseFloat(data[0].lat),
-      lon: parseFloat(data[0].lon)
-    };
+    resultBox.innerHTML =
+      "<b>নিচের তালিকা থেকে সঠিক জায়গাটি নির্বাচন করুন:</b><br><br>";
+
+    data.forEach((placeData, index) => {
+
+      const button = document.createElement("button");
+
+      button.type = "button";
+
+      button.style.textAlign = "left";
+      button.style.background = "#f1f8ff";
+      button.style.color = "#222";
+      button.style.border = "1px solid #ccc";
+      button.style.fontSize = "15px";
+      button.style.marginTop = "7px";
+
+      button.innerHTML =
+        "📍 " + escapeHtml(placeData.display_name);
+
+      button.addEventListener("click", () => {
+
+        const location = {
+          name: placeData.display_name,
+          lat: parseFloat(placeData.lat),
+          lon: parseFloat(placeData.lon)
+        };
+
+        if (type === "from") {
+
+          selectedFromLocation = location;
+
+          reserveFrom.value =
+            location.name;
+
+          fromResults.innerHTML =
+            "✅ Pickup নির্বাচিত হয়েছে:<br><br>" +
+            escapeHtml(location.name);
+
+        } else {
+
+          selectedToLocation = location;
+
+          reserveTo.value =
+            location.name;
+
+          toResults.innerHTML =
+            "✅ Destination নির্বাচিত হয়েছে:<br><br>" +
+            escapeHtml(location.name);
+
+        }
+
+      });
+
+      resultBox.appendChild(button);
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    resultBox.innerHTML =
+      "❌ Location search করা যাচ্ছে না। Internet connection পরীক্ষা করুন।";
+
   }
+}
+
+
+selectFromBtn.addEventListener("click", () => {
+
+  searchLocation(
+    reserveFrom.value,
+    fromResults,
+    "from"
+  );
+
+});
+
+
+selectToBtn.addEventListener("click", () => {
+
+  searchLocation(
+    reserveTo.value,
+    toResults,
+    "to"
+  );
+
+});
+  
 
 
   // =========================
