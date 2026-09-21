@@ -831,117 +831,129 @@ selectToBtn.addEventListener("click", () => {
   // =========================
   // CALCULATE DISTANCE
   // =========================
+async function calculateDistance() {
 
-  async function calculateDistance() {
+  if (!selectedFromLocation || !selectedToLocation) {
 
-    const from = reserveFrom.value.trim();
-    const to = reserveTo.value.trim();
+    alert(
+      "আগে Pickup এবং Destination-এর সঠিক জায়গা নির্বাচন করুন।"
+    );
 
-    if (!from || !to) {
-      alert("Pickup এবং Destination লিখুন।");
-      return false;
+    return false;
+  }
+
+  if (
+    selectedFromLocation.lat === selectedToLocation.lat &&
+    selectedFromLocation.lon === selectedToLocation.lon
+  ) {
+
+    alert(
+      "Pickup এবং Destination একই জায়গা হতে পারে না।"
+    );
+
+    return false;
+  }
+
+  calculateBtn.disabled = true;
+  calculateBtn.textContent = "📍 Calculating...";
+
+  distanceResult.classList.remove("hidden");
+
+  distanceResult.innerHTML =
+    "📍 সঠিক location অনুযায়ী distance হিসাব হচ্ছে...";
+
+  try {
+
+    const start = selectedFromLocation;
+    const end = selectedToLocation;
+
+    const routeUrl =
+      "https://router.project-osrm.org/route/v1/driving/" +
+      start.lon + "," + start.lat +
+      ";" +
+      end.lon + "," + end.lat +
+      "?overview=false";
+
+    const response = await fetch(routeUrl);
+
+    if (!response.ok) {
+      throw new Error("Route calculation failed");
     }
 
-    if (from.toLowerCase() === to.toLowerCase()) {
-      alert("Pickup এবং Destination একই হতে পারে না।");
-      return false;
+    const data = await response.json();
+
+    if (
+      !data.routes ||
+      !data.routes.length
+    ) {
+      throw new Error("Route not found");
     }
 
-    calculateBtn.disabled = true;
-    calculateBtn.textContent = "📍 Calculating...";
+    reserveDistanceKm =
+      data.routes[0].distance / 1000;
 
-    distanceResult.classList.remove("hidden");
+    reserveDistanceKm =
+      Math.round(reserveDistanceKm * 10) / 10;
 
-    distanceResult.innerHTML =
-      "📍 Location খোঁজা হচ্ছে...";
+    const rate =
+      Number(reserveRate.value) || 20;
 
-    try {
-
-      const start = await geocode(from);
-
-      distanceResult.innerHTML =
-        "📍 Destination খোঁজা হচ্ছে...";
-
-      const end = await geocode(to);
-
-      const routeUrl =
-        "https://router.project-osrm.org/route/v1/driving/" +
-        start.lon + "," + start.lat +
-        ";" +
-        end.lon + "," + end.lat +
-        "?overview=false";
-
-      const response = await fetch(routeUrl);
-
-      if (!response.ok) {
-        throw new Error("Route calculation failed");
-      }
-
-      const data = await response.json();
-
-      if (
-        !data.routes ||
-        !data.routes.length
-      ) {
-        throw new Error("Route not found");
-      }
-
-      reserveDistanceKm =
-        data.routes[0].distance / 1000;
-
-      reserveDistanceKm =
-        Math.round(reserveDistanceKm * 10) / 10;
-
-      const rate =
-        Number(reserveRate.value) || 20;
-
-      reserveFare =
-        Math.ceil(reserveDistanceKm * rate);
-
-      distanceResult.innerHTML = `
-
-        <b>📍 Distance:</b>
-        ${reserveDistanceKm} km<br>
-
-        <b>💰 Rate:</b>
-        ₹${rate}/km<br>
-
-        <b>💵 Estimated Fare:</b>
-        ₹${reserveFare}
-
-      `;
-
-      calculateBtn.textContent =
-        "✅ Distance Calculated";
-
-      calculateBtn.disabled = false;
-
-      return true;
-
-    } catch (error) {
-
-      console.error(error);
-
-      reserveDistanceKm = 0;
-      reserveFare = 0;
-
-      distanceResult.innerHTML =
-        "❌ Distance হিসাব করা যায়নি। Location-এর নাম একটু পরিষ্কার করে লিখুন।";
-
-      alert(
-        "Distance হিসাব করা যায়নি।\n\n" +
-        "উদাহরণ:\n" +
-        "Nalhati Railway Station\n" +
-        "Rampurhat Railway Station"
+    reserveFare =
+      Math.ceil(
+        reserveDistanceKm * rate
       );
 
-      calculateBtn.disabled = false;
-      calculateBtn.textContent =
-        "📍 Calculate Distance";
+    distanceResult.innerHTML = `
 
-      return false;
-    }
+      <b>📍 Pickup:</b><br>
+      ${escapeHtml(start.name)}<br><br>
+
+      <b>📍 Destination:</b><br>
+      ${escapeHtml(end.name)}<br><br>
+
+      <b>📏 Distance:</b>
+      ${reserveDistanceKm} km<br>
+
+      <b>💰 Rate:</b>
+      ₹${rate}/km<br>
+
+      <b>💵 Estimated Fare:</b>
+      ₹${reserveFare}
+
+    `;
+
+    calculateBtn.textContent =
+      "✅ Distance Calculated";
+
+    calculateBtn.disabled = false;
+
+    return true;
+
+  } catch (error) {
+
+    console.error(error);
+
+    reserveDistanceKm = 0;
+    reserveFare = 0;
+
+    distanceResult.innerHTML =
+      "❌ Route হিসাব করা যায়নি। আবার চেষ্টা করুন।";
+
+    alert(
+      "Distance হিসাব করা যায়নি।\n\n" +
+      "Pickup ও Destination আবার নির্বাচন করুন।"
+    );
+
+    calculateBtn.disabled = false;
+
+    calculateBtn.textContent =
+      "📍 Calculate Distance";
+
+    return false;
   }
+}
+  
+
 
 
   calculateBtn.addEventListener(
