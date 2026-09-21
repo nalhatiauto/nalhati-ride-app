@@ -960,6 +960,36 @@ async function calculateDistance() {
     "click",
     calculateDistance
   );
+  // =========================
+// RESET LOCATION WHEN TEXT CHANGES
+// =========================
+
+reserveFrom.addEventListener("input", () => {
+
+  selectedFromLocation = null;
+
+  reserveDistanceKm = 0;
+  reserveFare = 0;
+
+  fromResults.classList.add("hidden");
+
+  distanceResult.classList.add("hidden");
+
+});
+
+
+reserveTo.addEventListener("input", () => {
+
+  selectedToLocation = null;
+
+  reserveDistanceKm = 0;
+  reserveFare = 0;
+
+  toResults.classList.add("hidden");
+
+  distanceResult.classList.add("hidden");
+
+});
 
 
   // =========================
