@@ -4,7 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Nalhati Ride - Passenger</title>
+  <!-- Google / Search -->
+  <title>Nalhati Ride - Nalhati Auto Booking</title>
+
+  <meta
+    name="description"
+    content="Nalhati Ride - Nalhati ও আশেপাশের এলাকার জন্য সহজ Auto Booking Service। অনলাইনে Auto Booking Request পাঠান, Driver-এর ভাড়া দেখুন এবং Ride-এর Live Location দেখুন।"
+  >
+
+  <meta
+    name="robots"
+    content="index, follow"
+  >
+
+  <meta
+    name="author"
+    content="Nalhati Ride"
+  >
+
+  <meta
+    name="application-name"
+    content="Nalhati Ride"
+  >
+
+  <!-- Social / WhatsApp / Facebook preview -->
+  <meta
+    property="og:title"
+    content="Nalhati Ride - Nalhati Auto Booking"
+  >
+
+  <meta
+    property="og:description"
+    content="Nalhati ও আশেপাশের এলাকার জন্য সহজ Auto Booking Service।"
+  >
+
+  <meta
+    property="og:type"
+    content="website"
+  >
+
+  <meta
+    property="og:site_name"
+    content="Nalhati Ride"
+  >
 
   <style>
     * {
@@ -34,6 +76,22 @@
     .header p {
       margin: 0;
       opacity: .9;
+    }
+
+    .intro-text {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .intro-text h2 {
+      color: #1976d2;
+      margin-top: 0;
+      font-size: 20px;
     }
 
     .card {
@@ -234,6 +292,34 @@
 
 
   <!-- =====================================================
+       GOOGLE-FRIENDLY INTRODUCTION
+       ===================================================== -->
+
+  <div class="intro-text">
+
+    <h2>
+      🚕 Nalhati Ride - Nalhati Auto Booking
+    </h2>
+
+    <p>
+      <b>Nalhati Ride</b> হলো Nalhati ও আশেপাশের এলাকার
+      জন্য সহজ Auto Booking Service।
+    </p>
+
+    <p>
+      এখান থেকে আপনি Auto Booking Request পাঠাতে পারবেন,
+      Driver-এর পাঠানো ভাড়া দেখতে পারবেন এবং Confirmed Ride-এর
+      Live Location দেখতে পারবেন।
+    </p>
+
+    <p class="small">
+      Nalhati Auto Booking • Auto Ride • Driver Live Location
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
        PASSENGER INFORMATION
        ===================================================== -->
 
@@ -285,7 +371,6 @@
       আগের Booking থাকলেও আপনি নতুন Booking করতে পারবেন।
     </p>
 
-
     <label for="pickup">
       📍 কোথা থেকে যাবেন?
     </label>
@@ -297,7 +382,6 @@
       placeholder="Pickup address লিখুন"
     >
 
-
     <label for="destination">
       📍 কোথায় যাবেন?
     </label>
@@ -308,7 +392,6 @@
       maxlength="200"
       placeholder="Destination address লিখুন"
     >
-
 
     <label for="passengers">
       👥 যাত্রী সংখ্যা
@@ -325,7 +408,6 @@
       <option value="8">8 জন</option>
     </select>
 
-
     <label for="rideDate">
       📅 তারিখ
     </label>
@@ -334,7 +416,6 @@
       id="rideDate"
       type="date"
     >
-
 
     <label for="rideTime">
       ⏰ সময়
@@ -345,7 +426,6 @@
       type="time"
     >
 
-
     <label for="rideNote">
       📝 অতিরিক্ত তথ্য
     </label>
@@ -355,7 +435,6 @@
       maxlength="500"
       placeholder="প্রয়োজনে কিছু লিখুন"
     ></textarea>
-
 
     <button
       id="reviewBtn"
@@ -428,14 +507,12 @@
   } from
     "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
-
   import {
     getAuth,
     signInAnonymously,
     onAuthStateChanged
   } from
     "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-
 
   import {
     getFirestore,
@@ -446,7 +523,6 @@
     onSnapshot
   } from
     "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
 
   import {
     getDatabase,
@@ -463,7 +539,7 @@
   const firebaseConfig = {
 
     apiKey:
-      "AIzaSyD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
+      "AIzaD4gHM7Gx061qBHSvK-JEQg0HW9EO5z84c",
 
     authDomain:
       "nalhati-ride.firebaseapp.com",
@@ -1496,9 +1572,7 @@
       "searching";
 
 
-    // ===================================================
     // STATUS
-    // ===================================================
 
     if (
       status ===
@@ -1587,9 +1661,7 @@
     }
 
 
-    // ===================================================
     // FARE
-    // ===================================================
 
     fareElement.innerHTML = "";
 
@@ -1713,9 +1785,7 @@
     }
 
 
-    // ===================================================
     // DRIVER INFORMATION
-    // ===================================================
 
     driverElement.innerHTML = "";
 
@@ -1817,9 +1887,7 @@
     }
 
 
-    // ===================================================
     // LIVE LOCATION
-    // ===================================================
 
     const shouldShowLocation =
 
@@ -1870,9 +1938,7 @@
     }
 
 
-    // ===================================================
     // CANCEL BUTTON
-    // ===================================================
 
     if (
       status ===
@@ -2148,12 +2214,8 @@
             );
 
 
-          if (
-            !locationElement
-          ) {
-
+          if (!locationElement) {
             return;
-
           }
 
 
@@ -2279,9 +2341,7 @@
             );
 
 
-          if (
-            locationElement
-          ) {
+          if (locationElement) {
 
             locationElement.innerHTML = `
 
@@ -2328,9 +2388,7 @@
       );
 
 
-    if (
-      unsubscribe
-    ) {
+    if (unsubscribe) {
 
       unsubscribe();
 
