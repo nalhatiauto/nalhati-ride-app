@@ -233,7 +233,9 @@
   </div>
 
 
-  <!-- Passenger Information -->
+  <!-- =====================================================
+       PASSENGER INFORMATION
+       ===================================================== -->
 
   <div class="card">
 
@@ -269,24 +271,9 @@
   </div>
 
 
-  <!-- CURRENT BOOKINGS -->
-
-  <div class="card">
-
-    <h2>📌 আমার Booking</h2>
-
-    <div id="bookingsList">
-
-      <div class="empty-booking">
-        Booking খোঁজা হচ্ছে...
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- NEW BOOKING FORM -->
+  <!-- =====================================================
+       NEW BOOKING FORM
+       ===================================================== -->
 
   <div class="card">
 
@@ -380,7 +367,9 @@
   </div>
 
 
-  <!-- REVIEW -->
+  <!-- =====================================================
+       REVIEW
+       ===================================================== -->
 
   <div
     id="reviewSection"
@@ -404,6 +393,26 @@
     >
       ✏️ Edit
     </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       MY BOOKINGS
+       একেবারে নিচে
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>📌 আমার Booking</h2>
+
+    <div id="bookingsList">
+
+      <div class="empty-booking">
+        Booking খোঁজা হচ্ছে...
+      </div>
+
+    </div>
 
   </div>
 
@@ -582,11 +591,6 @@
 
   let unsubscribeBookings = null;
 
-  /*
-    প্রতিটি Booking-এর Live Location listener
-    আলাদা করে রাখা হবে।
-  */
-
   const locationListeners =
     new Map();
 
@@ -595,12 +599,24 @@
   // TODAY
   // =====================================================
 
-  const today =
-    new Date()
-      .toISOString()
-      .split("T")[0];
+  const now =
+    new Date();
 
-  rideDate.min = today;
+  const yyyy =
+    now.getFullYear();
+
+  const mm =
+    String(
+      now.getMonth() + 1
+    ).padStart(2, "0");
+
+  const dd =
+    String(
+      now.getDate()
+    ).padStart(2, "0");
+
+  rideDate.min =
+    `${yyyy}-${mm}-${dd}`;
 
 
   // =====================================================
@@ -1029,12 +1045,6 @@
         );
 
 
-        /*
-          Booking তৈরি হয়ে গেছে।
-          এখন Review বন্ধ করে নতুন Booking form
-          পরিষ্কার করে আবার ব্যবহার করা যাবে।
-        */
-
         reviewSection.classList.add(
           "hidden"
         );
@@ -1048,18 +1058,9 @@
         );
 
 
-        /*
-          Booking list-এ Firebase listener
-          নিজে থেকেই নতুন Booking দেখাবে।
-        */
-
-        document
-          .getElementById(
-            "bookingsList"
-          )
-          .scrollIntoView({
-            behavior: "smooth"
-          });
+        bookingsList.scrollIntoView({
+          behavior: "smooth"
+        });
 
       }
 
@@ -1147,26 +1148,10 @@
                 rideDoc.data();
 
 
-              /*
-                শুধু এই Passenger-এর Booking।
-              */
-
               if (
                 data.passengerId ===
                 currentUser.uid
               ) {
-
-                /*
-                  IMPORTANT:
-
-                  Driver Complete করলে status
-                  "completed" হবে।
-
-                  তখন Booking Passenger App-এ
-                  আর দেখানো হবে না।
-
-                  Cancelled Booking-ও সরিয়ে দেওয়া হচ্ছে।
-                */
 
                 if (
                   data.status !==
@@ -1192,10 +1177,6 @@
             }
           );
 
-
-          /*
-            নতুন Booking আগে দেখাবে।
-          */
 
           rides.sort(
             (a, b) => {
@@ -1257,11 +1238,6 @@
     rides
   ) {
 
-    /*
-      যেসব Location listener আর দরকার নেই
-      সেগুলো বন্ধ করা।
-    */
-
     const currentIds =
       new Set(
         rides.map(
@@ -1300,7 +1276,7 @@
 
           <br><br>
 
-          নিচের
+          উপরের
           <b>➕ নতুন Booking করুন</b>
           দিয়ে Booking করতে পারেন।
 
@@ -1458,10 +1434,6 @@
     `;
 
 
-    /*
-      Cancel button
-    */
-
     const cancelButton =
       card.querySelector(
         `#cancel-${ride.id}`
@@ -1477,10 +1449,6 @@
 
       };
 
-
-    /*
-      Booking status
-    */
 
     updateBookingCard(
       card,
@@ -1653,11 +1621,6 @@
 
       `;
 
-
-      /*
-        শুধু fare_sent অবস্থায় Accept/Reject
-        দেখাবে।
-      */
 
       if (
         status ===
@@ -1911,13 +1874,6 @@
     // CANCEL BUTTON
     // ===================================================
 
-    /*
-      Completed Booking এখানে আসারই কথা নয়।
-
-      তবে status completed হলে safety হিসেবে
-      cancel button লুকিয়ে দেওয়া হচ্ছে।
-    */
-
     if (
       status ===
       "completed"
@@ -2130,12 +2086,6 @@
         "❌ Booking বাতিল হয়েছে।"
       );
 
-
-      /*
-        Firestore listener নিজে থেকেই
-        cancelled Booking-টা list থেকে সরিয়ে দেবে।
-      */
-
     }
 
     catch (error) {
@@ -2165,11 +2115,6 @@
     driverId
   ) {
 
-    /*
-      একই Booking-এর জন্য listener আগে থেকেই
-      থাকলে নতুন করে তৈরি করা হবে না।
-    */
-
     if (
       locationListeners.has(
         rideId
@@ -2196,10 +2141,6 @@
         locationRef,
 
         snapshot => {
-
-          /*
-            Booking card খুঁজে বের করা।
-          */
 
           const locationElement =
             document.getElementById(
@@ -2457,13 +2398,6 @@
       currentUser =
         user;
 
-
-      /*
-        খুব গুরুত্বপূর্ণ:
-        Refresh হলেও Firebase Anonymous Auth-এর
-        বর্তমান user পাওয়ার পর সব Booking আবার
-        Firestore থেকে পড়া হবে।
-      */
 
       listenToAllBookings();
 
