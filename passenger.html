@@ -178,8 +178,8 @@
     .ride-type-buttons { display:flex; gap:10px; margin-top:10px; }
     .ride-type-buttons button { flex:1; margin-top:0; }
     .ride-type-btn { border:2px solid transparent; transition:0.15s; }
-    .ride-type-btn.selected { background:#1565c0 !important; border-color:#0d47a1 !important; color:#fff !important; box-shadow:0 0 0 3px rgba(33,150,243,.25); transform:scale(1.02); }
-    #reserveRideBtn.selected { background:#e65100 !important; border-color:#bf360c !important; color:#fff !important; box-shadow:0 0 0 3px rgba(255,152,0,.25); }
+    .ride-type-btn.selected { background:#757575 !important; border-color:#555 !important; color:#fff !important; box-shadow:0 0 0 3px rgba(117,117,117,.25); transform:scale(1.02); }
+    #reserveRideBtn.selected { background:#757575 !important; border-color:#555 !important; color:#fff !important; box-shadow:0 0 0 3px rgba(117,117,117,.25); }
 
     .hidden {
       display: none !important;
@@ -347,9 +347,7 @@
     </div>
     <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">আগে একটি Ride Type বেছে নিন।</div>
 
-    <label for="pickup">
-      📍 কোথা থেকে যাবেন?
-    </label>
+    <label for="pickup">Pickup Address</label>
 
     <input
       id="pickup"
@@ -358,9 +356,7 @@
       placeholder="Pickup address লিখুন"
     >
 
-    <label for="destination">
-      📍 কোথায় যাবেন?
-    </label>
+    <label for="destination">Destination Address</label>
 
     <input
       id="destination"
