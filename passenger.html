@@ -479,10 +479,10 @@
         : "🚖 Reserve Ride — পুরো Auto শুধু আপনার জন্য রিজার্ভ থাকবে।";
     }
 
-    share.addEventListener("click", () => choose("share"));
-    reserve.addEventListener("click", () => choose("reserve"));
+    share.onclick = () => choose("share");
+    reserve.onclick = () => choose("reserve");
 
-    review.addEventListener("click", () => {
+    review.onclick = () => {
       if (!/^\d{10}$/.test(phone.value.trim())) {
         alert("সঠিক ১০ সংখ্যার ফোন নম্বর লিখুন।");
         phone.focus();
