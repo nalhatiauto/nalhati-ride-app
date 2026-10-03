@@ -175,21 +175,10 @@
       color: white;
     }
 
-    .ride-type-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .ride-type-buttons button {
-      flex: 1;
-      margin-top: 0;
-    }
-    .ride-type-btn {
-      border: 2px solid transparent;
-    }
-    .ride-type-btn.selected {
-      border-color: #222;
-    }
+    .ride-type-buttons { display:flex; gap:10px; margin-top:10px; }
+    .ride-type-buttons button { flex:1; margin-top:0; }
+    .ride-type-btn { border:2px solid transparent; }
+    .ride-type-btn.selected { border-color:#222; }
 
     .hidden {
       display: none !important;
@@ -392,9 +381,7 @@
       <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Share Ride</button>
       <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserve Ride</button>
     </div>
-    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">
-      আগে একটি Ride Type বেছে নিন।
-    </div>
+    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">আগে একটি Ride Type বেছে নিন।</div>
 
     <label for="pickup">
       📍 কোথা থেকে যাবেন?
@@ -693,9 +680,7 @@
   let currentUser = null;
 
   let selectedRide = null;
-
   let selectedRideType = "";
-
   let unsubscribeBookings = null;
 
   const locationListeners =
@@ -815,6 +800,7 @@
       ? "🚕 Share Ride — অন্য যাত্রীর সঙ্গে শেয়ার করে যাবেন।"
       : "🚖 Reserve Ride — পুরো Auto শুধু আপনার জন্য রিজার্ভ থাকবে।";
   }
+
   shareRideBtn.onclick = () => selectRideType("share");
   reserveRideBtn.onclick = () => selectRideType("reserve");
 
@@ -830,11 +816,11 @@
         return;
       }
 
-
       if (!selectedRideType) {
         alert("আগে Share Ride অথবা Reserve Ride বেছে নিন।");
         return;
       }
+
 
       const from =
         pickup.value.trim();
@@ -968,6 +954,7 @@
         </div>
 
         <div class="summary-row">
+          <span class="summary-row">
           <span class="label">🚕 Ride Type:</span>
           ${selectedRide.rideType === "reserve"
             ? "🚖 Reserve Ride — পুরো Auto শুধু আপনার জন্য"
@@ -1255,7 +1242,7 @@
     selectedRideType = "";
     shareRideBtn.classList.remove("selected");
     reserveRideBtn.classList.remove("selected");
-    rideTypeHint.textContent = "আগে একটি Ride Type বেছে নিন.";
+    rideTypeHint.textContent = "আগে একটি Ride Type বেছে নিন।";
 
   }
 
@@ -1365,3 +1352,1207 @@
             <div class="error">
               ❌ Booking load করতে সমস্যা হচ্ছে।
             </div>
+
+          `;
+
+        }
+
+      );
+
+  }
+
+
+  // =====================================================
+  // RENDER ALL BOOKINGS
+  // =====================================================
+
+  function renderAllBookings(
+    rides
+  ) {
+
+    const currentIds =
+      new Set(
+        rides.map(
+          ride => ride.id
+        )
+      );
+
+
+    for (
+      const [rideId, unsubscribe]
+      of locationListeners
+    ) {
+
+      if (
+        !currentIds.has(rideId)
+      ) {
+
+        unsubscribe();
+
+        locationListeners.delete(
+          rideId
+        );
+
+      }
+
+    }
+
+
+    if (!rides.length) {
+
+      bookingsList.innerHTML = `
+
+        <div class="empty-booking">
+
+          এখন কোনো চলমান Booking নেই।
+
+          <br><br>
+
+          উপরের
+          <b>➕ নতুন Booking করুন</b>
+          দিয়ে Booking করতে পারেন।
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    bookingsList.innerHTML = "";
+
+
+    rides.forEach(
+      (ride, index) => {
+
+        const card =
+          createBookingCard(
+            ride,
+            index + 1
+          );
+
+
+        bookingsList.appendChild(
+          card
+        );
+
+      }
+    );
+
+  }
+
+
+  // =====================================================
+  // CREATE BOOKING CARD
+  // =====================================================
+
+  function createBookingCard(
+    ride,
+    bookingNumber
+  ) {
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+    card.className =
+      "booking-card";
+
+
+    card.innerHTML = `
+
+      <div class="booking-number">
+        Booking ${bookingNumber}
+      </div>
+
+      <h3>
+        🚕 ${escapeHtml(
+          ride.from || ""
+        )}
+        →
+        ${escapeHtml(
+          ride.to || ""
+        )}
+      </h3>
+
+      <div class="summary-row">
+
+        <span class="label">
+          👥 যাত্রী:
+        </span>
+
+        ${ride.passengers || 1} জন
+
+      </div>
+
+
+      <div class="summary-row">
+
+        <span class="label">
+          📅 তারিখ:
+        </span>
+
+        ${escapeHtml(
+          ride.date || ""
+        )}
+
+      </div>
+
+
+      <div class="summary-row">
+
+        <span class="label">
+          ⏰ সময়:
+        </span>
+
+        ${escapeHtml(
+          ride.time || ""
+        )}
+
+      </div>
+
+
+      ${
+        ride.note
+        ?
+        `
+        <div class="summary-row">
+
+          <span class="label">
+            📝 Note:
+          </span>
+
+          ${escapeHtml(
+            ride.note
+          )}
+
+        </div>
+        `
+        :
+        ""
+      }
+
+
+      <div
+        class="status-box"
+        id="status-${ride.id}">
+      </div>
+
+
+      <div
+        id="fare-${ride.id}">
+      </div>
+
+
+      <div
+        id="driver-${ride.id}">
+      </div>
+
+
+      <div
+        id="location-${ride.id}">
+      </div>
+
+
+      <button
+        id="cancel-${ride.id}"
+        class="danger">
+        ❌ Cancel Booking
+      </button>
+
+    `;
+
+
+    const cancelButton =
+      card.querySelector(
+        `#cancel-${ride.id}`
+      );
+
+
+    cancelButton.onclick =
+      () => {
+
+        cancelBooking(
+          ride.id
+        );
+
+      };
+
+
+    updateBookingCard(
+      card,
+      ride
+    );
+
+
+    return card;
+
+  }
+
+
+  // =====================================================
+  // UPDATE ONE BOOKING CARD
+  // =====================================================
+
+  function updateBookingCard(
+    card,
+    ride
+  ) {
+
+    const statusElement =
+      card.querySelector(
+        `#status-${ride.id}`
+      );
+
+    const fareElement =
+      card.querySelector(
+        `#fare-${ride.id}`
+      );
+
+    const driverElement =
+      card.querySelector(
+        `#driver-${ride.id}`
+      );
+
+    const cancelButton =
+      card.querySelector(
+        `#cancel-${ride.id}`
+      );
+
+
+    const status =
+      ride.status ||
+      "searching";
+
+
+    // STATUS
+
+    if (
+      status ===
+      "searching"
+    ) {
+
+      statusElement.innerHTML = `
+
+        <div class="waiting">
+          🔎 Driver-এর উত্তর অপেক্ষা করা হচ্ছে...
+        </div>
+
+        <div class="small">
+          Driver আপনার Booking দেখে
+          ভাড়া পাঠাবেন।
+        </div>
+
+      `;
+
+    }
+
+    else if (
+      status ===
+      "fare_sent"
+    ) {
+
+      statusElement.innerHTML = `
+
+        <div class="waiting">
+          💰 Driver ভাড়া পাঠিয়েছেন।
+        </div>
+
+        <div class="small">
+          নিচে ভাড়া দেখে Accept করুন।
+        </div>
+
+      `;
+
+    }
+
+    else if (
+      status ===
+      "confirmed"
+      ||
+      status ===
+      "fare_accepted"
+    ) {
+
+      statusElement.innerHTML = `
+
+        <div class="success-text">
+          ✅ Booking Confirmed
+        </div>
+
+        <div class="small">
+          Driver আপনার Booking Confirm করেছেন।
+        </div>
+
+      `;
+
+    }
+
+    else if (
+      status ===
+      "started"
+    ) {
+
+      statusElement.innerHTML = `
+
+        <div class="success-text">
+          🚕 Ride Started
+        </div>
+
+        <div class="small">
+          আপনার Ride এখন চলছে।
+        </div>
+
+      `;
+
+    }
+
+    else {
+
+      statusElement.innerHTML = "";
+
+    }
+
+
+    // FARE
+
+    fareElement.innerHTML = "";
+
+
+    if (
+      Number(ride.fare) > 0
+    ) {
+
+      const fareBox =
+        document.createElement(
+          "div"
+        );
+
+      fareBox.className =
+        "fare-box";
+
+
+      fareBox.innerHTML = `
+
+        <div>
+          💰 Driver-এর ভাড়া
+        </div>
+
+        <div class="fare-price">
+          ₹${Number(
+            ride.fare
+          )}
+        </div>
+
+      `;
+
+
+      if (
+        status ===
+        "fare_sent"
+      ) {
+
+        const acceptButton =
+          document.createElement(
+            "button"
+          );
+
+        acceptButton.className =
+          "success";
+
+        acceptButton.textContent =
+          "✅ এই ভাড়া গ্রহণ করুন";
+
+
+        acceptButton.onclick =
+          () => {
+
+            acceptFare(
+              ride.id,
+              ride.fare
+            );
+
+          };
+
+
+        fareBox.appendChild(
+          acceptButton
+        );
+
+
+        const rejectButton =
+          document.createElement(
+            "button"
+          );
+
+        rejectButton.className =
+          "secondary";
+
+        rejectButton.textContent =
+          "❌ ভাড়া গ্রহণ করব না";
+
+
+        rejectButton.onclick =
+          () => {
+
+            rejectFare(
+              ride.id
+            );
+
+          };
+
+
+        fareBox.appendChild(
+          rejectButton
+        );
+
+      }
+
+      else {
+
+        const accepted =
+          document.createElement(
+            "div"
+          );
+
+        accepted.className =
+          "success-text";
+
+        accepted.style.marginTop =
+          "8px";
+
+        accepted.textContent =
+          "✅ ভাড়া গ্রহণ করা হয়েছে";
+
+        fareBox.appendChild(
+          accepted
+        );
+
+      }
+
+
+      fareElement.appendChild(
+        fareBox
+      );
+
+    }
+
+
+    // DRIVER INFORMATION
+
+    driverElement.innerHTML = "";
+
+
+    if (
+      ride.driverName ||
+      ride.driverPhone ||
+      ride.autoNumber
+    ) {
+
+      driverElement.innerHTML = `
+
+        <div class="route-box">
+
+          <h3>
+            🚕 Driver Information
+          </h3>
+
+          ${
+            ride.driverName
+            ?
+            `
+            <div class="summary-row">
+              <span class="label">
+                👤 Driver:
+              </span>
+              ${escapeHtml(
+                ride.driverName
+              )}
+            </div>
+            `
+            :
+            ""
+          }
+
+
+          ${
+            ride.autoNumber
+            ?
+            `
+            <div class="summary-row">
+              <span class="label">
+                🚖 Auto:
+              </span>
+              ${escapeHtml(
+                ride.autoNumber
+              )}
+            </div>
+            `
+            :
+            ""
+          }
+
+
+          ${
+            ride.driverPhone
+            ?
+            `
+            <button
+              class="primary"
+              id="call-driver-${ride.id}">
+              📞 Driver-কে Call
+            </button>
+            `
+            :
+            ""
+          }
+
+        </div>
+
+      `;
+
+
+      if (
+        ride.driverPhone
+      ) {
+
+        const callButton =
+          driverElement.querySelector(
+            `#call-driver-${ride.id}`
+          );
+
+
+        if (callButton) {
+
+          callButton.onclick =
+            () => {
+
+              window.location.href =
+                "tel:" +
+                ride.driverPhone;
+
+            };
+
+        }
+
+      }
+
+    }
+
+
+    // LIVE LOCATION
+
+    const shouldShowLocation =
+
+      (
+        status ===
+        "confirmed"
+        ||
+        status ===
+        "fare_accepted"
+        ||
+        status ===
+        "started"
+      )
+      &&
+      ride.driverId;
+
+
+    if (
+      shouldShowLocation
+    ) {
+
+      listenDriverLocation(
+        ride.id,
+        ride.driverId
+      );
+
+    }
+
+    else {
+
+      stopLocationListener(
+        ride.id
+      );
+
+      const locationElement =
+        card.querySelector(
+          `#location-${ride.id}`
+        );
+
+
+      if (locationElement) {
+
+        locationElement.innerHTML =
+          "";
+
+      }
+
+    }
+
+
+    // CANCEL BUTTON
+
+    if (
+      status ===
+      "completed"
+      ||
+      status ===
+      "cancelled"
+    ) {
+
+      cancelButton.classList.add(
+        "hidden"
+      );
+
+    }
+
+    else {
+
+      cancelButton.classList.remove(
+        "hidden"
+      );
+
+    }
+
+  }
+
+
+  // =====================================================
+  // ACCEPT FARE
+  // =====================================================
+
+  async function acceptFare(
+    rideId,
+    fare
+  ) {
+
+    const ok =
+      confirm(
+        "আপনি কি Driver-এর ₹" +
+        fare +
+        " ভাড়া গ্রহণ করছেন?"
+      );
+
+
+    if (!ok) {
+      return;
+    }
+
+
+    try {
+
+      await updateDoc(
+
+        doc(
+          db,
+          "rides",
+          rideId
+        ),
+
+        {
+
+          status:
+            "confirmed",
+
+          fareStatus:
+            "accepted",
+
+          passengerFareAcceptedAt:
+            new Date()
+
+        }
+
+      );
+
+
+      alert(
+        "✅ ভাড়া গ্রহণ করা হয়েছে। Booking Confirmed!"
+      );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Accept Fare Error:",
+        error
+      );
+
+
+      alert(
+        "ভাড়া Accept করা যাচ্ছে না।\n\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  // =====================================================
+  // REJECT FARE
+  // =====================================================
+
+  async function rejectFare(
+    rideId
+  ) {
+
+    const ok =
+      confirm(
+        "আপনি কি এই ভাড়া গ্রহণ করবেন না?"
+      );
+
+
+    if (!ok) {
+      return;
+    }
+
+
+    try {
+
+      await updateDoc(
+
+        doc(
+          db,
+          "rides",
+          rideId
+        ),
+
+        {
+
+          status:
+            "fare_rejected",
+
+          fareStatus:
+            "rejected"
+
+        }
+
+      );
+
+
+      alert(
+        "❌ আপনি ভাড়া গ্রহণ করেননি।"
+      );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Reject Fare Error:",
+        error
+      );
+
+
+      alert(
+        "ভাড়া Reject করা যাচ্ছে না।\n\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  // =====================================================
+  // CANCEL BOOKING
+  // =====================================================
+
+  async function cancelBooking(
+    rideId
+  ) {
+
+    const ok =
+      confirm(
+        "আপনি কি এই Booking বাতিল করতে চান?"
+      );
+
+
+    if (!ok) {
+      return;
+    }
+
+
+    try {
+
+      await updateDoc(
+
+        doc(
+          db,
+          "rides",
+          rideId
+        ),
+
+        {
+
+          status:
+            "cancelled",
+
+          cancelledBy:
+            "passenger",
+
+          cancelledAt:
+            new Date()
+
+        }
+
+      );
+
+
+      alert(
+        "❌ Booking বাতিল হয়েছে।"
+      );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Cancel Error:",
+        error
+      );
+
+
+      alert(
+        "Booking বাতিল করা যাচ্ছে না.\n\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  // =====================================================
+  // DRIVER LIVE LOCATION
+  // =====================================================
+
+  function listenDriverLocation(
+    rideId,
+    driverId
+  ) {
+
+    if (
+      locationListeners.has(
+        rideId
+      )
+    ) {
+
+      return;
+
+    }
+
+
+    const locationRef =
+      ref(
+        realtimeDb,
+        "drivers/" +
+        driverId +
+        "/location"
+      );
+
+
+    const unsubscribe =
+      onValue(
+
+        locationRef,
+
+        snapshot => {
+
+          const locationElement =
+            document.getElementById(
+              `location-${rideId}`
+            );
+
+
+          if (!locationElement) {
+            return;
+          }
+
+
+          const data =
+            snapshot.val();
+
+
+          if (
+            !data ||
+            data.online !== true ||
+            typeof data.lat !== "number" ||
+            typeof data.lng !== "number"
+          ) {
+
+            locationElement.innerHTML = `
+
+              <div class="location-box">
+
+                <b>
+                  📍 Driver Live Location
+                </b>
+
+                <p class="small">
+                  Driver-এর Live Location বর্তমানে বন্ধ আছে।
+                </p>
+
+              </div>
+
+            `;
+
+            return;
+
+          }
+
+
+          const lat =
+            data.lat;
+
+          const lng =
+            data.lng;
+
+          const accuracy =
+            data.accuracy ||
+            "";
+
+
+          locationElement.innerHTML = `
+
+            <div class="location-box">
+
+              <b>
+                🟢 Driver Live Location
+              </b>
+
+              <p class="small">
+                🚕 Driver এখন Live আছেন।
+              </p>
+
+              ${
+                accuracy
+                ?
+                `
+                <p class="small">
+                  Location accuracy:
+                  ${accuracy} m
+                </p>
+                `
+                :
+                ""
+              }
+
+
+              <button
+                class="success"
+                id="map-${rideId}">
+                📍 Google Maps-এ Driver দেখুন
+              </button>
+
+            </div>
+
+          `;
+
+
+          const mapButton =
+            document.getElementById(
+              `map-${rideId}`
+            );
+
+
+          if (mapButton) {
+
+            mapButton.onclick =
+              () => {
+
+                window.open(
+
+                  "https://www.google.com/maps?q=" +
+                  lat +
+                  "," +
+                  lng,
+
+                  "_blank"
+
+                );
+
+              };
+
+          }
+
+        },
+
+        error => {
+
+          console.error(
+            "Location Error:",
+            error
+          );
+
+
+          const locationElement =
+            document.getElementById(
+              `location-${rideId}`
+            );
+
+
+          if (locationElement) {
+
+            locationElement.innerHTML = `
+
+              <div class="location-box">
+
+                <b>
+                  📍 Driver Live Location
+                </b>
+
+                <p class="small error">
+                  Live Location পড়তে সমস্যা হচ্ছে।
+                </p>
+
+              </div>
+
+            `;
+
+          }
+
+        }
+
+      );
+
+
+    locationListeners.set(
+      rideId,
+      unsubscribe
+    );
+
+  }
+
+
+  // =====================================================
+  // STOP ONE LOCATION LISTENER
+  // =====================================================
+
+  function stopLocationListener(
+    rideId
+  ) {
+
+    const unsubscribe =
+      locationListeners.get(
+        rideId
+      );
+
+
+    if (unsubscribe) {
+
+      unsubscribe();
+
+      locationListeners.delete(
+        rideId
+      );
+
+    }
+
+  }
+
+
+  // =====================================================
+  // ANONYMOUS LOGIN
+  // =====================================================
+
+  signInAnonymously(
+    auth
+  )
+
+    .catch(
+      error => {
+
+        console.error(
+          "Anonymous Login Error:",
+          error
+        );
+
+
+        bookingsList.innerHTML = `
+
+          <div class="error">
+
+            ❌ Firebase Login হচ্ছে না।
+
+            <br><br>
+
+            ${escapeHtml(
+              error.message
+            )}
+
+          </div>
+
+        `;
+
+      }
+    );
+
+
+  // =====================================================
+  // AUTH STATE
+  // =====================================================
+
+  onAuthStateChanged(
+
+    auth,
+
+    user => {
+
+      if (!user) {
+        return;
+      }
+
+
+      currentUser =
+        user;
+
+
+      listenToAllBookings();
+
+    }
+
+  );
+
+
+  // =====================================================
+  // PAGE CLEANUP
+  // =====================================================
+
+  window.addEventListener(
+    "beforeunload",
+    () => {
+
+      if (
+        unsubscribeBookings
+      ) {
+
+        unsubscribeBookings();
+
+      }
+
+
+      for (
+        const unsubscribe
+        of locationListeners.values()
+      ) {
+
+        unsubscribe();
+
+      }
+
+
+      locationListeners.clear();
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
