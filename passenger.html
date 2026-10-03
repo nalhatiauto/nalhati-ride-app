@@ -177,8 +177,9 @@
 
     .ride-type-buttons { display:flex; gap:10px; margin-top:10px; }
     .ride-type-buttons button { flex:1; margin-top:0; }
-    .ride-type-btn { border:2px solid transparent; }
-    .ride-type-btn.selected { border-color:#222; }
+    .ride-type-btn { border:2px solid transparent; transition:0.15s; }
+    .ride-type-btn.selected { background:#1565c0 !important; border-color:#0d47a1 !important; color:#fff !important; box-shadow:0 0 0 3px rgba(33,150,243,.25); transform:scale(1.02); }
+    #reserveRideBtn.selected { background:#e65100 !important; border-color:#bf360c !important; color:#fff !important; box-shadow:0 0 0 3px rgba(255,152,0,.25); }
 
     .hidden {
       display: none !important;
