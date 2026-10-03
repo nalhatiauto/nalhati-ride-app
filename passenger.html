@@ -466,7 +466,6 @@
     const review = document.getElementById("reviewBtn");
     const reviewSection = document.getElementById("reviewSection");
     const reviewContent = document.getElementById("reviewContent");
-    const name = document.getElementById("passengerName");
     const phone = document.getElementById("passengerPhone");
 
     let fallbackType = "";
@@ -484,11 +483,6 @@
     reserve.addEventListener("click", () => choose("reserve"));
 
     review.addEventListener("click", () => {
-      if (!name.value.trim()) {
-        alert("আপনার নাম লিখুন।");
-        name.focus();
-        return;
-      }
       if (!/^\d{10}$/.test(phone.value.trim())) {
         alert("সঠিক ১০ সংখ্যার ফোন নম্বর লিখুন।");
         phone.focus();
@@ -510,7 +504,7 @@
       }
       reviewContent.innerHTML = "<div class='summary-row'><b>Ride Type:</b> " +
         (fallbackType === "share" ? "🚕 Share Ride" : "🚖 Reserve Ride") +
-        "</div><div class='summary-row'><b>নাম:</b> " + name.value.trim() + "</div>";
+        "</div><div class='summary-row'><b>Phone:</b> " + phone.value.trim() + "</div>";
       reviewSection.classList.remove("hidden");
       reviewSection.scrollIntoView({behavior:"smooth"});
     });
@@ -606,11 +600,6 @@
   // =====================================================
   // ELEMENTS
   // =====================================================
-
-  const passengerName =
-    document.getElementById(
-      "passengerName"
-    );
 
   const passengerPhone =
     document.getElementById(
@@ -759,24 +748,9 @@
 
   function validatePassenger() {
 
-    const name =
-      passengerName.value.trim();
-
     const phone =
       passengerPhone.value.trim();
 
-
-    if (!name) {
-
-      alert(
-        "আপনার নাম লিখুন।"
-      );
-
-      passengerName.focus();
-
-      return false;
-
-    }
 
 
     if (!/^\d{10}$/.test(phone)) {
@@ -947,13 +921,6 @@
 
 
       reviewContent.innerHTML = `
-
-        <div class="summary-row">
-          <span class="label">👤 নাম:</span>
-          ${escapeHtml(
-            passengerName.value.trim()
-          )}
-        </div>
 
         <div class="summary-row">
           <span class="label">📞 ফোন:</span>
@@ -1154,9 +1121,6 @@
 
             passengerId:
               currentUser.uid,
-
-            passengerName:
-              passengerName.value.trim(),
 
             passengerPhone:
               passengerPhone.value.trim(),
