@@ -509,6 +509,66 @@
   </div>
 
 
+<script>
+  // UI fallback: keep basic buttons responsive even if Firebase module loading is delayed.
+  (() => {
+    const share = document.getElementById("shareRideBtn");
+    const reserve = document.getElementById("reserveRideBtn");
+    const hint = document.getElementById("rideTypeHint");
+    const review = document.getElementById("reviewBtn");
+    const reviewSection = document.getElementById("reviewSection");
+    const reviewContent = document.getElementById("reviewContent");
+    const name = document.getElementById("passengerName");
+    const phone = document.getElementById("passengerPhone");
+
+    let fallbackType = "";
+
+    function choose(type) {
+      fallbackType = type;
+      share.classList.toggle("selected", type === "share");
+      reserve.classList.toggle("selected", type === "reserve");
+      hint.textContent = type === "share"
+        ? "🚕 Share Ride — অন্য যাত্রীর সঙ্গে শেয়ার করে যাবেন।"
+        : "🚖 Reserve Ride — পুরো Auto শুধু আপনার জন্য রিজার্ভ থাকবে।";
+    }
+
+    share.addEventListener("click", () => choose("share"));
+    reserve.addEventListener("click", () => choose("reserve"));
+
+    review.addEventListener("click", () => {
+      if (!name.value.trim()) {
+        alert("আপনার নাম লিখুন।");
+        name.focus();
+        return;
+      }
+      if (!/^\d{10}$/.test(phone.value.trim())) {
+        alert("সঠিক ১০ সংখ্যার ফোন নম্বর লিখুন।");
+        phone.focus();
+        return;
+      }
+      if (!fallbackType) {
+        alert("আগে Share Ride অথবা Reserve Ride বেছে নিন।");
+        return;
+      }
+      if (!document.getElementById("pickup").value.trim()) {
+        alert("Pickup address লিখুন।");
+        document.getElementById("pickup").focus();
+        return;
+      }
+      if (!document.getElementById("destination").value.trim()) {
+        alert("Destination address লিখুন।");
+        document.getElementById("destination").focus();
+        return;
+      }
+      reviewContent.innerHTML = "<div class='summary-row'><b>Ride Type:</b> " +
+        (fallbackType === "share" ? "🚕 Share Ride" : "🚖 Reserve Ride") +
+        "</div><div class='summary-row'><b>নাম:</b> " + name.value.trim() + "</div>";
+      reviewSection.classList.remove("hidden");
+      reviewSection.scrollIntoView({behavior:"smooth"});
+    });
+  })();
+</script>
+
 <script type="module">
 
   // =====================================================
