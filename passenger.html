@@ -306,7 +306,7 @@
     <h2>👤 Passenger Information / যাত্রী তথ্য / যাত্রী তথ্য</h2>
 
         <label for="passengerPhone">
-      Phone Number / Phone Number / ফোন নম্বর
+      Phone Number / ফোন নম্বর
     </label>
 
     <input
@@ -314,7 +314,7 @@
       type="tel"
       inputmode="numeric"
       maxlength="10"
-      placeholder="১০ সংখ্যার Phone Number / Phone Number / ফোন নম্বর"
+      placeholder="১০ সংখ্যার Phone Number / ফোন নম্বর"
     >
 
   </div>
@@ -370,7 +370,7 @@
     </select>
 
     <label for="rideDate">
-      📅 Date / Date / তারিখ
+      📅 Date / তারিখ
     </label>
 
     <input
@@ -379,7 +379,7 @@
     >
 
     <label for="rideTime">
-      ⏰ Time / Time / সময়
+      ⏰ Time / সময়
     </label>
 
     <input
@@ -451,7 +451,7 @@
 
     review.onclick = () => {
       if (!/^\d{10}$/.test(phone.value.trim())) {
-        alert("সঠিক ১০ সংখ্যার Phone Number / Phone Number / ফোন নম্বর লিখুন।");
+        alert("সঠিক ১০ সংখ্যার Phone Number / ফোন নম্বর লিখুন।");
         phone.focus();
         return;
       }
@@ -469,11 +469,8 @@
         document.getElementById("destination").focus();
         return;
       }
-      reviewContent.innerHTML = "<div class='summary-row'><b>Ride Type:</b> " +
         (fallbackType === "share" ? "🚕 Share Ride" : "🚖 Reserve Ride") +
         "</div><div class='summary-row'><b>Phone:</b> " + phone.value.trim() + "</div>";
-      reviewSection.classList.remove("hidden");
-      reviewSection.scrollIntoView({behavior:"smooth"});
     });
   })();
 </script>
@@ -703,7 +700,7 @@
     if (!/^\d{10}$/.test(phone)) {
 
       alert(
-        "সঠিক ১০ সংখ্যার Phone Number / Phone Number / ফোন নম্বর লিখুন।"
+        "সঠিক ১০ সংখ্যার Phone Number / ফোন নম্বর লিখুন।"
       );
 
       passengerPhone.focus();
@@ -739,7 +736,8 @@
   // DIRECT BOOKING REQUEST
   // =====================================================
 
-  async function sendBookingRequest() {
+  confirmRequestBtn.onclick =
+    async () => {
 
       if (!validatePassenger()) {
         return;
@@ -786,7 +784,7 @@
 
       if (!rideDate.value) {
         alert(
-          "Date / Date / তারিখ নির্বাচন করুন।\\nPlease select a date."
+          "Date / তারিখ নির্বাচন করুন।\\nPlease select a date."
         );
         rideDate.focus();
         return;
@@ -794,7 +792,7 @@
 
       if (!rideTime.value) {
         alert(
-          "Time / Time / সময় নির্বাচন করুন।\\nPlease select a time."
+          "Time / সময় নির্বাচন করুন।\\nPlease select a time."
         );
         rideTime.focus();
         return;
@@ -1249,7 +1247,7 @@
       <div class="summary-row">
 
         <span class="label">
-          📅 Date / Date / তারিখ:
+          📅 Date / তারিখ:
         </span>
 
         ${escapeHtml(
@@ -1262,7 +1260,7 @@
       <div class="summary-row">
 
         <span class="label">
-          ⏰ Time / Time / সময়:
+          ⏰ Time / সময়:
         </span>
 
         ${escapeHtml(
