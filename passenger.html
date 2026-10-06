@@ -303,10 +303,10 @@
 
   <div class="card">
 
-    <h2>👤 Passenger Information</h2>
+    <h2>👤 Passenger Information / যাত্রী তথ্য</h2>
 
         <label for="passengerPhone">
-      ফোন নম্বর
+      Phone Number / ফোন নম্বর
     </label>
 
     <input
@@ -314,7 +314,7 @@
       type="tel"
       inputmode="numeric"
       maxlength="10"
-      placeholder="১০ সংখ্যার ফোন নম্বর"
+      placeholder="১০ সংখ্যার Phone Number / ফোন নম্বর"
     >
 
   </div>
@@ -327,14 +327,14 @@
   <div class="card">
 
     <h2 class="new-booking-title">
-      ➕ নতুন Booking করুন
+      ➕ New Booking / নতুন Booking করুন
     </h2>
 
     <div class="ride-type-buttons">
       <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Share Ride</button>
       <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserve Ride</button>
     </div>
-    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">আগে একটি Ride Type বেছে নিন।</div>
+    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">Select a Ride Type / আগে একটি Ride Type বেছে নিন।</div>
 
     <label for="pickup">Pickup Point</label>
 
@@ -355,22 +355,22 @@
     >
 
     <label for="passengers">
-      👥 যাত্রী সংখ্যা
+      👥 Passengers / যাত্রী সংখ্যা
     </label>
 
     <select id="passengers">
-      <option value="1">1 জন</option>
-      <option value="2">2 জন</option>
-      <option value="3">3 জন</option>
-      <option value="4">4 জন</option>
-      <option value="5">5 জন</option>
-      <option value="6">6 জন</option>
-      <option value="7">7 জন</option>
-      <option value="8">8 জন</option>
+      <option value="1">1 Passenger / ১ জন</option>
+      <option value="2">2 Passengers / ২ জন</option>
+      <option value="3">3 Passengers / ৩ জন</option>
+      <option value="4">4 Passengers / ৪ জন</option>
+      <option value="5">5 Passengers / ৫ জন</option>
+      <option value="6">6 Passengers / ৬ জন</option>
+      <option value="7">7 Passengers / ৭ জন</option>
+      <option value="8">8 Passengers / ৮ জন</option>
     </select>
 
     <label for="rideDate">
-      📅 তারিখ
+      📅 Date / তারিখ
     </label>
 
     <input
@@ -379,7 +379,7 @@
     >
 
     <label for="rideTime">
-      ⏰ সময়
+      ⏰ Time / সময়
     </label>
 
     <input
@@ -388,50 +388,20 @@
     >
 
     <label for="rideNote">
-      📝 অতিরিক্ত তথ্য
+      📝 Additional Information / অতিরিক্ত তথ্য
     </label>
 
     <textarea
       id="rideNote"
       maxlength="500"
-      placeholder="প্রয়োজনে কিছু লিখুন"
+      placeholder="Optional / প্রয়োজনে কিছু লিখুন"
     ></textarea>
-
-    <button
-      id="reviewBtn"
-      class="primary"
-    >
-      👀 Booking Review
-    </button>
-
-  </div>
-
-
-  <!-- =====================================================
-       REVIEW
-       ===================================================== -->
-
-  <div
-    id="reviewSection"
-    class="card hidden"
-  >
-
-    <h2>📋 Booking Review</h2>
-
-    <div id="reviewContent"></div>
 
     <button
       id="confirmRequestBtn"
       class="success"
     >
-      🚕 Booking Request পাঠান
-    </button>
-
-    <button
-      id="editBtn"
-      class="secondary"
-    >
-      ✏️ Edit
+      🚕 Booking Request পাঠান / Send Booking Request
     </button>
 
   </div>
@@ -444,12 +414,12 @@
 
   <div class="card">
 
-    <h2>📌 আমার Booking</h2>
+    <h2>📌 My Bookings / আমার Booking</h2>
 
     <div id="bookingsList">
 
       <div class="empty-booking">
-        Booking খোঁজা হচ্ছে...
+        Loading bookings... / Booking খোঁজা হচ্ছে...
       </div>
 
     </div>
@@ -463,9 +433,6 @@
     const share = document.getElementById("shareRideBtn");
     const reserve = document.getElementById("reserveRideBtn");
     const hint = document.getElementById("rideTypeHint");
-    const review = document.getElementById("reviewBtn");
-    const reviewSection = document.getElementById("reviewSection");
-    const reviewContent = document.getElementById("reviewContent");
     const phone = document.getElementById("passengerPhone");
 
     let fallbackType = "";
@@ -484,7 +451,7 @@
 
     review.onclick = () => {
       if (!/^\d{10}$/.test(phone.value.trim())) {
-        alert("সঠিক ১০ সংখ্যার ফোন নম্বর লিখুন।");
+        alert("সঠিক ১০ সংখ্যার Phone Number / ফোন নম্বর লিখুন।");
         phone.focus();
         return;
       }
@@ -756,7 +723,7 @@
     if (!/^\d{10}$/.test(phone)) {
 
       alert(
-        "সঠিক ১০ সংখ্যার ফোন নম্বর লিখুন।"
+        "সঠিক ১০ সংখ্যার Phone Number / ফোন নম্বর লিখুন।"
       );
 
       passengerPhone.focus();
@@ -789,21 +756,21 @@
 
 
   // =====================================================
-  // REVIEW
+  // DIRECT BOOKING REQUEST
   // =====================================================
 
-  reviewBtn.onclick =
-    () => {
+  async function sendBookingRequest() {
 
       if (!validatePassenger()) {
         return;
       }
 
       if (!selectedRideType) {
-        alert("আগে Share Ride অথবা Reserve Ride বেছে নিন।");
+        alert(
+          "আগে Share Ride অথবা Reserve Ride বেছে নিন।\\nPlease select a Ride Type first."
+        );
         return;
       }
-
 
       const from =
         pickup.value.trim();
@@ -811,216 +778,67 @@
       const to =
         destination.value.trim();
 
-
       if (!from) {
-
         alert(
-          "Pickup address লিখুন।"
+          "Pickup Point লিখুন।\\nPlease enter Pickup Point."
         );
-
         pickup.focus();
-
         return;
-
       }
-
 
       if (!to) {
-
         alert(
-          "Destination address লিখুন।"
+          "Drop Point লিখুন।\\nPlease enter Drop Point."
         );
-
         destination.focus();
-
         return;
-
       }
-
 
       if (
         from.toLowerCase() ===
         to.toLowerCase()
       ) {
-
         alert(
-          "Pickup এবং Destination একই হতে পারবে না।"
+          "Pickup এবং Drop Point একই হতে পারবে না।\\nPickup and Drop Point cannot be the same."
         );
-
         return;
-
       }
-
 
       if (!rideDate.value) {
-
         alert(
-          "তারিখ নির্বাচন করুন।"
+          "Date / তারিখ নির্বাচন করুন।\\nPlease select a date."
         );
-
         rideDate.focus();
-
         return;
-
       }
-
 
       if (!rideTime.value) {
-
         alert(
-          "সময় নির্বাচন করুন।"
+          "Time / সময় নির্বাচন করুন।\\nPlease select a time."
         );
-
         rideTime.focus();
-
         return;
-
       }
-
 
       if (!currentUser) {
-
         alert(
-          "Firebase connection হচ্ছে। একটু পরে চেষ্টা করুন।"
+          "Firebase connection হচ্ছে। একটু পরে চেষ্টা করুন।\\nFirebase is connecting. Please try again."
         );
-
         return;
-
       }
 
-
       selectedRide = {
-
-        type:
-          "booking",
-
-        rideType:
-          selectedRideType,
-
-        from:
-          from,
-
-        to:
-          to,
-
-        passengers:
-          Number(
-            passengers.value
-          ),
-
-        date:
-          rideDate.value,
-
-        time:
-          rideTime.value,
-
-        note:
-          rideNote.value.trim()
-
+        type: "booking",
+        rideType: selectedRideType,
+        from: from,
+        to: to,
+        passengers: Number(passengers.value),
+        date: rideDate.value,
+        time: rideTime.value,
+        note: rideNote.value.trim()
       };
 
-
-      reviewContent.innerHTML = `
-
-        <div class="summary-row">
-          <span class="label">📞 ফোন:</span>
-          ${escapeHtml(
-            passengerPhone.value.trim()
-          )}
-        </div>
-
-        <div class="summary-row">
-          <span class="label">🚕 Ride Type:</span>
-          ${selectedRide.rideType === "reserve"
-            ? "🚖 Reserve Ride — পুরো Auto শুধু আপনার জন্য"
-            : "🚕 Share Ride — অন্য যাত্রীর সঙ্গে"}
-        </div>
-
-        <div class="summary-row">
-          <span class="label">📍 From:</span>
-          ${escapeHtml(from)}
-        </div>
-
-        <div class="summary-row">
-          <span class="label">📍 To:</span>
-          ${escapeHtml(to)}
-        </div>
-
-        <div class="summary-row">
-          <span class="label">👥 যাত্রী:</span>
-          ${selectedRide.passengers} জন
-        </div>
-
-        <div class="summary-row">
-          <span class="label">📅 তারিখ:</span>
-          ${escapeHtml(
-            selectedRide.date
-          )}
-        </div>
-
-        <div class="summary-row">
-          <span class="label">⏰ সময়:</span>
-          ${escapeHtml(
-            selectedRide.time
-          )}
-        </div>
-
-        ${
-          selectedRide.note
-          ?
-          `
-          <div class="summary-row">
-            <span class="label">📝 Note:</span>
-            ${escapeHtml(
-              selectedRide.note
-            )}
-          </div>
-          `
-          :
-          ""
-        }
-
-        <div class="fare-box">
-
-          💰 ভাড়া এখনো নির্ধারিত নয়
-
-          <div class="small">
-            Driver আপনার Pickup ও Destination দেখে
-            ভাড়া পাঠাবেন।
-          </div>
-
-        </div>
-
-      `;
-
-
-      reviewSection.classList.remove(
-        "hidden"
-      );
-
-
-      reviewSection.scrollIntoView({
-        behavior: "smooth"
-      });
-
-    };
-
-
-  // =====================================================
-  // EDIT
-  // =====================================================
-
-  editBtn.onclick =
-    () => {
-
-      reviewSection.classList.add(
-        "hidden"
-      );
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      await sendBookingRequest();
 
     };
 
@@ -1189,7 +1007,8 @@
 
       }
 
-    };
+  }
+
 
 
   // =====================================================
@@ -1214,7 +1033,7 @@
     selectedRideType = "";
     shareRideBtn.classList.remove("selected");
     reserveRideBtn.classList.remove("selected");
-    rideTypeHint.textContent = "আগে একটি Ride Type বেছে নিন।";
+    rideTypeHint.textContent = "Select a Ride Type / আগে একটি Ride Type বেছে নিন।";
 
   }
 
@@ -1456,7 +1275,7 @@
       <div class="summary-row">
 
         <span class="label">
-          📅 তারিখ:
+          📅 Date / তারিখ:
         </span>
 
         ${escapeHtml(
@@ -1469,7 +1288,7 @@
       <div class="summary-row">
 
         <span class="label">
-          ⏰ সময়:
+          ⏰ Time / সময়:
         </span>
 
         ${escapeHtml(
