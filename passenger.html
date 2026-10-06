@@ -1394,7 +1394,7 @@
         </div>
 
         <div class="small">
-          নিচে ভাড়া দেখে Accept করুন।
+          নিচে ভাড়া দেখে Final Booking করুন।
         </div>
 
       `;
@@ -1496,7 +1496,7 @@
           "success";
 
         acceptButton.textContent =
-          "✅ এই ভাড়া গ্রহণ করুন";
+          "✅ Final Booking / বুকিং নিশ্চিত করুন";
 
 
         acceptButton.onclick =
@@ -1515,30 +1515,28 @@
         );
 
 
-        const rejectButton =
+        const cancelFareButton =
           document.createElement(
             "button"
           );
 
-        rejectButton.className =
-          "secondary";
+        cancelFareButton.className =
+          "danger";
 
-        rejectButton.textContent =
-          "❌ ভাড়া গ্রহণ করব না";
+        cancelFareButton.textContent =
+          "❌ Cancel Booking / বুকিং বাতিল করুন";
 
-
-        rejectButton.onclick =
+        cancelFareButton.onclick =
           () => {
 
-            rejectFare(
+            cancelBooking(
               ride.id
             );
 
           };
 
-
         fareBox.appendChild(
-          rejectButton
+          cancelFareButton
         );
 
       }
