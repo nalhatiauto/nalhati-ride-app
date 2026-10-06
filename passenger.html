@@ -303,10 +303,10 @@
 
   <div class="card">
 
-    <h2>👤 Passenger Information / যাত্রী তথ্য</h2>
+    <h2>👤 Passenger Information / যাত্রী তথ্য / যাত্রী তথ্য</h2>
 
         <label for="passengerPhone">
-      Phone Number / ফোন নম্বর
+      Phone Number / Phone Number / ফোন নম্বর
     </label>
 
     <input
@@ -314,7 +314,7 @@
       type="tel"
       inputmode="numeric"
       maxlength="10"
-      placeholder="১০ সংখ্যার Phone Number / ফোন নম্বর"
+      placeholder="১০ সংখ্যার Phone Number / Phone Number / ফোন নম্বর"
     >
 
   </div>
@@ -327,14 +327,14 @@
   <div class="card">
 
     <h2 class="new-booking-title">
-      ➕ New Booking / নতুন Booking করুন
+      ➕ New Booking / New Booking / নতুন Booking করুন
     </h2>
 
     <div class="ride-type-buttons">
       <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Share Ride</button>
       <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserve Ride</button>
     </div>
-    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">Select a Ride Type / আগে একটি Ride Type বেছে নিন।</div>
+    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">Select a Ride Type / Select a Ride Type / আগে একটি Ride Type বেছে নিন।</div>
 
     <label for="pickup">Pickup Point</label>
 
@@ -355,7 +355,7 @@
     >
 
     <label for="passengers">
-      👥 Passengers / যাত্রী সংখ্যা
+      👥 Passengers / Passengers / যাত্রী সংখ্যা
     </label>
 
     <select id="passengers">
@@ -370,7 +370,7 @@
     </select>
 
     <label for="rideDate">
-      📅 Date / তারিখ
+      📅 Date / Date / তারিখ
     </label>
 
     <input
@@ -379,7 +379,7 @@
     >
 
     <label for="rideTime">
-      ⏰ Time / সময়
+      ⏰ Time / Time / সময়
     </label>
 
     <input
@@ -388,13 +388,13 @@
     >
 
     <label for="rideNote">
-      📝 Additional Information / অতিরিক্ত তথ্য
+      📝 Additional Information / Additional Information / অতিরিক্ত তথ্য
     </label>
 
     <textarea
       id="rideNote"
       maxlength="500"
-      placeholder="Optional / প্রয়োজনে কিছু লিখুন"
+      placeholder="Optional / Optional / প্রয়োজনে কিছু লিখুন"
     ></textarea>
 
     <button
@@ -414,12 +414,12 @@
 
   <div class="card">
 
-    <h2>📌 My Bookings / আমার Booking</h2>
+    <h2>📌 My Bookings / My Bookings / আমার Booking</h2>
 
     <div id="bookingsList">
 
       <div class="empty-booking">
-        Loading bookings... / Booking খোঁজা হচ্ছে...
+        Loading bookings... / Loading bookings... / Booking খোঁজা হচ্ছে...
       </div>
 
     </div>
@@ -451,7 +451,7 @@
 
     review.onclick = () => {
       if (!/^\d{10}$/.test(phone.value.trim())) {
-        alert("সঠিক ১০ সংখ্যার Phone Number / ফোন নম্বর লিখুন।");
+        alert("সঠিক ১০ সংখ্যার Phone Number / Phone Number / ফোন নম্বর লিখুন।");
         phone.focus();
         return;
       }
@@ -603,29 +603,9 @@
       "rideNote"
     );
 
-  const reviewBtn =
-    document.getElementById(
-      "reviewBtn"
-    );
-
-  const reviewSection =
-    document.getElementById(
-      "reviewSection"
-    );
-
-  const reviewContent =
-    document.getElementById(
-      "reviewContent"
-    );
-
   const confirmRequestBtn =
     document.getElementById(
       "confirmRequestBtn"
-    );
-
-  const editBtn =
-    document.getElementById(
-      "editBtn"
     );
 
   const bookingsList =
@@ -723,7 +703,7 @@
     if (!/^\d{10}$/.test(phone)) {
 
       alert(
-        "সঠিক ১০ সংখ্যার Phone Number / ফোন নম্বর লিখুন।"
+        "সঠিক ১০ সংখ্যার Phone Number / Phone Number / ফোন নম্বর লিখুন।"
       );
 
       passengerPhone.focus();
@@ -806,7 +786,7 @@
 
       if (!rideDate.value) {
         alert(
-          "Date / তারিখ নির্বাচন করুন।\\nPlease select a date."
+          "Date / Date / তারিখ নির্বাচন করুন।\\nPlease select a date."
         );
         rideDate.focus();
         return;
@@ -814,7 +794,7 @@
 
       if (!rideTime.value) {
         alert(
-          "Time / সময় নির্বাচন করুন।\\nPlease select a time."
+          "Time / Time / সময় নির্বাচন করুন।\\nPlease select a time."
         );
         rideTime.focus();
         return;
@@ -847,8 +827,7 @@
   // SEND NEW BOOKING
   // =====================================================
 
-  confirmRequestBtn.onclick =
-    async () => {
+  async function sendBookingRequest() {
 
       if (!selectedRide) {
 
@@ -963,11 +942,6 @@
         );
 
 
-        reviewSection.classList.add(
-          "hidden"
-        );
-
-
         clearBookingForm();
 
 
@@ -1033,7 +1007,7 @@
     selectedRideType = "";
     shareRideBtn.classList.remove("selected");
     reserveRideBtn.classList.remove("selected");
-    rideTypeHint.textContent = "Select a Ride Type / আগে একটি Ride Type বেছে নিন।";
+    rideTypeHint.textContent = "Select a Ride Type / Select a Ride Type / আগে একটি Ride Type বেছে নিন।";
 
   }
 
@@ -1275,7 +1249,7 @@
       <div class="summary-row">
 
         <span class="label">
-          📅 Date / তারিখ:
+          📅 Date / Date / তারিখ:
         </span>
 
         ${escapeHtml(
@@ -1288,7 +1262,7 @@
       <div class="summary-row">
 
         <span class="label">
-          ⏰ Time / সময়:
+          ⏰ Time / Time / সময়:
         </span>
 
         ${escapeHtml(
