@@ -331,8 +331,8 @@
     </h2>
 
     <div class="ride-type-buttons">
-      <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Share Auto<br><small>অন্য যাত্রীর সাথে</small></button>
-      <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserve Auto<br><small>পুরো অটো শুধু আপনার</small></button>
+      <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Shared Ride<br><small>অন্য যাত্রীর সাথে</small></button>
+      <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserved Ride<br><small>পুরো অটো শুধু আপনার</small></button>
     </div>
     <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">একটি Auto বেছে নিন / Choose an Auto</div>
 
@@ -455,8 +455,8 @@
       share.classList.toggle("selected", type === "share");
       reserve.classList.toggle("selected", type === "reserve");
       hint.textContent = type === "share"
-        ? "🚕 Share Auto — অন্য যাত্রীর সাথে যাবেন।"
-        : "🚖 Reserve Auto — পুরো Auto শুধু আপনার জন্য।";
+        ? "🚕 Shared Ride — অন্য যাত্রীর সাথে যাবেন।"
+        : "🚖 Reserved Ride — পুরো Auto শুধু আপনার জন্য।";
     }
 
     share.onclick = () => choose("share");
@@ -714,8 +714,8 @@
     shareRideBtn.classList.toggle("selected", type === "share");
     reserveRideBtn.classList.toggle("selected", type === "reserve");
     rideTypeHint.textContent = type === "share"
-      ? "🚕 Share Ride — অন্য যাত্রীর সঙ্গে শেয়ার করে যাবেন।"
-      : "🚖 Reserve Ride — পুরো Auto শুধু আপনার জন্য রিজার্ভ থাকবে।";
+      ? "🚕 Shared Ride — অন্য যাত্রীর সঙ্গে শেয়ার করে যাবেন।"
+      : "🚖 Reserved Ride — পুরো Auto শুধু আপনার জন্য রিজার্ভ থাকবে।";
   }
 
   shareRideBtn.onclick = () => selectRideType("share");
@@ -735,7 +735,7 @@
 
       if (!selectedRideType) {
         alert(
-          "আগে Share Auto অথবা Reserve Auto বেছে নিন।\\nPlease select an Auto first."
+          "আগে Shared Ride অথবা Reserved Ride বেছে নিন।\\nPlease select an Auto first."
         );
         return;
       }
@@ -995,7 +995,7 @@
     selectedRideType = "";
     shareRideBtn.classList.remove("selected");
     reserveRideBtn.classList.remove("selected");
-    rideTypeHint.textContent = "Select a Ride Type / আগে একটি Ride Type বেছে নিন।";
+    rideTypeHint.textContent = "Select a Ride Type / আগে Shared Ride অথবা Reserved Ride বেছে নিন।";
 
   }
 
