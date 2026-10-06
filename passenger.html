@@ -331,10 +331,10 @@
     </h2>
 
     <div class="ride-type-buttons">
-      <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Share Ride</button>
-      <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserve Ride</button>
+      <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Share Auto<br><small>অন্য যাত্রীর সাথে</small></button>
+      <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserve Auto<br><small>পুরো অটো শুধু আপনার</small></button>
     </div>
-    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">Select a Ride Type / আগে একটি Ride Type বেছে নিন।</div>
+    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">একটি Auto বেছে নিন / Choose an Auto</div>
 
     <label for="pickup">Pickup Point</label>
 
@@ -442,36 +442,13 @@
       share.classList.toggle("selected", type === "share");
       reserve.classList.toggle("selected", type === "reserve");
       hint.textContent = type === "share"
-        ? "🚕 Share Ride — অন্য যাত্রীর সঙ্গে শেয়ার করে যাবেন।"
-        : "🚖 Reserve Ride — পুরো Auto শুধু আপনার জন্য রিজার্ভ থাকবে।";
+        ? "🚕 Share Auto — অন্য যাত্রীর সাথে যাবেন।"
+        : "🚖 Reserve Auto — পুরো Auto শুধু আপনার জন্য।";
     }
 
     share.onclick = () => choose("share");
     reserve.onclick = () => choose("reserve");
 
-    review.onclick = () => {
-      if (!/^\d{10}$/.test(phone.value.trim())) {
-        alert("সঠিক ১০ সংখ্যার Phone Number / ফোন নম্বর লিখুন।");
-        phone.focus();
-        return;
-      }
-      if (!fallbackType) {
-        alert("আগে Share Ride অথবা Reserve Ride বেছে নিন।");
-        return;
-      }
-      if (!document.getElementById("pickup").value.trim()) {
-        alert("Pickup address লিখুন।");
-        document.getElementById("pickup").focus();
-        return;
-      }
-      if (!document.getElementById("destination").value.trim()) {
-        alert("Destination address লিখুন।");
-        document.getElementById("destination").focus();
-        return;
-      }
-        (fallbackType === "share" ? "🚕 Share Ride" : "🚖 Reserve Ride") +
-        "</div><div class='summary-row'><b>Phone:</b> " + phone.value.trim() + "</div>";
-    });
   })();
 </script>
 
@@ -745,7 +722,7 @@
 
       if (!selectedRideType) {
         alert(
-          "আগে Share Ride অথবা Reserve Ride বেছে নিন।\\nPlease select a Ride Type first."
+          "আগে Share Auto অথবা Reserve Auto বেছে নিন।\\nPlease select an Auto first."
         );
         return;
       }
