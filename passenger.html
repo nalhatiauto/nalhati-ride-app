@@ -1528,30 +1528,6 @@
         );
 
 
-        const cancelFareButton =
-          document.createElement(
-            "button"
-          );
-
-        cancelFareButton.className =
-          "danger";
-
-        cancelFareButton.textContent =
-          "❌ Cancel Booking / বুকিং বাতিল করুন";
-
-        cancelFareButton.onclick =
-          () => {
-
-            cancelBooking(
-              ride.id
-            );
-
-          };
-
-        fareBox.appendChild(
-          cancelFareButton
-        );
-
       }
 
       else {
