@@ -363,13 +363,7 @@
     <div id="bookingPage" class="hidden">
       <button id="backToHomeBtn" type="button" class="location-btn">← Back to ride options</button>
       <div id="bookingModeTitle" class="hero-line" style="margin-top:12px;">Book your ride</div>
-      <div id="shareAvailabilityPanel" class="card hidden" style="padding:14px;">
-        <h2 style="margin-top:0;">Check Share Ride Availability</h2>
-        <p class="muted">Enter pickup and destination, then check whether a driver is offering this route.</p>
-        <button id="checkShareAvailabilityBtn" type="button" class="primary">🔎 Check Availability</button>
-        <div id="shareAvailabilityResult" class="route-estimate hidden" aria-live="polite"></div>
-        <button id="shareNotAvailableBack" type="button" class="location-btn hidden">← Back to ride options</button>
-      </div>
+      <div id="shareBookingStatus" class="route-estimate hidden" aria-live="polite"></div>
 
 
   <!-- =====================================================
@@ -399,7 +393,7 @@
 
   <div class="card">
 
-    <h2 class="new-booking-title">
+    <h2 class="new-booking-title reserve-only">
       ➕ New Booking
     </h2>
 
@@ -417,24 +411,25 @@
       <input id="destination" type="text" maxlength="200" placeholder="Start typing a place or address" autocomplete="off">
       <div id="destinationSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Destination address suggestions"></div>
     </div>
+    <div id="shareFareDisplay" class="route-estimate hidden" aria-live="polite" style="font-size:20px;font-weight:700;margin-top:12px;"></div>
 
-    <div class="map-tools">
+    <div class="map-tools reserve-only">
       <button id="setPickupOnMapBtn" class="location-btn" type="button">📍 Set Pickup on Map</button>
       <button id="setDestinationOnMapBtn" class="location-btn" type="button">🏁 Set Destination on Map</button>
     </div>
-    <div id="rideMap" aria-label="Interactive pickup and destination map"></div>
-    <div class="map-legend">Enter addresses manually or tap the map to place the selected pin. Map data © OpenStreetMap contributors.</div>
+    <div id="rideMap" class="reserve-only" aria-label="Interactive pickup and destination map"></div>
+    <div class="map-legend reserve-only">Enter addresses manually or tap the map to place the selected pin. Map data © OpenStreetMap contributors.</div>
 
-    <button id="calculateRouteBtn" class="primary" type="button">🗺️ Calculate Route Distance</button>
-    <div id="routeEstimate" class="route-estimate hidden" aria-live="polite"></div>
-    <div class="muted">Distance is an estimate. The driver will confirm the final fare.</div>
-    <div id="fareEstimate" class="route-estimate hidden" aria-live="polite"></div>
+    <button id="calculateRouteBtn" class="primary reserve-only" type="button">🗺️ Calculate Route Distance</button>
+    <div id="routeEstimate" class="route-estimate hidden reserve-only" aria-live="polite"></div>
+    <div class="muted reserve-only">Distance is an estimate. The driver will confirm the final fare.</div>
+    <div id="fareEstimate" class="route-estimate hidden reserve-only" aria-live="polite"></div>
 
-    <label for="passengers">
+    <label class="reserve-only" for="passengers">
       👥 Number of Passengers
     </label>
 
-    <select id="passengers">
+    <select class="reserve-only" id="passengers">
       <option value="1">1 Passenger</option>
       <option value="2">2 Passengers</option>
       <option value="3">3 Passengers</option>
@@ -445,29 +440,32 @@
       <option value="8">8 Passengers</option>
     </select>
 
-    <label for="rideDate">
+    <label class="reserve-only" for="rideDate">
       📅 Date
     </label>
 
     <input
+      class="reserve-only"
       id="rideDate"
       type="date"
     >
 
-    <label for="rideTime">
+    <label class="reserve-only" for="rideTime">
       ⏰ Time
     </label>
 
     <input
+      class="reserve-only"
       id="rideTime"
       type="time"
     >
 
-    <label for="rideNote">
+    <label class="reserve-only" for="rideNote">
       📝 Additional Information
     </label>
 
     <textarea
+      class="reserve-only"
       id="rideNote"
       maxlength="500"
       placeholder="Optional"
@@ -695,26 +693,24 @@
   const reserveRideOption = document.getElementById("reserveRideOption");
   const backToHomeBtn = document.getElementById("backToHomeBtn");
   const bookingModeTitle = document.getElementById("bookingModeTitle");
-  const shareAvailabilityPanel = document.getElementById("shareAvailabilityPanel");
-  const checkShareAvailabilityBtn = document.getElementById("checkShareAvailabilityBtn");
-  const shareAvailabilityResult = document.getElementById("shareAvailabilityResult");
-  const shareNotAvailableBack = document.getElementById("shareNotAvailableBack");
+  const shareBookingStatus = document.getElementById("shareBookingStatus");
+  const shareFareDisplay = document.getElementById("shareFareDisplay");
 
   function openBookingMode(mode) {
     selectedRideType = mode;
-    shareAvailabilityChecked = false;
     homePage.classList.add("hidden");
     bookingPage.classList.remove("hidden");
-    bookingModeTitle.textContent = mode === "share" ? "👥 Share Ride Booking" : "🚕 Reserve Auto Booking";
-    shareAvailabilityPanel.classList.toggle("hidden", mode !== "share");
-    shareAvailabilityResult.classList.add("hidden");
-    shareAvailabilityResult.textContent = "";
-    shareNotAvailableBack.classList.add("hidden");
-    confirmRequestBtn.disabled = mode === "share";
-    confirmRequestBtn.textContent = mode === "share" ? "Check availability before booking" : "🚕 Send Reserve Request";
-    pickup.placeholder = mode === "share" ? "Enter share ride pickup" : "Enter pickup address";
-    destination.placeholder = mode === "share" ? "Enter share ride destination" : "Enter destination address";
-    if (map) setTimeout(() => map.invalidateSize(), 100);
+    bookingModeTitle.textContent = mode === "share" ? "👥 Share Ride" : "🚕 Reserve Auto Booking";
+    document.querySelectorAll(".reserve-only").forEach(el => el.classList.toggle("hidden", mode === "share"));
+    shareBookingStatus.classList.add("hidden");
+    shareBookingStatus.textContent = "";
+    shareFareDisplay.classList.toggle("hidden", mode !== "share");
+    confirmRequestBtn.disabled = false;
+    confirmRequestBtn.textContent = mode === "share" ? "📨 Send Share Booking" : "🚕 Send Reserve Request";
+    pickup.placeholder = mode === "share" ? "Boarding / Pickup কোথা থেকে" : "Enter pickup address";
+    destination.placeholder = mode === "share" ? "Destination কোথায় যাবেন" : "Enter destination address";
+    updateKnownFareEstimate();
+    if (map && mode !== "share") setTimeout(() => map.invalidateSize(), 100);
   }
 
   shareRideOption.addEventListener("click", () => openBookingMode("share"));
@@ -724,61 +720,6 @@
     hideSuggestions("destination");
     bookingPage.classList.add("hidden");
     homePage.classList.remove("hidden");
-  });
-  shareNotAvailableBack.addEventListener("click", () => {
-    bookingPage.classList.add("hidden");
-    homePage.classList.remove("hidden");
-  });
-
-  checkShareAvailabilityBtn.addEventListener("click", async () => {
-    const from = pickup.value.trim();
-    const to = destination.value.trim();
-    if (!from || !to) {
-      shareAvailabilityResult.textContent = "প্রথমে Pickup ও Destination লিখুন।";
-      shareAvailabilityResult.classList.remove("hidden");
-      return;
-    }
-    const fromPlace = findKnownPlace(from);
-    const toPlace = findKnownPlace(to);
-    if (!fromPlace || !toPlace || fromPlace === toPlace) {
-      shareAvailabilityResult.textContent = "এই রুটটি যাচাই করতে Pickup ও Destination-এ নলহাটি এলাকার পরিচিত স্থান/শহরের নাম দিন।";
-      shareAvailabilityResult.classList.remove("hidden");
-      return;
-    }
-    checkShareAvailabilityBtn.disabled = true;
-    checkShareAvailabilityBtn.textContent = "⏳ Checking...";
-    shareAvailabilityResult.classList.remove("hidden");
-    shareAvailabilityResult.textContent = "শেয়ার রাইড খোঁজা হচ্ছে...";
-    shareNotAvailableBack.classList.add("hidden");
-    try {
-      const availabilitySnap = await get(ref(realtimeDb, "shareRideAvailability"));
-      const allRoutes = availabilitySnap.exists() ? availabilitySnap.val() : {};
-      const available = Object.values(allRoutes || {}).some(route => {
-        if (!route || route.enabled !== true) return false;
-        const routeFrom = String(route.from || "").toLowerCase();
-        const routeTo = String(route.to || "").toLowerCase();
-        return (routeFrom === fromPlace && routeTo === toPlace) ||
-               (routeFrom === toPlace && routeTo === fromPlace);
-      });
-      if (available) {
-        shareAvailabilityChecked = true;
-        confirmRequestBtn.disabled = false;
-        confirmRequestBtn.textContent = "👥 Book Share Ride";
-        shareAvailabilityResult.textContent = "✅ এই রুটে Share Ride Available! এখন বুকিং করতে পারবেন।";
-      } else {
-        shareAvailabilityChecked = false;
-        confirmRequestBtn.disabled = true;
-        shareAvailabilityResult.textContent = "❌ এই রুটে এখন Share Ride Available নয়। Reserve Auto নিতে প্রথম পেজে ফিরে যান।";
-        shareNotAvailableBack.classList.remove("hidden");
-      }
-    } catch (error) {
-      shareAvailabilityChecked = false;
-      confirmRequestBtn.disabled = true;
-      shareAvailabilityResult.textContent = "Availability যাচাই করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।";
-    } finally {
-      checkShareAvailabilityBtn.disabled = false;
-      checkShareAvailabilityBtn.textContent = "🔎 Check Availability";
-    }
   });
 
   const locationListeners =
@@ -892,8 +833,25 @@
   }
   function updateKnownFareEstimate() {
     const from = pickup.value.trim(), to = destination.value.trim();
-    if (!from || !to) { fareEstimate.classList.add("hidden"); fareEstimate.textContent = ""; return; }
     const fare = getKnownRouteFare(from, to);
+    if (selectedRideType === "share") {
+      fareEstimate.classList.add("hidden");
+      shareFareDisplay.classList.remove("hidden");
+      if (!from || !to) {
+        shareFareDisplay.textContent = "💰 Share Ride ভাড়া দেখতে Pickup ও Destination দিন";
+        confirmRequestBtn.disabled = true;
+      } else if (fare === null) {
+        shareFareDisplay.textContent = "💰 এই রুটের শেয়ার ভাড়া জানা নেই। তালিকাভুক্ত রুট দিন।";
+        confirmRequestBtn.disabled = true;
+      } else {
+        shareFareDisplay.textContent = "💰 Share Ride ভাড়া: ₹" + fare;
+        confirmRequestBtn.disabled = false;
+      }
+      confirmRequestBtn.textContent = "📨 Send Share Booking";
+      return;
+    }
+    shareFareDisplay.classList.add("hidden");
+    if (!from || !to) { fareEstimate.classList.add("hidden"); fareEstimate.textContent = ""; return; }
     fareEstimate.classList.remove("hidden");
     if (fare === null) fareEstimate.textContent = "Fare estimate is unavailable for this route. The driver will provide a quote.";
     else fareEstimate.textContent = "Estimated fare: ₹" + fare + " — The driver will confirm the final fare.";
@@ -1323,11 +1281,6 @@
         return;
       }
 
-      if (selectedRideType === "share" && !shareAvailabilityChecked) {
-        alert("Please check Share Ride availability before booking.");
-        return;
-      }
-
       const from =
         pickup.value.trim();
 
@@ -1360,19 +1313,21 @@
         return;
       }
 
-      if (!rideDate.value) {
-        alert(
-          "Please select a date."
-        );
+      if (selectedRideType !== "share" && !rideDate.value) {
+        alert("Please select a date.");
         rideDate.focus();
         return;
       }
 
-      if (!rideTime.value) {
-        alert(
-          "Please select a time."
-        );
+      if (selectedRideType !== "share" && !rideTime.value) {
+        alert("Please select a time.");
         rideTime.focus();
+        return;
+      }
+
+      const shareFare = getKnownRouteFare(from, to);
+      if (selectedRideType === "share" && shareFare === null) {
+        alert("এই রুটের শেয়ার ভাড়া জানা নেই। Pickup ও Destination ঠিক করে দিন।");
         return;
       }
 
@@ -1388,10 +1343,10 @@
         rideType: selectedRideType,
         from: from,
         to: to,
-        passengers: Number(passengers.value),
-        date: rideDate.value,
-        time: rideTime.value,
-        note: rideNote.value.trim(),
+        passengers: selectedRideType === "share" ? 1 : Number(passengers.value),
+        date: selectedRideType === "share" ? "" : rideDate.value,
+        time: selectedRideType === "share" ? "" : rideTime.value,
+        note: selectedRideType === "share" ? "" : rideNote.value.trim(),
         estimatedFare: getKnownRouteFare(from, to),
         pickupLocation: pickupCoordinates ? { lat: pickupCoordinates.lat, lon: pickupCoordinates.lon } : null,
         destinationLocation: destinationCoordinates ? { lat: destinationCoordinates.lat, lon: destinationCoordinates.lon } : null,
@@ -1485,19 +1440,19 @@
               selectedRide.estimatedFare,
 
             fare:
-              0,
+              selectedRide.rideType === "share" ? selectedRide.estimatedFare : 0,
 
             originalFare:
-              0,
+              selectedRide.rideType === "share" ? selectedRide.estimatedFare : 0,
 
             discountAmount:
               0,
 
             fareType:
-              "driver_quote",
+              selectedRide.rideType === "share" ? "fixed_share_fare" : "driver_quote",
 
             fareStatus:
-              "waiting",
+              selectedRide.rideType === "share" ? "share_pending_driver" : "waiting",
 
             status:
               "searching",
@@ -1527,6 +1482,11 @@
 
         );
 
+
+        if (selectedRide && selectedRide.rideType === "share") {
+          shareBookingStatus.classList.remove("hidden");
+          shareBookingStatus.textContent = "⏳ শেয়ার বুকিং ড্রাইভারের কাছে পাঠানো হয়েছে। চালকের উত্তরের জন্য অপেক্ষা করুন।";
+        }
 
         clearBookingForm();
 
@@ -1563,7 +1523,7 @@
           false;
 
         confirmRequestBtn.textContent =
-          "🚕 Submit Booking Request";
+          selectedRideType === "share" ? "📨 Send Share Booking" : "🚕 Send Reserve Request";
 
       }
 
@@ -1644,8 +1604,7 @@
                   data.status !==
                   "completed"
                   &&
-                  data.status !==
-                  "cancelled"
+                  (data.status !== "cancelled" || data.cancelledBy === "driver")
                 ) {
 
                   rides.push({
@@ -1977,7 +1936,12 @@
 
     // STATUS
 
-    if (
+    if (status === "cancelled" && ride.cancelledBy === "driver" && ride.rideType === "share") {
+      statusElement.innerHTML = `
+        <div class="error">❌ এখন গাড়ি Available নেই। চালক এই রুটে বুকিং নিতে পারছেন না।</div>
+      `;
+    }
+    else if (
       status ===
       "searching"
     ) {
