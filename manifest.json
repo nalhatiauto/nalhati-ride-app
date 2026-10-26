@@ -1,8 +1,8 @@
 {
-  "name": "Nalhati Ride",
-  "short_name": "Nalhati Ride",
+  "name": "বন্দে ভারত এক্সপ্রেস",
+  "short_name": "বন্দে ভারত",
   "id": "nalhati-ride",
-  "description": "Nalhati to Murarai auto booking service",
+  "description": "নলহাটি ও আশেপাশের এলাকার অটো বুকিং পরিষেবা",
   "start_url": "/nalhati-ride-app/passenger.html",
   "scope": "/nalhati-ride-app/",
   "display": "standalone",
