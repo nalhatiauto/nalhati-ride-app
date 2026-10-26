@@ -403,11 +403,10 @@
 
     <label for="pickup">Pickup Address</label>
     <div class="address-field-wrap">
-      <input id="pickup" type="text" maxlength="200" placeholder="Finding your location or enter pickup address" autocomplete="off">
+      <input id="pickup" type="text" maxlength="200" placeholder="Enter pickup address manually" autocomplete="off">
       <div id="pickupSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Pickup address suggestions"></div>
     </div>
-    <button id="useMyLocationBtn" class="location-btn" type="button">📍 Use My Current Location</button>
-    <div id="locationMessage" class="muted" aria-live="polite">Requesting your current location permission…</div>
+    <div id="locationMessage" class="muted" aria-live="polite"></div>
 
     <label for="destination">Destination Address</label>
     <div class="address-field-wrap">
@@ -655,7 +654,6 @@
       "bookingsList"
     );
 
-  const useMyLocationBtn = document.getElementById("useMyLocationBtn");
   const locationMessage = document.getElementById("locationMessage");
   const calculateRouteBtn = document.getElementById("calculateRouteBtn");
   const routeEstimate = document.getElementById("routeEstimate");
@@ -687,7 +685,6 @@
 
   let selectedRide = null;
   let selectedRideType = "reserve";
-  let shareAvailabilityChecked = false;
   let unsubscribeBookings = null;
 
   const homePage = document.getElementById("homePage");
@@ -955,7 +952,6 @@
       if (message) message.textContent = fromMap ? "Pickup pin updated. Please verify the address." : "Current pickup location added. Please verify the address.";
     }
     hideSuggestions(field);
-    invalidateShareAvailabilityIfNeeded();
     updateKnownFareEstimate();
     drawMapLocations();
   }
@@ -1142,15 +1138,6 @@
     else destinationSearchTimer = timer;
   }
 
-  function invalidateShareAvailabilityIfNeeded() {
-    if (selectedRideType !== "share") return;
-    shareAvailabilityChecked = false;
-    confirmRequestBtn.disabled = true;
-    confirmRequestBtn.textContent = "Check availability before booking";
-    shareAvailabilityResult.classList.add("hidden");
-    shareNotAvailableBack.classList.add("hidden");
-  }
-
   pickup.addEventListener("focus", () => { activeLocationField = "pickup"; });
   destination.addEventListener("focus", () => { activeLocationField = "destination"; });
   // Address autocomplete suggestions are disabled by request.
@@ -1182,35 +1169,6 @@
     locationMessage.textContent = "Tap the map to choose the destination.";
     setDestinationOnMapBtn.textContent = "🏁 Tap Map for Destination";
     setPickupOnMapBtn.textContent = "📍 Set Pickup on Map";
-  };
-
-  function getCurrentLocation() {
-    if (!navigator.geolocation) {
-      locationMessage.textContent = "Location services are unavailable. Please enter your pickup address manually.";
-      return;
-    }
-    locationMessage.textContent = "Getting your current location…";
-    navigator.geolocation.getCurrentPosition(async position => {
-      if (pickupManuallyEdited || pickup.value.trim()) {
-        locationMessage.textContent = "Current location found. Your pickup entry was kept unchanged.";
-        return;
-      }
-      await setLocationForField("pickup", {
-        lat: position.coords.latitude,
-        lon: position.coords.longitude
-      });
-      if (map) map.setView([position.coords.latitude, position.coords.longitude], 15);
-    }, error => {
-      locationMessage.textContent = "Could not access your location. Allow location permission or enter the pickup address manually.";
-    }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
-  }
-
-  useMyLocationBtn.onclick = () => {
-    pickupManuallyEdited = false;
-    pickup.value = "";
-    pickupCoordinates = null;
-    drawMapLocations();
-    getCurrentLocation();
   };
 
   async function geocodeAddress(address) {
@@ -1269,9 +1227,6 @@
       calculateRouteBtn.textContent = "🗺️ Calculate Route Distance";
     }
   };
-
-  // Ask for location permission when the booking page opens. Manual edits are never overwritten.
-  getCurrentLocation();
 
   // =====================================================
   // DIRECT BOOKING REQUEST
