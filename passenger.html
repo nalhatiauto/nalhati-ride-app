@@ -854,7 +854,7 @@
 
       if (!from) {
         alert(
-          "Pickup Point লিখুন।\\nPlease enter Pickup Point."
+          "Please enter a pickup address."
         );
         pickup.focus();
         return;
@@ -862,7 +862,7 @@
 
       if (!to) {
         alert(
-          "Drop Point লিখুন।\\nPlease enter Drop Point."
+          "Please enter a destination address."
         );
         destination.focus();
         return;
@@ -873,7 +873,7 @@
         to.toLowerCase()
       ) {
         alert(
-          "Pickup এবং Drop Point একই হতে পারবে না।\\nPickup and Drop Point cannot be the same."
+          "Pickup and destination cannot be the same."
         );
         return;
       }
