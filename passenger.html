@@ -900,42 +900,108 @@
   function scheduleAddressSearch(field, value) {
     const isPickup = field === "pickup";
     const box = isPickup ? pickupSuggestions : destinationSuggestions;
-    const timerName = isPickup ? "pickup" : "destination";
     if (isPickup) { clearTimeout(pickupSearchTimer); pickupSearchSequence++; }
     else { clearTimeout(destinationSearchTimer); destinationSearchSequence++; }
     const sequence = isPickup ? pickupSearchSequence : destinationSearchSequence;
     const query = value.trim();
     if (query.length < 3) { hideSuggestions(field); return; }
-    showSuggestionMessage(box, "Searching nearby places…");
+    showSuggestionMessage(box, "Finding nearby schools, stations, hospitals and other places…");
+
     const timer = setTimeout(async () => {
       try {
-        const params = new URLSearchParams({
-          format: "jsonv2", addressdetails: "1", limit: "6", countrycodes: "in",
-          q: query + ", West Bengal, India",
-          viewbox: "87.55,24.55,88.10,24.05", bounded: "0"
-        });
-        const response = await fetch("https://nominatim.openstreetmap.org/search?" + params.toString());
-        if (!response.ok) throw new Error("Address search is temporarily unavailable.");
-        const results = await response.json();
+        const localityAliases = [
+          ["nalhati", "নলহাটি"], ["basanta", "বসন্ত"], ["diha", "দিহা"],
+          ["rampurhat", "রামপুরহাট"], ["murarai", "মুরারই"], ["lohapur", "লোহাপুর"],
+          ["kukhura", "কুখুরা"], ["kanior", "কানিওর"]
+        ];
+        const normalQuery = query.toLocaleLowerCase("en").replace(/[.,]/g, "").trim();
+        const exactLocality = localityAliases.find(names =>
+          names.some(name => name.toLocaleLowerCase("en") === normalQuery)
+        );
+
+        const photonSearch = async (searchText, limit = 8) => {
+          const params = new URLSearchParams({
+            q: searchText,
+            lat: "24.30",
+            lon: "87.83",
+            limit: String(limit),
+            lang: "en"
+          });
+          const response = await fetch("https://photon.komoot.io/api/?" + params.toString());
+          if (!response.ok) throw new Error("Nearby place search unavailable");
+          const data = await response.json();
+          return (data.features || []).map(feature => {
+            const p = feature.properties || {};
+            const coords = feature.geometry && feature.geometry.coordinates;
+            if (!coords || coords.length < 2) return null;
+            const lat = Number(coords[1]), lon = Number(coords[0]);
+            // Keep autocomplete focused on Nalhati and nearby Birbhum places.
+            if (lat < 23.55 || lat > 24.95 || lon < 86.65 || lon > 88.65) return null;
+            const name = p.name || p.street || p.locality || p.district || "";
+            const context = [p.suburb, p.city, p.district, p.state].filter(Boolean)
+              .filter((item, index, arr) => arr.indexOf(item) === index && item !== name);
+            const label = [name, ...context].filter(Boolean).join(", ");
+            return label ? { label, lat, lon, category: p.osm_value || p.type || "" } : null;
+          }).filter(Boolean);
+        };
+
+        // Search the typed words first. If the user typed a known locality exactly,
+        // also ask for common landmarks in that locality (school, station, hospital, bus stand, market).
+        const baseSearch = photonSearch(query, 10);
+        const landmarkSearches = exactLocality
+          ? ["railway station", "school", "hospital", "bus stand", "market"].map(suffix =>
+              photonSearch(exactLocality[0] + " " + suffix, 5).catch(() => [])
+            )
+          : [];
+        let results = (await baseSearch).concat(...await Promise.all(landmarkSearches));
+
+        // Prefer closer/local results and remove duplicate names/coordinates.
+        const seen = new Set();
+        results = results.filter(result => {
+          const key = result.label.toLocaleLowerCase("en") + "|" + result.lat.toFixed(4) + "|" + result.lon.toFixed(4);
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }).slice(0, 12);
+
+        // Nominatim fallback, constrained to the local region, if Photon has no useful result.
+        if (!results.length) {
+          const params = new URLSearchParams({
+            format: "jsonv2", addressdetails: "1", limit: "8", countrycodes: "in",
+            q: query + ", Birbhum, West Bengal, India",
+            viewbox: "86.65,24.95,88.65,23.55", bounded: "1"
+          });
+          const response = await fetch("https://nominatim.openstreetmap.org/search?" + params.toString());
+          if (response.ok) {
+            const fallback = await response.json();
+            results = fallback.map(item => ({
+              label: item.display_name,
+              lat: Number(item.lat),
+              lon: Number(item.lon)
+            }));
+          }
+        }
+
         const currentSequence = isPickup ? pickupSearchSequence : destinationSearchSequence;
         if (sequence !== currentSequence) return;
         box.innerHTML = "";
         if (!results.length) {
-          showSuggestionMessage(box, "No matching places found. Try a nearby landmark or a fuller address.");
+          showSuggestionMessage(box, "No local match found. Try the place name plus a landmark, or choose the location on the map.");
           return;
         }
+
         results.forEach(result => {
           const option = document.createElement("button");
           option.type = "button";
           option.className = "address-suggestion";
           option.setAttribute("role", "option");
-          option.textContent = result.display_name;
+          option.textContent = result.label;
           option.onclick = () => {
-            const coords = { lat: Number(result.lat), lon: Number(result.lon) };
+            const coords = { lat: result.lat, lon: result.lon };
             if (field === "pickup") pickupManuallyEdited = true;
             if (field === "pickup") pickupCoordinates = coords;
             else destinationCoordinates = coords;
-            (field === "pickup" ? pickup : destination).value = result.display_name;
+            (field === "pickup" ? pickup : destination).value = result.label;
             hideSuggestions(field);
             updateKnownFareEstimate();
             drawMapLocations();
@@ -945,7 +1011,7 @@
         box.classList.remove("hidden");
       } catch (error) {
         if (sequence === (isPickup ? pickupSearchSequence : destinationSearchSequence)) {
-          showSuggestionMessage(box, "Suggestions unavailable right now. You can still enter the address manually.");
+          showSuggestionMessage(box, "Suggestions are temporarily unavailable. You can still enter the address or choose it on the map.");
         }
       }
     }, 650);
