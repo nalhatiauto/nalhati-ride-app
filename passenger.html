@@ -380,6 +380,7 @@
     <button id="calculateRouteBtn" class="primary" type="button">🗺️ Calculate Route Distance</button>
     <div id="routeEstimate" class="route-estimate hidden" aria-live="polite"></div>
     <div class="muted">Distance is an estimate. The driver will confirm the final fare.</div>
+    <div id="fareEstimate" class="route-estimate hidden" aria-live="polite"></div>
 
     <label for="passengers">
       👥 Number of Passengers
@@ -716,6 +717,33 @@
   // Shared/Reserved selection removed; all requests use the standard booking type.
 
 
+  const fareEstimate = document.getElementById("fareEstimate");
+  const routeFareFromNalhati = { diha: 80, basanta: 160, rampurhat: 200, murarai: 200, lohapur: 200, kukhura: 160, kanior: 160, nalhati: 0 };
+  const directRouteFares = { "basanta|rampurhat": 360 };
+  function findKnownPlace(address) {
+    const value = String(address || "").toLowerCase();
+    const aliases = { nalhati:["nalhati","নলহাটি"], diha:["diha","দিহা"], basanta:["basanta","বসন্ত"], rampurhat:["rampurhat","রামপুরহাট"], murarai:["murarai","মুরারই"], lohapur:["lohapur","লোহাপুর"], kukhura:["kukhura","কুখুরা"], kanior:["kanior","কানিওর"] };
+    return Object.keys(aliases).find(place => aliases[place].some(alias => value.includes(alias))) || null;
+  }
+  function getKnownRouteFare(fromAddress, toAddress) {
+    const from = findKnownPlace(fromAddress), to = findKnownPlace(toAddress);
+    if (!from || !to || from === to) return null;
+    const key = [from, to].sort().join("|");
+    if (Object.prototype.hasOwnProperty.call(directRouteFares, key)) return directRouteFares[key];
+    if (routeFareFromNalhati[from] !== undefined && routeFareFromNalhati[to] !== undefined) return routeFareFromNalhati[from] + routeFareFromNalhati[to];
+    return null;
+  }
+  function updateKnownFareEstimate() {
+    const from = pickup.value.trim(), to = destination.value.trim();
+    if (!from || !to) { fareEstimate.classList.add("hidden"); fareEstimate.textContent = ""; return; }
+    const fare = getKnownRouteFare(from, to);
+    fareEstimate.classList.remove("hidden");
+    if (fare === null) fareEstimate.textContent = "এই রুটের ভাড়া তালিকায় নেই। চালক ভাড়া জানাবেন।";
+    else fareEstimate.textContent = "আনুমানিক ভাড়া: ₹" + fare + " — চালক চূড়ান্ত ভাড়া নিশ্চিত করবেন।";
+  }
+  pickup.addEventListener("input", updateKnownFareEstimate);
+  destination.addEventListener("input", updateKnownFareEstimate);
+
   // =====================================================
   // PICKUP GPS + ROUTE DISTANCE (on-demand lookup)
   // =====================================================
@@ -792,7 +820,8 @@
       pickupCoordinates = start;
       destinationCoordinates = end;
       routeEstimate.innerHTML = "<b>🛣️ আনুমানিক রাস্তার দূরত্ব: " + estimatedRoadDistanceKm +
-        " কিমি</b><br>💰 চূড়ান্ত ভাড়া চালক জানাবেন।<br><span class='muted'>এটি প্রাথমিক দূরত্বের হিসাব; ম্যাপের রুট ভুল হলে ভিন্ন হতে পারে।</span>";
+        " কিমি</b><br><span class='muted'>ম্যাপের দূরত্ব আনুমানিক; রুট ভুল হলে দূরত্ব ভিন্ন হতে পারে।</span>";
+      updateKnownFareEstimate();
     } catch (error) {
       estimatedRoadDistanceKm = null;
       routeEstimate.textContent = error.message || "দূরত্ব হিসাব করা যায়নি। ঠিকানা লিখে আবার চেষ্টা করুন।";
@@ -880,7 +909,8 @@
         passengers: Number(passengers.value),
         date: rideDate.value,
         time: rideTime.value,
-        note: rideNote.value.trim()
+        note: rideNote.value.trim(),
+        estimatedFare: getKnownRouteFare(from, to)
       };
 
       await sendBookingRequest();
@@ -965,6 +995,9 @@
 
             estimatedDistanceKm:
               estimatedRoadDistanceKm || null,
+
+            estimatedFare:
+              selectedRide.estimatedFare,
 
             fare:
               0,
@@ -1066,6 +1099,8 @@
     estimatedRoadDistanceKm = null;
     routeEstimate.classList.add("hidden");
     routeEstimate.textContent = "";
+    fareEstimate.classList.add("hidden");
+    fareEstimate.textContent = "";
     locationMessage.textContent = "";
 
     passengers.value = "1";
