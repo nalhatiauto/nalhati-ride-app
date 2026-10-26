@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
 
   <meta
     name="description"
-    content="Nalhati Ride - Nalhati ও আশেপাশের এলাকার জন্য সহজ Auto Booking Service। অনলাইনে Auto Booking Request পাঠান, Driver-এর ভাড়া দেখুন এবং Ride-এর Live Location দেখুন।"
+    content="Nalhati Ride - A convenient auto booking service for Nalhati and nearby areas. Submit booking requests online, view driver fare quotes, and track your ride location."
   >
 
   <meta
@@ -36,7 +36,7 @@
 
   <meta
     property="og:description"
-    content="Nalhati ও আশেপাশের এলাকার জন্য সহজ Auto Booking Service।"
+    content="A convenient auto booking service for Nalhati and nearby areas."
   >
 
   <meta
@@ -441,8 +441,8 @@
        ===================================================== -->
 
   <div class="card" style="text-align:center;">
-    <h2>☎️ Help Line / সাহায্য</h2>
-    <div class="small">Booking বা অন্য কোনো সমস্যায় সরাসরি ফোন করুন।</div>
+    <h2>☎️ Help Line</h2>
+    <div class="small">For booking assistance or any other issue, please call us directly.</div>
     <a href="tel:8348294299" style="display:block;text-decoration:none;">
       <button class="primary" type="button">📞 Help Line: 8348294299</button>
     </a>
@@ -451,17 +451,17 @@
 
   <!-- =====================================================
        MY BOOKINGS
-       একেবারে নিচে
+       At the bottom of the page
        ===================================================== -->
 
   <div class="card">
 
-    <h2>📌 My Bookings / আমার Booking</h2>
+    <h2>📌 My Bookings</h2>
 
     <div id="bookingsList">
 
       <div class="empty-booking">
-        Loading bookings... / Booking খোঁজা হচ্ছে...
+        Loading your bookings...
       </div>
 
     </div>
@@ -699,7 +699,7 @@
     if (!/^\d{10}$/.test(phone)) {
 
       alert(
-        "সঠিক ১০ সংখ্যার Phone Number / ফোন নম্বর লিখুন।"
+        "Please enter a valid 10-digit mobile number."
       );
 
       passengerPhone.focus();
@@ -738,8 +738,8 @@
     if (!from || !to) { fareEstimate.classList.add("hidden"); fareEstimate.textContent = ""; return; }
     const fare = getKnownRouteFare(from, to);
     fareEstimate.classList.remove("hidden");
-    if (fare === null) fareEstimate.textContent = "এই রুটের ভাড়া তালিকায় নেই। চালক ভাড়া জানাবেন।";
-    else fareEstimate.textContent = "আনুমানিক ভাড়া: ₹" + fare + " — চালক চূড়ান্ত ভাড়া নিশ্চিত করবেন।";
+    if (fare === null) fareEstimate.textContent = "Fare estimate is unavailable for this route. The driver will provide a quote.";
+    else fareEstimate.textContent = "Estimated fare: ₹" + fare + " — The driver will confirm the final fare.";
   }
   pickup.addEventListener("input", updateKnownFareEstimate);
   destination.addEventListener("input", updateKnownFareEstimate);
@@ -750,11 +750,11 @@
 
   useMyLocationBtn.onclick = () => {
     if (!navigator.geolocation) {
-      locationMessage.textContent = "এই ফোনে Location সুবিধা পাওয়া যাচ্ছে না। ঠিকানা লিখুন।";
+      locationMessage.textContent = "Location services are unavailable on this phone. Please enter the address manually.";
       return;
     }
     useMyLocationBtn.disabled = true;
-    locationMessage.textContent = "বর্তমান লোকেশন নেওয়া হচ্ছে…";
+    locationMessage.textContent = "Getting your current location…";
     navigator.geolocation.getCurrentPosition(async position => {
       pickupCoordinates = {
         lat: position.coords.latitude,
@@ -770,15 +770,15 @@
         } else {
           pickup.value = pickupCoordinates.lat.toFixed(5) + ", " + pickupCoordinates.lon.toFixed(5);
         }
-        locationMessage.textContent = "✅ বর্তমান পিকআপ লোকেশন নেওয়া হয়েছে। ঠিকানাটি একবার মিলিয়ে নিন।";
+        locationMessage.textContent = "✅ Current pickup location added. Please verify the address.";
       } catch (error) {
         pickup.value = pickupCoordinates.lat.toFixed(5) + ", " + pickupCoordinates.lon.toFixed(5);
-        locationMessage.textContent = "লোকেশন নেওয়া হয়েছে; ঠিকানার নাম পাওয়া যায়নি।";
+        locationMessage.textContent = "Location received, but the address could not be identified.";
       } finally {
         useMyLocationBtn.disabled = false;
       }
     }, error => {
-      locationMessage.textContent = "লোকেশন পাওয়া যায়নি। Location permission চালু করে আবার চেষ্টা করুন, অথবা ঠিকানা লিখুন।";
+      locationMessage.textContent = "Unable to get your location. Enable location permission and try again, or enter the address manually.";
       useMyLocationBtn.disabled = false;
     }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
   };
@@ -787,9 +787,9 @@
     const query = address + ", West Bengal, India";
     const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=" + encodeURIComponent(query);
     const response = await fetch(url);
-    if (!response.ok) throw new Error("ঠিকানা খোঁজা যাচ্ছে না।");
+    if (!response.ok) throw new Error("Unable to look up the address.");
     const results = await response.json();
-    if (!results.length) throw new Error('এই ঠিকানাটি ম্যাপে পাওয়া যায়নি। আরও নির্দিষ্ট ঠিকানা লিখুন।');
+    if (!results.length) throw new Error('This address was not found on the map. Please enter a more specific address.');
     return { lat: Number(results[0].lat), lon: Number(results[0].lon) };
   }
 
@@ -798,36 +798,36 @@
     const to = destination.value.trim();
     if (!from || !to) {
       routeEstimate.classList.remove("hidden");
-      routeEstimate.textContent = "দূরত্ব হিসাব করতে পিকআপ ও গন্তব্য—দুটিই লিখুন।";
+      routeEstimate.textContent = "Enter both pickup and destination addresses to calculate the distance.";
       return;
     }
     calculateRouteBtn.disabled = true;
-    calculateRouteBtn.textContent = "⏳ রাস্তার দূরত্ব খোঁজা হচ্ছে…";
+    calculateRouteBtn.textContent = "⏳ Calculating road distance…";
     routeEstimate.classList.remove("hidden");
-    routeEstimate.textContent = "ম্যাপ থেকে রাস্তার দূরত্ব হিসাব করা হচ্ছে…";
+    routeEstimate.textContent = "Calculating road distance from the map…";
     try {
       const start = pickupCoordinates || await geocodeAddress(from);
       const end = destinationCoordinates || await geocodeAddress(to);
       const routeUrl = "https://router.project-osrm.org/route/v1/driving/" +
         start.lon + "," + start.lat + ";" + end.lon + "," + end.lat + "?overview=false";
       const routeResponse = await fetch(routeUrl);
-      if (!routeResponse.ok) throw new Error("রাস্তার দূরত্বের পরিষেবা এখন পাওয়া যাচ্ছে না।");
+      if (!routeResponse.ok) throw new Error("The road distance service is currently unavailable.");
       const routeData = await routeResponse.json();
       if (routeData.code !== "Ok" || !routeData.routes || !routeData.routes.length) {
-        throw new Error("এই দুই জায়গার রাস্তার রুট পাওয়া যায়নি। ঠিকানা মিলিয়ে দেখুন।");
+        throw new Error("No road route was found between these locations. Please check the addresses.");
       }
       estimatedRoadDistanceKm = Math.round((routeData.routes[0].distance / 1000) * 10) / 10;
       pickupCoordinates = start;
       destinationCoordinates = end;
-      routeEstimate.innerHTML = "<b>🛣️ আনুমানিক রাস্তার দূরত্ব: " + estimatedRoadDistanceKm +
-        " কিমি</b><br><span class='muted'>ম্যাপের দূরত্ব আনুমানিক; রুট ভুল হলে দূরত্ব ভিন্ন হতে পারে।</span>";
+      routeEstimate.innerHTML = "<b>🛣️ Estimated road distance: " + estimatedRoadDistanceKm +
+        " km</b><br><span class='muted'>Map distance is an estimate and may vary if the route is inaccurate.</span>";
       updateKnownFareEstimate();
     } catch (error) {
       estimatedRoadDistanceKm = null;
-      routeEstimate.textContent = error.message || "দূরত্ব হিসাব করা যায়নি। ঠিকানা লিখে আবার চেষ্টা করুন।";
+      routeEstimate.textContent = error.message || "Unable to calculate the distance. Check the addresses and try again.";
     } finally {
       calculateRouteBtn.disabled = false;
-      calculateRouteBtn.textContent = "🗺️ দূরত্ব ও আনুমানিক ভাড়া দেখুন";
+      calculateRouteBtn.textContent = "🗺️ View Distance & Estimated Fare";
     }
   };
 
@@ -880,7 +880,7 @@
 
       if (!rideDate.value) {
         alert(
-          "Date / তারিখ নির্বাচন করুন।\\nPlease select a date."
+          "Please select a date."
         );
         rideDate.focus();
         return;
@@ -888,7 +888,7 @@
 
       if (!rideTime.value) {
         alert(
-          "Time / সময় নির্বাচন করুন।\\nPlease select a time."
+          "Please select a time."
         );
         rideTime.focus();
         return;
@@ -896,7 +896,7 @@
 
       if (!currentUser) {
         alert(
-          "Firebase connection হচ্ছে। একটু পরে চেষ্টা করুন।\\nFirebase is connecting. Please try again."
+          "Connecting to the booking service. Please try again in a moment."
         );
         return;
       }
@@ -955,7 +955,7 @@
         true;
 
       confirmRequestBtn.textContent =
-        "⏳ Booking পাঠানো হচ্ছে...";
+        "⏳ Submitting booking request...";
 
 
       try {
@@ -1066,7 +1066,7 @@
 
 
         alert(
-          "Booking পাঠানো যাচ্ছে না।\n\n" +
+          "Unable to submit booking request.\n\n" +
           error.message
         );
 
@@ -1078,7 +1078,7 @@
           false;
 
         confirmRequestBtn.textContent =
-          "🚕 Booking Request পাঠান";
+          "🚕 Submit Booking Request";
 
       }
 
@@ -1220,7 +1220,7 @@
           bookingsList.innerHTML = `
 
             <div class="error">
-              ❌ Booking load করতে সমস্যা হচ্ছে।
+              ❌ Unable to load bookings.
             </div>
 
           `;
@@ -1273,7 +1273,7 @@
       bookingsList.innerHTML = `
 
         <div class="empty-booking">
-          এখন কোনো চলমান Booking নেই।
+          There are no active bookings right now.
         </div>
 
       `;
@@ -1343,10 +1343,10 @@
       <div class="summary-row">
 
         <span class="label">
-          👥 যাত্রী:
+          👥 Passengers:
         </span>
 
-        ${ride.passengers || 1} জন
+        ${ride.passengers || 1}
 
       </div>
 
@@ -1354,7 +1354,7 @@
       <div class="summary-row">
 
         <span class="label">
-          📅 Date / তারিখ:
+          📅 Date:
         </span>
 
         ${escapeHtml(
@@ -1367,7 +1367,7 @@
       <div class="summary-row">
 
         <span class="label">
-          ⏰ Time / সময়:
+          ⏰ Time:
         </span>
 
         ${escapeHtml(
@@ -1500,12 +1500,12 @@
       statusElement.innerHTML = `
 
         <div class="waiting">
-          🔎 Driver-এর উত্তর অপেক্ষা করা হচ্ছে...
+          🔎 Waiting for the driver’s response...
         </div>
 
         <div class="small">
-          Driver আপনার Booking দেখে
-          ভাড়া পাঠাবেন।
+          The driver will review your booking
+          and send a fare quote.
         </div>
 
       `;
@@ -1520,11 +1520,11 @@
       statusElement.innerHTML = `
 
         <div class="waiting">
-          💰 Driver ভাড়া পাঠিয়েছেন।
+          💰 The driver has sent a fare quote.
         </div>
 
         <div class="small">
-          নিচে ভাড়া দেখে Final Booking করুন।
+          Review the fare below to confirm your booking.
         </div>
 
       `;
@@ -1546,7 +1546,7 @@
         </div>
 
         <div class="small">
-          Driver আপনার Booking Confirm করেছেন।
+          The driver has confirmed your booking.
         </div>
 
       `;
@@ -1565,7 +1565,7 @@
         </div>
 
         <div class="small">
-          আপনার Ride এখন চলছে।
+          Your ride is now in progress.
         </div>
 
       `;
@@ -1600,7 +1600,7 @@
       fareBox.innerHTML = `
 
         <div>
-          💰 Driver-এর ভাড়া
+          💰 Driver’s Fare
         </div>
 
         <div class="fare-price">
@@ -1626,7 +1626,7 @@
           "success";
 
         acceptButton.textContent =
-          "✅ Final Booking / বুকিং নিশ্চিত করুন";
+          "✅ Confirm Booking";
 
 
         acceptButton.onclick =
@@ -1661,7 +1661,7 @@
           "8px";
 
         accepted.textContent =
-          "✅ ভাড়া গ্রহণ করা হয়েছে";
+          "✅ Fare accepted";
 
         fareBox.appendChild(
           accepted
@@ -1739,7 +1739,7 @@
             <button
               class="primary"
               id="call-driver-${ride.id}">
-              📞 Driver-কে Call
+              📞 Call Driver
             </button>
             `
             :
@@ -1868,9 +1868,9 @@
 
     const ok =
       confirm(
-        "আপনি কি Driver-এর ₹" +
+        "Do you accept the driver’s fare of ₹" +
         fare +
-        " ভাড়া গ্রহণ করছেন?"
+        "?"
       );
 
 
@@ -1906,7 +1906,7 @@
 
 
       alert(
-        "✅ ভাড়া গ্রহণ করা হয়েছে। Booking Confirmed!"
+        "✅ Fare accepted। Booking Confirmed!"
       );
 
     }
@@ -1920,7 +1920,7 @@
 
 
       alert(
-        "ভাড়া Accept করা যাচ্ছে না।\n\n" +
+        "Unable to accept the fare.\n\n" +
         error.message
       );
 
@@ -1939,7 +1939,7 @@
 
     const ok =
       confirm(
-        "আপনি কি এই ভাড়া গ্রহণ করবেন না?"
+        "Do you want to reject this fare?"
       );
 
 
@@ -1972,7 +1972,7 @@
 
 
       alert(
-        "❌ আপনি ভাড়া গ্রহণ করেননি।"
+        "❌ You have rejected the fare."
       );
 
     }
@@ -1986,7 +1986,7 @@
 
 
       alert(
-        "ভাড়া Reject করা যাচ্ছে না।\n\n" +
+        "Unable to reject the fare.\n\n" +
         error.message
       );
 
@@ -2005,7 +2005,7 @@
 
     const ok =
       confirm(
-        "আপনি কি এই Booking বাতিল করতে চান?"
+        "Do you want to cancel this booking?"
       );
 
 
@@ -2041,7 +2041,7 @@
 
 
       alert(
-        "❌ Booking বাতিল হয়েছে।"
+        "❌ Booking cancelled."
       );
 
     }
@@ -2055,7 +2055,7 @@
 
 
       alert(
-        "Booking বাতিল করা যাচ্ছে না.\n\n" +
+        "Unable to cancel booking.\n\n" +
         error.message
       );
 
@@ -2131,7 +2131,7 @@
                 </b>
 
                 <p class="small">
-                  Driver-এর Live Location বর্তমানে বন্ধ আছে।
+                  The driver’s live location is currently unavailable.
                 </p>
 
               </div>
@@ -2163,7 +2163,7 @@
               </b>
 
               <p class="small">
-                🚕 Driver এখন Live আছেন।
+                🚕 The driver is currently online.
               </p>
 
               ${
@@ -2183,7 +2183,7 @@
               <button
                 class="success"
                 id="map-${rideId}">
-                📍 Google Maps-এ Driver দেখুন
+                📍 View Driver on Google Maps
               </button>
 
             </div>
@@ -2244,7 +2244,7 @@
                 </b>
 
                 <p class="small error">
-                  Live Location পড়তে সমস্যা হচ্ছে।
+                  Unable to load live location.
                 </p>
 
               </div>
@@ -2314,7 +2314,7 @@
 
           <div class="error">
 
-            ❌ Firebase Login হচ্ছে না।
+            ❌ Unable to connect to the booking service.
 
             <br><br>
 
