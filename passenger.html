@@ -1180,17 +1180,28 @@
     else destinationSearchTimer = timer;
   }
 
+  function invalidateShareAvailabilityIfNeeded() {
+    if (selectedRideType !== "share") return;
+    shareAvailabilityChecked = false;
+    confirmRequestBtn.disabled = true;
+    confirmRequestBtn.textContent = "Check availability before booking";
+    shareAvailabilityResult.classList.add("hidden");
+    shareNotAvailableBack.classList.add("hidden");
+  }
+
   pickup.addEventListener("focus", () => { activeLocationField = "pickup"; });
   destination.addEventListener("focus", () => { activeLocationField = "destination"; });
   // Address autocomplete suggestions are disabled by request.
   pickup.addEventListener("input", () => {
     pickupCoordinates = null; estimatedRoadDistanceKm = null; pickupManuallyEdited = true;
     hideSuggestions("pickup");
+    invalidateShareAvailabilityIfNeeded();
     updateKnownFareEstimate(); drawMapLocations();
   });
   destination.addEventListener("input", () => {
     destinationCoordinates = null; estimatedRoadDistanceKm = null;
     hideSuggestions("destination");
+    invalidateShareAvailabilityIfNeeded();
     updateKnownFareEstimate(); drawMapLocations();
   });
   document.addEventListener("click", event => {
