@@ -974,30 +974,25 @@
         // results explicitly belonging to that locality. This prevents
         // "Basanta" from showing "Basantapur" or other similarly named places.
         if (exactLocality) {
-          const localityName = exactLocality[0].toLocaleLowerCase("en");
           const localityAliasesForMatch = exactLocality.map(name => name.toLocaleLowerCase("en"));
-          const isInsideTypedLocality = result => {
+          results = results.filter(result => {
             const parts = result.label.toLocaleLowerCase("en")
               .split(",").map(part => part.trim());
-            return parts.some(part => localityAliasesForMatch.includes(part)) ||
-              new RegExp("\\b" + localityName.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\        let results = (await baseSearch).concat(...await Promise.all(landmarkSearches));
-
-        // Prefer closer/local results and remove duplicate names/coordinates.
-        const seen = new Set();
-        results = results.filter(result => {
-          const key = result.label.toLocaleLowerCase("en") + "|" + result.lat.toFixed(4) + "|" + result.lon.toFixed(4);
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        }).sort((a, b) =>
-          distanceFromNalhatiKm(a.lat, a.lon) - distanceFromNalhatiKm(b.lat, b.lon)
-        ).slice(0, 12);") + "(?:\\s+(?:railway station|station|school|hospital|bus stand|market))?\\b", "i").test(result.label);
-          };
-          results = results.filter(isInsideTypedLocality);
+            return parts.some(part =>
+              localityAliasesForMatch.some(alias =>
+                part === alias ||
+                part.startsWith(alias + " railway station") ||
+                part.startsWith(alias + " station") ||
+                part.startsWith(alias + " school") ||
+                part.startsWith(alias + " hospital") ||
+                part.startsWith(alias + " bus stand") ||
+                part.startsWith(alias + " market")
+              )
+            );
+          });
         }
 
-        // Remove duplicate names/coordinates. Keep locality-filtered results;
-        // proximity is only a tie-breaker, not permission to show another village.
+        // Remove duplicate names/coordinates; never broaden the search just to fill the list.
         const seen = new Set();
         results = results.filter(result => {
           const key = result.label.toLocaleLowerCase("en") + "|" + result.lat.toFixed(4) + "|" + result.lon.toFixed(4);
