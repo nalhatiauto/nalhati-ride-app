@@ -1057,7 +1057,6 @@
         routeLine = L.polyline(points, { color: "#1565c0", weight: 5 }).addTo(map);
         map.fitBounds(routeLine.getBounds().pad(0.12), { maxZoom: 15 });
       }
-      drawMapLocations();
       updateKnownFareEstimate();
     } catch (error) {
       estimatedRoadDistanceKm = null;
