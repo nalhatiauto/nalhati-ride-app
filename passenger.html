@@ -884,7 +884,9 @@
         shareFareDisplay.textContent = "💰 এই রুটের শেয়ার ভাড়া জানা নেই। তালিকাভুক্ত রুট দিন।";
         confirmRequestBtn.disabled = true;
       } else {
-        shareFareDisplay.textContent = "💰 Share Ride ভাড়া: ₹" + fare;
+        const passengerCount = Math.max(1, Number(passengers.value) || 1);
+        const totalFare = fare * passengerCount;
+        shareFareDisplay.textContent = "💰 প্রতি জন ₹" + fare + " × " + passengerCount + " জন = মোট ভাড়া ₹" + totalFare;
         confirmRequestBtn.disabled = false;
       }
       confirmRequestBtn.textContent = "📨 Send Share Booking";
@@ -898,6 +900,7 @@
   }
   pickup.addEventListener("input", updateKnownFareEstimate);
   destination.addEventListener("input", updateKnownFareEstimate);
+  passengers.addEventListener("change", updateKnownFareEstimate);
 
   // =====================================================
   // INTERACTIVE MAP, AUTOCOMPLETE, GPS AND ROUTE DISTANCE
@@ -1345,7 +1348,10 @@
         date: selectedRideType === "share" ? "" : rideDate.value,
         time: selectedRideType === "share" ? "" : rideTime.value,
         note: selectedRideType === "share" ? "" : rideNote.value.trim(),
-        estimatedFare: selectedRideType === "share" ? getShareRouteFare(from, to) : getKnownRouteFare(from, to),
+        farePerPassenger: selectedRideType === "share" ? getShareRouteFare(from, to) : null,
+        estimatedFare: selectedRideType === "share"
+          ? getShareRouteFare(from, to) * Number(passengers.value)
+          : getKnownRouteFare(from, to),
         pickupLocation: pickupCoordinates ? { lat: pickupCoordinates.lat, lon: pickupCoordinates.lon } : null,
         destinationLocation: destinationCoordinates ? { lat: destinationCoordinates.lat, lon: destinationCoordinates.lon } : null,
         estimatedRoadDistanceKm: estimatedRoadDistanceKm
@@ -1433,6 +1439,9 @@
 
             estimatedDistanceKm:
               estimatedRoadDistanceKm || null,
+
+            farePerPassenger:
+              selectedRide.rideType === "share" ? selectedRide.farePerPassenger : null,
 
             estimatedFare:
               selectedRide.estimatedFare,
