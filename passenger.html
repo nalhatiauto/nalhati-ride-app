@@ -350,10 +350,8 @@
 
   <div class="card">
 
-    <h2>👤 Passenger Information / যাত্রী তথ্য</h2>
-
-        <label for="passengerPhone">
-      Phone Number / ফোন নম্বর
+    <label for="passengerPhone">
+      Mobile Number
     </label>
 
     <input
@@ -361,7 +359,7 @@
       type="tel"
       inputmode="numeric"
       maxlength="10"
-      placeholder="১০ সংখ্যার Phone Number / ফোন নম্বর"
+      placeholder="Enter 10-digit mobile number"
     >
 
   </div>
@@ -378,39 +376,39 @@
     </h2>
 
     <div class="ride-type-buttons">
-      <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Shared Ride<br><small>অন্য যাত্রীর সাথে</small></button>
-      <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserved Ride<br><small>পুরো অটো শুধু আপনার</small></button>
+      <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Shared Ride</button>
+      <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserved Ride</button>
     </div>
-    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">একটি Ride বেছে নিন / Choose a Ride</div>
+    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">Choose a ride type</div>
 
-    <label for="pickup">📍 কোথা থেকে উঠবেন? / Pickup</label>
-    <input id="pickup" type="text" maxlength="200" placeholder="এলাকা বা পিকআপের ঠিকানা লিখুন">
-    <button id="useMyLocationBtn" class="location-btn" type="button">📍 আমার বর্তমান লোকেশন নিন</button>
+    <label for="pickup">Pickup Address</label>
+    <input id="pickup" type="text" maxlength="200" placeholder="Enter pickup address">
+    <button id="useMyLocationBtn" class="location-btn" type="button">📍 Use My Current Location</button>
     <div id="locationMessage" class="muted" aria-live="polite"></div>
 
-    <label for="destination">🏁 কোথায় যাবেন? / Destination</label>
-    <input id="destination" type="text" maxlength="200" placeholder="গন্তব্যের এলাকা বা ঠিকানা লিখুন">
-    <button id="calculateRouteBtn" class="primary" type="button">🗺️ দূরত্ব ও আনুমানিক ভাড়া দেখুন</button>
+    <label for="destination">Destination Address</label>
+    <input id="destination" type="text" maxlength="200" placeholder="Enter destination address">
+    <button id="calculateRouteBtn" class="primary" type="button">🗺️ Calculate Route Distance</button>
     <div id="routeEstimate" class="route-estimate hidden" aria-live="polite"></div>
-    <div class="muted">দূরত্ব/ভাড়া প্রাথমিক হিসাব। চূড়ান্ত ভাড়া চালক নিশ্চিত করবেন।</div>
+    <div class="muted">Distance is an estimate. The driver will confirm the final fare.</div>
 
     <label for="passengers">
-      👥 Passengers / যাত্রী সংখ্যা
+      👥 Number of Passengers
     </label>
 
     <select id="passengers">
-      <option value="1">1 Passenger / ১ জন</option>
-      <option value="2">2 Passengers / ২ জন</option>
-      <option value="3">3 Passengers / ৩ জন</option>
-      <option value="4">4 Passengers / ৪ জন</option>
-      <option value="5">5 Passengers / ৫ জন</option>
-      <option value="6">6 Passengers / ৬ জন</option>
-      <option value="7">7 Passengers / ৭ জন</option>
-      <option value="8">8 Passengers / ৮ জন</option>
+      <option value="1">1 Passenger</option>
+      <option value="2">2 Passengers</option>
+      <option value="3">3 Passengers</option>
+      <option value="4">4 Passengers</option>
+      <option value="5">5 Passengers</option>
+      <option value="6">6 Passengers</option>
+      <option value="7">7 Passengers</option>
+      <option value="8">8 Passengers</option>
     </select>
 
     <label for="rideDate">
-      📅 Date / তারিখ
+      📅 Date
     </label>
 
     <input
@@ -419,7 +417,7 @@
     >
 
     <label for="rideTime">
-      ⏰ Time / সময়
+      ⏰ Time
     </label>
 
     <input
@@ -428,20 +426,20 @@
     >
 
     <label for="rideNote">
-      📝 Additional Information / অতিরিক্ত তথ্য
+      📝 Additional Information
     </label>
 
     <textarea
       id="rideNote"
       maxlength="500"
-      placeholder="Optional / প্রয়োজনে কিছু লিখুন"
+      placeholder="Optional"
     ></textarea>
 
     <button
       id="confirmRequestBtn"
       class="success"
     >
-      🚕 Booking Request পাঠান / Send Booking Request
+      🚕 Send Booking Request
     </button>
 
   </div>
@@ -763,8 +761,8 @@
     shareRideBtn.classList.toggle("selected", type === "share");
     reserveRideBtn.classList.toggle("selected", type === "reserve");
     rideTypeHint.textContent = type === "share"
-      ? "🚕 Shared Ride — অন্য যাত্রীর সঙ্গে শেয়ার করে যাবেন।"
-      : "🚖 Reserved Ride — পুরো Auto শুধু আপনার জন্য রিজার্ভ থাকবে।";
+      ? "Shared Ride"
+      : "Reserved Ride";
   }
 
   shareRideBtn.onclick = () => selectRideType("share");
@@ -959,7 +957,7 @@
       if (!selectedRide) {
 
         alert(
-          "Booking information পাওয়া যায়নি।"
+          "Booking information is missing."
         );
 
         return;
@@ -970,7 +968,7 @@
       if (!currentUser) {
 
         alert(
-          "Firebase connection নেই।"
+          "Firebase is not connected yet."
         );
 
         return;
@@ -1076,7 +1074,7 @@
 
 
         alert(
-          "✅ Booking Request পাঠানো হয়েছে।"
+          "✅ Booking request sent successfully."
         );
 
 
@@ -1142,7 +1140,7 @@
     selectedRideType = "";
     shareRideBtn.classList.remove("selected");
     reserveRideBtn.classList.remove("selected");
-    rideTypeHint.textContent = "Select a Ride Type / আগে Shared Ride অথবা Reserved Ride বেছে নিন।";
+    rideTypeHint.textContent = "Please select Shared Ride or Reserved Ride.";
 
   }
 
