@@ -347,7 +347,29 @@
     <p>Your local auto ride</p>
   </div>
   <div class="page-wrap">
-    <div class="hero-line">Where would you like to go? <span style="font-size:15px;font-weight:500;color:#666;">Book your auto ride</span></div>
+    <div id="homePage">
+      <div class="hero-line">Choose your ride <span style="font-size:15px;font-weight:500;color:#666;">আপনার যাত্রা বেছে নিন</span></div>
+      <div class="card" style="padding:18px; text-align:center;">
+        <button id="shareRideOption" type="button" style="width:100%; min-height:110px; background:#e8f3ff; color:#124b83; border:2px solid #b7d8fb; margin:0 0 14px; font-size:20px;">
+          <span style="font-size:32px;display:block;margin-bottom:6px;">👥</span>
+          Share Ride<br><span style="font-size:14px;font-weight:500;">শেয়ার রাইড</span>
+        </button>
+        <button id="reserveRideOption" type="button" style="width:100%; min-height:110px; background:#e9f8ef; color:#17663a; border:2px solid #b8e3c8; margin:0; font-size:20px;">
+          <span style="font-size:32px;display:block;margin-bottom:6px;">🚕</span>
+          Reserve Auto<br><span style="font-size:14px;font-weight:500;">রিজার্ভ অটো</span>
+        </button>
+      </div>
+    </div>
+    <div id="bookingPage" class="hidden">
+      <button id="backToHomeBtn" type="button" class="location-btn">← Back to ride options</button>
+      <div id="bookingModeTitle" class="hero-line" style="margin-top:12px;">Book your ride</div>
+      <div id="shareAvailabilityPanel" class="card hidden" style="padding:14px;">
+        <h2 style="margin-top:0;">Check Share Ride Availability</h2>
+        <p class="muted">Enter pickup and destination, then check whether a driver is offering this route.</p>
+        <button id="checkShareAvailabilityBtn" type="button" class="primary">🔎 Check Availability</button>
+        <div id="shareAvailabilityResult" class="route-estimate hidden" aria-live="polite"></div>
+        <button id="shareNotAvailableBack" type="button" class="location-btn hidden">← Back to ride options</button>
+      </div>
 
 
   <!-- =====================================================
@@ -493,6 +515,7 @@
     </div>
 
   </div>
+  </div><!-- /bookingPage -->
 
 
 <script type="module">
@@ -526,6 +549,7 @@
   import {
     getDatabase,
     ref,
+    get,
     onValue
   } from
     "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
@@ -661,8 +685,100 @@
   let currentUser = null;
 
   let selectedRide = null;
-  let selectedRideType = "normal";
+  let selectedRideType = "reserve";
+  let shareAvailabilityChecked = false;
   let unsubscribeBookings = null;
+
+  const homePage = document.getElementById("homePage");
+  const bookingPage = document.getElementById("bookingPage");
+  const shareRideOption = document.getElementById("shareRideOption");
+  const reserveRideOption = document.getElementById("reserveRideOption");
+  const backToHomeBtn = document.getElementById("backToHomeBtn");
+  const bookingModeTitle = document.getElementById("bookingModeTitle");
+  const shareAvailabilityPanel = document.getElementById("shareAvailabilityPanel");
+  const checkShareAvailabilityBtn = document.getElementById("checkShareAvailabilityBtn");
+  const shareAvailabilityResult = document.getElementById("shareAvailabilityResult");
+  const shareNotAvailableBack = document.getElementById("shareNotAvailableBack");
+
+  function openBookingMode(mode) {
+    selectedRideType = mode;
+    shareAvailabilityChecked = false;
+    homePage.classList.add("hidden");
+    bookingPage.classList.remove("hidden");
+    bookingModeTitle.textContent = mode === "share" ? "👥 Share Ride Booking" : "🚕 Reserve Auto Booking";
+    shareAvailabilityPanel.classList.toggle("hidden", mode !== "share");
+    shareAvailabilityResult.classList.add("hidden");
+    shareAvailabilityResult.textContent = "";
+    shareNotAvailableBack.classList.add("hidden");
+    confirmRequestBtn.disabled = mode === "share";
+    confirmRequestBtn.textContent = mode === "share" ? "Check availability before booking" : "🚕 Send Reserve Request";
+    pickup.placeholder = mode === "share" ? "Enter share ride pickup" : "Enter pickup address";
+    destination.placeholder = mode === "share" ? "Enter share ride destination" : "Enter destination address";
+  }
+
+  shareRideOption.addEventListener("click", () => openBookingMode("share"));
+  reserveRideOption.addEventListener("click", () => openBookingMode("reserve"));
+  backToHomeBtn.addEventListener("click", () => {
+    hideSuggestions("pickup");
+    hideSuggestions("destination");
+    bookingPage.classList.add("hidden");
+    homePage.classList.remove("hidden");
+  });
+  shareNotAvailableBack.addEventListener("click", () => {
+    bookingPage.classList.add("hidden");
+    homePage.classList.remove("hidden");
+  });
+
+  checkShareAvailabilityBtn.addEventListener("click", async () => {
+    const from = pickup.value.trim();
+    const to = destination.value.trim();
+    if (!from || !to) {
+      shareAvailabilityResult.textContent = "প্রথমে Pickup ও Destination লিখুন।";
+      shareAvailabilityResult.classList.remove("hidden");
+      return;
+    }
+    const fromPlace = findKnownPlace(from);
+    const toPlace = findKnownPlace(to);
+    if (!fromPlace || !toPlace || fromPlace === toPlace) {
+      shareAvailabilityResult.textContent = "এই রুটটি যাচাই করতে Pickup ও Destination-এ নলহাটি এলাকার পরিচিত স্থান/শহরের নাম দিন।";
+      shareAvailabilityResult.classList.remove("hidden");
+      return;
+    }
+    checkShareAvailabilityBtn.disabled = true;
+    checkShareAvailabilityBtn.textContent = "⏳ Checking...";
+    shareAvailabilityResult.classList.remove("hidden");
+    shareAvailabilityResult.textContent = "শেয়ার রাইড খোঁজা হচ্ছে...";
+    shareNotAvailableBack.classList.add("hidden");
+    try {
+      const availabilitySnap = await get(ref(realtimeDb, "shareRideAvailability"));
+      const allRoutes = availabilitySnap.exists() ? availabilitySnap.val() : {};
+      const available = Object.values(allRoutes || {}).some(route => {
+        if (!route || route.enabled !== true) return false;
+        const routeFrom = String(route.from || "").toLowerCase();
+        const routeTo = String(route.to || "").toLowerCase();
+        return (routeFrom === fromPlace && routeTo === toPlace) ||
+               (routeFrom === toPlace && routeTo === fromPlace);
+      });
+      if (available) {
+        shareAvailabilityChecked = true;
+        confirmRequestBtn.disabled = false;
+        confirmRequestBtn.textContent = "👥 Book Share Ride";
+        shareAvailabilityResult.textContent = "✅ এই রুটে Share Ride Available! এখন বুকিং করতে পারবেন।";
+      } else {
+        shareAvailabilityChecked = false;
+        confirmRequestBtn.disabled = true;
+        shareAvailabilityResult.textContent = "❌ এই রুটে এখন Share Ride Available নয়। Reserve Auto নিতে প্রথম পেজে ফিরে যান।";
+        shareNotAvailableBack.classList.remove("hidden");
+      }
+    } catch (error) {
+      shareAvailabilityChecked = false;
+      confirmRequestBtn.disabled = true;
+      shareAvailabilityResult.textContent = "Availability যাচাই করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।";
+    } finally {
+      checkShareAvailabilityBtn.disabled = false;
+      checkShareAvailabilityBtn.textContent = "🔎 Check Availability";
+    }
+  });
 
   const locationListeners =
     new Map();
@@ -1191,6 +1307,11 @@
     async () => {
 
       if (!validatePassenger()) {
+        return;
+      }
+
+      if (selectedRideType === "share" && !shareAvailabilityChecked) {
+        alert("Please check Share Ride availability before booking.");
         return;
       }
 
