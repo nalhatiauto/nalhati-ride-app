@@ -199,11 +199,6 @@
       color: white;
     }
 
-    .ride-type-buttons { display:flex; gap:10px; margin-top:10px; }
-    .ride-type-buttons button { flex:1; margin-top:0; }
-    .ride-type-btn { border:2px solid transparent; transition:0.15s; }
-    .ride-type-btn.selected { background:#757575 !important; border-color:#555 !important; color:#fff !important; box-shadow:0 0 0 3px rgba(117,117,117,.25); transform:scale(1.02); }
-    #reserveRideBtn.selected { background:#757575 !important; border-color:#555 !important; color:#fff !important; box-shadow:0 0 0 3px rgba(117,117,117,.25); }
 
     .hidden {
       display: none !important;
@@ -326,7 +321,6 @@
     .warning { background:#fff7cc; color:#202124; font-weight:700; }
     input, textarea, select { border:1px solid #d5d7db; border-radius:11px; }
     button { border-radius:11px; }
-    .ride-type-btn.selected, #reserveRideBtn.selected { background:#171717 !important; border-color:#f9c900 !important; color:#fff !important; box-shadow:0 0 0 2px rgba(249,201,0,.35); transform:none; }
     .route-estimate { background:#fffbe6; border:1px solid #f0d96c; border-radius:12px; padding:12px; margin-top:12px; line-height:1.5; }
     .location-btn { background:#f3f4f6; color:#222; border:1px solid #ddd; font-size:14px; padding:10px; }
     .muted { color:#666; font-size:13px; }
@@ -375,11 +369,6 @@
       ➕ New Booking
     </h2>
 
-    <div class="ride-type-buttons">
-      <button id="shareRideBtn" class="primary ride-type-btn" type="button">🚕 Shared Ride</button>
-      <button id="reserveRideBtn" class="warning ride-type-btn" type="button">🚖 Reserved Ride</button>
-    </div>
-    <div id="rideTypeHint" class="small" style="text-align:center;margin-top:8px;">Choose a ride type</div>
 
     <label for="pickup">Pickup Address</label>
     <input id="pickup" type="text" maxlength="200" placeholder="Enter pickup address">
@@ -478,31 +467,6 @@
 
   </div>
 
-
-<script>
-  // UI fallback: keep basic buttons responsive even if Firebase module loading is delayed.
-  (() => {
-    const share = document.getElementById("shareRideBtn");
-    const reserve = document.getElementById("reserveRideBtn");
-    const hint = document.getElementById("rideTypeHint");
-    const phone = document.getElementById("passengerPhone");
-
-    let fallbackType = "";
-
-    function choose(type) {
-      fallbackType = type;
-      share.classList.toggle("selected", type === "share");
-      reserve.classList.toggle("selected", type === "reserve");
-      hint.textContent = type === "share"
-        ? "🚕 Shared Ride — অন্য যাত্রীর সাথে যাবেন।"
-        : "🚖 Reserved Ride — পুরো Auto শুধু আপনার জন্য।";
-    }
-
-    share.onclick = () => choose("share");
-    reserve.onclick = () => choose("reserve");
-
-  })();
-</script>
 
 <script type="module">
 
@@ -639,9 +603,6 @@
       "bookingsList"
     );
 
-  const shareRideBtn = document.getElementById("shareRideBtn");
-  const reserveRideBtn = document.getElementById("reserveRideBtn");
-  const rideTypeHint = document.getElementById("rideTypeHint");
   const useMyLocationBtn = document.getElementById("useMyLocationBtn");
   const locationMessage = document.getElementById("locationMessage");
   const calculateRouteBtn = document.getElementById("calculateRouteBtn");
@@ -659,7 +620,7 @@
   let currentUser = null;
 
   let selectedRide = null;
-  let selectedRideType = "";
+  let selectedRideType = "normal";
   let unsubscribeBookings = null;
 
   const locationListeners =
@@ -752,21 +713,7 @@
   }
 
 
-  // =====================================================
-  // RIDE TYPE
-  // =====================================================
-
-  function selectRideType(type) {
-    selectedRideType = type;
-    shareRideBtn.classList.toggle("selected", type === "share");
-    reserveRideBtn.classList.toggle("selected", type === "reserve");
-    rideTypeHint.textContent = type === "share"
-      ? "Shared Ride"
-      : "Reserved Ride";
-  }
-
-  shareRideBtn.onclick = () => selectRideType("share");
-  reserveRideBtn.onclick = () => selectRideType("reserve");
+  // Shared/Reserved selection removed; all requests use the standard booking type.
 
 
   // =====================================================
@@ -867,13 +814,6 @@
     async () => {
 
       if (!validatePassenger()) {
-        return;
-      }
-
-      if (!selectedRideType) {
-        alert(
-          "আগে Shared Ride অথবা Reserved Ride বেছে নিন।\\nPlease select an Auto first."
-        );
         return;
       }
 
@@ -1137,10 +1077,7 @@
     rideNote.value = "";
 
     selectedRide = null;
-    selectedRideType = "";
-    shareRideBtn.classList.remove("selected");
-    reserveRideBtn.classList.remove("selected");
-    rideTypeHint.textContent = "Please select Shared Ride or Reserved Ride.";
+    selectedRideType = "normal";
 
   }
 
