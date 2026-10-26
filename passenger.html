@@ -373,7 +373,7 @@
        PASSENGER INFORMATION
        ===================================================== -->
 
-  <div class="card">
+  <div class="card reserve-only">
 
     <label for="passengerPhone">
       Mobile Number
@@ -1280,7 +1280,7 @@
   confirmRequestBtn.onclick =
     async () => {
 
-      if (!validatePassenger()) {
+      if (selectedRideType !== "share" && !validatePassenger()) {
         return;
       }
 
@@ -1389,7 +1389,7 @@
       }
 
 
-      if (!validatePassenger()) {
+      if (selectedRideType !== "share" && !validatePassenger()) {
         return;
       }
 
