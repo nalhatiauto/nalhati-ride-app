@@ -427,11 +427,11 @@
     <div class="muted reserve-only">Distance is an estimate. The driver will confirm the final fare.</div>
     <div id="fareEstimate" class="route-estimate hidden reserve-only" aria-live="polite"></div>
 
-    <label class="reserve-only" for="passengers">
+    <label for="passengers">
       👥 Number of Passengers
     </label>
 
-    <select class="reserve-only" id="passengers">
+    <select id="passengers">
       <option value="1">1 Passenger</option>
       <option value="2">2 Passengers</option>
       <option value="3">3 Passengers</option>
@@ -541,6 +541,8 @@
     collection,
     addDoc,
     doc,
+    getDoc,
+    deleteDoc,
     updateDoc,
     onSnapshot
   } from
@@ -1339,7 +1341,7 @@
         rideType: selectedRideType,
         from: from,
         to: to,
-        passengers: selectedRideType === "share" ? 1 : Number(passengers.value),
+        passengers: Number(passengers.value),
         date: selectedRideType === "share" ? "" : rideDate.value,
         time: selectedRideType === "share" ? "" : rideTime.value,
         note: selectedRideType === "share" ? "" : rideNote.value.trim(),
@@ -1876,6 +1878,13 @@
         ❌ Cancel Booking
       </button>
 
+      <button
+        id="delete-driver-cancelled-${ride.id}"
+        class="danger hidden"
+        style="margin-top:8px;">
+        🗑️ Delete Unavailable Booking
+      </button>
+
     `;
 
 
@@ -1884,6 +1893,10 @@
         `#cancel-${ride.id}`
       );
 
+    const deleteUnavailableButton = card.querySelector(
+      `#delete-driver-cancelled-${ride.id}`
+    );
+    deleteUnavailableButton.onclick = () => deleteDriverCancelledShareBooking(ride.id);
 
     cancelButton.onclick =
       () => {
@@ -2310,6 +2323,38 @@
 
     }
 
+    const deleteUnavailableButton = card.querySelector(
+      `#delete-driver-cancelled-${ride.id}`
+    );
+    if (deleteUnavailableButton) {
+      deleteUnavailableButton.classList.toggle(
+        "hidden",
+        !(status === "cancelled" && ride.cancelledBy === "driver" && ride.rideType === "share")
+      );
+    }
+
+  }
+
+  async function deleteDriverCancelledShareBooking(rideId) {
+    if (!currentUser) return;
+    const ok = confirm("ড্রাইভার এই রুটে গাড়ি Available নেই বলেছেন। এই বুকিংটি তালিকা থেকে Delete করবেন?");
+    if (!ok) return;
+    try {
+      const rideRef = doc(db, "rides", rideId);
+      const rideSnap = await getDoc(rideRef);
+      if (!rideSnap.exists()) return;
+      const ride = rideSnap.data();
+      if (ride.passengerId !== currentUser.uid || ride.rideType !== "share" || ride.status !== "cancelled" || ride.cancelledBy !== "driver") {
+        alert("শুধু ড্রাইভার বাতিল করা Share Booking Delete করা যাবে।");
+        return;
+      }
+      await deleteDoc(rideRef);
+      shareBookingStatus.classList.add("hidden");
+      shareBookingStatus.textContent = "";
+    } catch (error) {
+      console.error("Delete unavailable Share Booking error:", error);
+      alert("বুকিং Delete করা যায়নি। Firebase permission/rules পরীক্ষা করতে হবে।");
+    }
   }
 
 
