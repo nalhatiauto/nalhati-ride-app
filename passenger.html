@@ -423,7 +423,7 @@
       <button id="setDestinationOnMapBtn" class="location-btn" type="button">🏁 Set Destination on Map</button>
     </div>
     <div id="rideMap" aria-label="Interactive pickup and destination map"></div>
-    <div class="map-legend">Select an address suggestion or tap the map to place the selected pin. Map data © OpenStreetMap contributors.</div>
+    <div class="map-legend">Enter addresses manually or tap the map to place the selected pin. Map data © OpenStreetMap contributors.</div>
 
     <button id="calculateRouteBtn" class="primary" type="button">🗺️ Calculate Route Distance</button>
     <div id="routeEstimate" class="route-estimate hidden" aria-live="polite"></div>
@@ -714,6 +714,7 @@
     confirmRequestBtn.textContent = mode === "share" ? "Check availability before booking" : "🚕 Send Reserve Request";
     pickup.placeholder = mode === "share" ? "Enter share ride pickup" : "Enter pickup address";
     destination.placeholder = mode === "share" ? "Enter share ride destination" : "Enter destination address";
+    if (map) setTimeout(() => map.invalidateSize(), 100);
   }
 
   shareRideOption.addEventListener("click", () => openBookingMode("share"));
@@ -1584,7 +1585,7 @@
     rideNote.value = "";
 
     selectedRide = null;
-    selectedRideType = "normal";
+    selectedRideType = "reserve";
 
   }
 
