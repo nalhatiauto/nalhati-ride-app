@@ -947,7 +947,7 @@
 
         // Search the typed words first. If the user typed a known locality exactly,
         // also ask for common landmarks in that locality (school, station, hospital, bus stand, market).
-        const baseSearch = photonSearch(query, 10);
+        const baseSearch = photonSearch(query, 10).catch(() => []);
         const landmarkSearches = exactLocality
           ? ["railway station", "school", "hospital", "bus stand", "market"].map(suffix =>
               photonSearch(exactLocality[0] + " " + suffix, 5).catch(() => [])
