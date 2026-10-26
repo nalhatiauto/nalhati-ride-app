@@ -834,7 +834,7 @@
     return null;
   }
 
-  // Share Ride has its own fixed fare list; do not use reserve-fare estimates here.
+  // Share Ride fixed fares. Branch villages add ₹10 per passenger to/from their junction.
   const sharePlaceAliases = {
     nalhati: ["nalhati", "নলহাটি"],
     murarai: ["murarai", "মুরারই", "মুরারাই"],
@@ -847,15 +847,38 @@
     baisfuko: ["bais fuko", "baisfuko", "baish fuko", "বাইস ফুকো"],
     pagla: ["pagla", "পাগলা"],
     ghuskura: ["ghuskura", "ঘুসকুড়া", "ঘুষকুড়া"],
-    paikpara: ["paikpara", "পাইকপাড়া"]
+    paikpara: ["paikpara", "পাইকপাড়া"],
+    basanta: ["basanta", "বসন্ত"],
+    koigoria: ["koigoria", "কইগোরিয়া", "কইগরিয়া"],
+    kanior: ["kanior", "কানিওর"],
+    kukhuraDiha: ["kukhura-diha", "kukhura diha", "kukhuradiha", "কুখুরা দিহা"],
+    mohullaVillage: ["mohulla village", "village mohulla", "মহুল্লা গ্রাম"],
+    habispurMohulla: ["habispur-mohulla", "habispur mohulla", "habispur", "হাবিসপুর মহুল্লা"],
+    topna: ["topna", "টপনা"]
+  };
+  const shareVillageJunctions = {
+    basanta: "diha",
+    koigoria: "diha",
+    kanior: "diha",
+    kukhuraDiha: "diha",
+    mohullaVillage: "mohulla",
+    habispurMohulla: "mohulla",
+    topna: "baisfuko"
   };
   function findSharePlace(address) {
-    const value = String(address || "").toLowerCase().replace(/[.,]/g, " ");
-    return Object.keys(sharePlaceAliases).find(place => sharePlaceAliases[place].some(alias => value.includes(alias))) || null;
+    const value = String(address || "").toLowerCase().replace(/[.,]/g, " ").replace(/[_]/g, " ");
+    const matches = Object.keys(sharePlaceAliases).flatMap(place =>
+      sharePlaceAliases[place].filter(alias => value.includes(alias.toLowerCase())).map(alias => ({ place, length: alias.length }))
+    ).sort((a, b) => b.length - a.length);
+    return matches.length ? matches[0].place : null;
   }
   function getShareRouteFare(fromAddress, toAddress) {
-    const from = findSharePlace(fromAddress), to = findSharePlace(toAddress);
-    if (!from || !to || from === to) return null;
+    const fromRaw = findSharePlace(fromAddress), toRaw = findSharePlace(toAddress);
+    if (!fromRaw || !toRaw || fromRaw === toRaw) return null;
+    const fromVillage = Object.prototype.hasOwnProperty.call(shareVillageJunctions, fromRaw);
+    const toVillage = Object.prototype.hasOwnProperty.call(shareVillageJunctions, toRaw);
+    const from = fromVillage ? shareVillageJunctions[fromRaw] : fromRaw;
+    const to = toVillage ? shareVillageJunctions[toRaw] : toRaw;
     const routeKey = [from, to].sort().join("|");
     const fareByRoute = {
       "diha|nalhati": 10, "nalhati|pathra": 10,
@@ -866,10 +889,11 @@
       "bothia|murarai": 10, "duria|murarai": 10, "baisfuko|murarai": 10,
       "ghuskura|murarai": 10, "murarai|pagla": 10,
       "chatra|murarai": 15,
-      "diha|murarai": 20, "mohulla|murarai": 20, "murarai|paikpara": 20,
-      "murarai|pathra": 20
+      "diha|murarai": 20, "mohulla|murarai": 20, "murarai|paikpara": 20
     };
-    return fareByRoute[routeKey] ?? null;
+    const baseFare = from === to ? 0 : (fareByRoute[routeKey] ?? null);
+    if (baseFare === null) return null;
+    return baseFare + (fromVillage ? 10 : 0) + (toVillage ? 10 : 0);
   }
   function updateKnownFareEstimate() {
     const from = pickup.value.trim(), to = destination.value.trim();
