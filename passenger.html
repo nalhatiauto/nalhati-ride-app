@@ -919,11 +919,24 @@
           names.some(name => name.toLocaleLowerCase("en") === normalQuery)
         );
 
+        // Nalhati Ride serves Nalhati and nearby Birbhum only.
+        // Photon lat/lon are a ranking bias, NOT a strict boundary, so enforce
+        // a 40 km radius ourselves to prevent far-away results such as Kolkata.
+        const localCenter = { lat: 24.30, lon: 87.83 };
+        const distanceFromNalhatiKm = (lat, lon) => {
+          const rad = value => value * Math.PI / 180;
+          const dLat = rad(lat - localCenter.lat);
+          const dLon = rad(lon - localCenter.lon);
+          const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(rad(localCenter.lat)) * Math.cos(rad(lat)) * Math.sin(dLon / 2) ** 2;
+          return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        };
+
         const photonSearch = async (searchText, limit = 8) => {
           const params = new URLSearchParams({
             q: searchText,
-            lat: "24.30",
-            lon: "87.83",
+            lat: String(localCenter.lat),
+            lon: String(localCenter.lon),
             limit: String(limit),
             lang: "en"
           });
@@ -935,8 +948,10 @@
             const coords = feature.geometry && feature.geometry.coordinates;
             if (!coords || coords.length < 2) return null;
             const lat = Number(coords[1]), lon = Number(coords[0]);
-            // Keep autocomplete focused on Nalhati and nearby Birbhum places.
+            // Reject anything outside the local service area, even if the
+            // provider returns it despite the Nalhati location bias.
             if (lat < 23.55 || lat > 24.95 || lon < 86.65 || lon > 88.65) return null;
+            if (distanceFromNalhatiKm(lat, lon) > 40) return null;
             const name = p.name || p.street || p.locality || p.district || "";
             const context = [p.suburb, p.city, p.district, p.state].filter(Boolean)
               .filter((item, index, arr) => arr.indexOf(item) === index && item !== name);
@@ -962,7 +977,9 @@
           if (seen.has(key)) return false;
           seen.add(key);
           return true;
-        }).slice(0, 12);
+        }).sort((a, b) =>
+          distanceFromNalhatiKm(a.lat, a.lon) - distanceFromNalhatiKm(b.lat, b.lon)
+        ).slice(0, 12);
 
         // Nominatim fallback, constrained to the local region, if Photon has no useful result.
         if (!results.length) {
@@ -978,7 +995,12 @@
               label: item.display_name,
               lat: Number(item.lat),
               lon: Number(item.lon)
-            }));
+            })).filter(item =>
+              Number.isFinite(item.lat) && Number.isFinite(item.lon) &&
+              distanceFromNalhatiKm(item.lat, item.lon) <= 40
+            ).sort((a, b) =>
+              distanceFromNalhatiKm(a.lat, a.lon) - distanceFromNalhatiKm(b.lat, b.lon)
+            ).slice(0, 12);
           }
         }
 
