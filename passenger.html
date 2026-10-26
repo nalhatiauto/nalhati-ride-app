@@ -994,6 +994,7 @@
       if (message) message.textContent = fromMap ? "Pickup pin updated. Please verify the address." : "Current pickup location added. Please verify the address.";
     }
     hideSuggestions(field);
+    invalidateShareAvailabilityIfNeeded();
     updateKnownFareEstimate();
     drawMapLocations();
   }
