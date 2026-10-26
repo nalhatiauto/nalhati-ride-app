@@ -1065,13 +1065,16 @@
 
   pickup.addEventListener("focus", () => { activeLocationField = "pickup"; });
   destination.addEventListener("focus", () => { activeLocationField = "destination"; });
+  // Address autocomplete suggestions are disabled by request.
   pickup.addEventListener("input", () => {
     pickupCoordinates = null; estimatedRoadDistanceKm = null; pickupManuallyEdited = true;
-    updateKnownFareEstimate(); drawMapLocations(); scheduleAddressSearch("pickup", pickup.value);
+    hideSuggestions("pickup");
+    updateKnownFareEstimate(); drawMapLocations();
   });
   destination.addEventListener("input", () => {
     destinationCoordinates = null; estimatedRoadDistanceKm = null;
-    updateKnownFareEstimate(); drawMapLocations(); scheduleAddressSearch("destination", destination.value);
+    hideSuggestions("destination");
+    updateKnownFareEstimate(); drawMapLocations();
   });
   document.addEventListener("click", event => {
     if (!event.target.closest("#pickup") && !event.target.closest("#pickupSuggestions")) hideSuggestions("pickup");
