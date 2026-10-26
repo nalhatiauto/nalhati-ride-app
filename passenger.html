@@ -206,6 +206,9 @@
     .hidden {
       display: none !important;
     }
+    .share-mode-hidden {
+      display: none !important;
+    }
 
     .summary-row {
       padding: 8px 0;
@@ -701,7 +704,7 @@
     homePage.classList.add("hidden");
     bookingPage.classList.remove("hidden");
     bookingModeTitle.textContent = mode === "share" ? "👥 Share Ride" : "🚕 Reserve Auto Booking";
-    document.querySelectorAll(".reserve-only").forEach(el => el.classList.toggle("hidden", mode === "share"));
+    document.querySelectorAll(".reserve-only").forEach(el => el.classList.toggle("share-mode-hidden", mode === "share"));
     shareBookingStatus.classList.add("hidden");
     shareBookingStatus.textContent = "";
     shareFareDisplay.classList.toggle("hidden", mode !== "share");
@@ -1599,6 +1602,17 @@
                 data.passengerId ===
                 currentUser.uid
               ) {
+
+                if (data.rideType === "share") {
+                  shareBookingStatus.classList.remove("hidden");
+                  if (data.status === "cancelled" && data.cancelledBy === "driver") {
+                    shareBookingStatus.textContent = "❌ এখন গাড়ি Available নেই। অন্য সময় চেষ্টা করুন অথবা Reserve Auto বেছে নিন।";
+                  } else if (data.status === "confirmed") {
+                    shareBookingStatus.textContent = "✅ আপনার Share Ride বুকিং ড্রাইভার Confirm করেছেন।";
+                  } else if (data.status === "searching") {
+                    shareBookingStatus.textContent = "⏳ শেয়ার বুকিং ড্রাইভারের কাছে পাঠানো হয়েছে। উত্তরের জন্য অপেক্ষা করুন।";
+                  }
+                }
 
                 if (
                   data.status !==
