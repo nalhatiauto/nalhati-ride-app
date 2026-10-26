@@ -831,9 +831,47 @@
     if (routeFareFromNalhati[from] !== undefined && routeFareFromNalhati[to] !== undefined) return routeFareFromNalhati[from] + routeFareFromNalhati[to];
     return null;
   }
+
+  // Share Ride has its own fixed fare list; do not use reserve-fare estimates here.
+  const sharePlaceAliases = {
+    nalhati: ["nalhati", "নলহাটি"],
+    murarai: ["murarai", "মুরারই", "মুরারাই"],
+    pathra: ["pathra", "পাথরা"],
+    diha: ["diha", "দিহা"],
+    mohulla: ["mohulla", "মহুল্লা", "মহুলা"],
+    chatra: ["chatra", "ছাতরা", "চাতরা"],
+    bothia: ["bothia", "বথিয়া", "বোথিয়া"],
+    duria: ["duria", "দুরিয়া"],
+    baisfuko: ["bais fuko", "baisfuko", "baish fuko", "বাইস ফুকো"],
+    pagla: ["pagla", "পাগলা"],
+    ghuskura: ["ghuskura", "ঘুসকুড়া", "ঘুষকুড়া"],
+    paikpara: ["paikpara", "পাইকপাড়া"]
+  };
+  function findSharePlace(address) {
+    const value = String(address || "").toLowerCase().replace(/[.,]/g, " ");
+    return Object.keys(sharePlaceAliases).find(place => sharePlaceAliases[place].some(alias => value.includes(alias))) || null;
+  }
+  function getShareRouteFare(fromAddress, toAddress) {
+    const from = findSharePlace(fromAddress), to = findSharePlace(toAddress);
+    if (!from || !to || from === to) return null;
+    const routeKey = [from, to].sort().join("|");
+    const fareByRoute = {
+      "diha|nalhati": 10, "nalhati|pathra": 10,
+      "chatra|nalhati": 15, "mohulla|nalhati": 15,
+      "bothia|nalhati": 20, "duria|nalhati": 20, "baisfuko|nalhati": 20,
+      "ghuskura|nalhati": 20, "nalhati|pagla": 20,
+      "murarai|nalhati": 25,
+      "bothia|murarai": 10, "duria|murarai": 10, "baisfuko|murarai": 10,
+      "ghuskura|murarai": 10, "murarai|pagla": 10,
+      "chatra|murarai": 15,
+      "diha|murarai": 20, "mohulla|murarai": 20, "murarai|paikpara": 20,
+      "murarai|pathra": 20
+    };
+    return fareByRoute[routeKey] ?? null;
+  }
   function updateKnownFareEstimate() {
     const from = pickup.value.trim(), to = destination.value.trim();
-    const fare = getKnownRouteFare(from, to);
+    const fare = selectedRideType === "share" ? getShareRouteFare(from, to) : getKnownRouteFare(from, to);
     if (selectedRideType === "share") {
       fareEstimate.classList.add("hidden");
       shareFareDisplay.classList.remove("hidden");
@@ -1283,7 +1321,7 @@
         return;
       }
 
-      const shareFare = getKnownRouteFare(from, to);
+      const shareFare = getShareRouteFare(from, to);
       if (selectedRideType === "share" && shareFare === null) {
         alert("এই রুটের শেয়ার ভাড়া জানা নেই। Pickup ও Destination ঠিক করে দিন।");
         return;
@@ -1305,7 +1343,7 @@
         date: selectedRideType === "share" ? "" : rideDate.value,
         time: selectedRideType === "share" ? "" : rideTime.value,
         note: selectedRideType === "share" ? "" : rideNote.value.trim(),
-        estimatedFare: getKnownRouteFare(from, to),
+        estimatedFare: selectedRideType === "share" ? getShareRouteFare(from, to) : getKnownRouteFare(from, to),
         pickupLocation: pickupCoordinates ? { lat: pickupCoordinates.lat, lon: pickupCoordinates.lon } : null,
         destinationLocation: destinationCoordinates ? { lat: destinationCoordinates.lat, lon: destinationCoordinates.lon } : null,
         estimatedRoadDistanceKm: estimatedRoadDistanceKm
