@@ -351,6 +351,7 @@
   #routeEstimate,
   #fareEstimate,
   #shareFareDisplay,
+  #shareBookingStatus,
   #locationMessage,
   label[for="passengers"],
   #passengers,
@@ -1345,7 +1346,7 @@
 
       if (!from) {
         alert(
-          "Please enter a pickup address."
+          "কোথা থেকে উঠবেন, সেটি লিখুন।"
         );
         pickup.focus();
         return;
@@ -1353,7 +1354,7 @@
 
       if (!to) {
         alert(
-          "Please enter a destination address."
+          "কোথায় যাবেন, সেটি লিখুন।"
         );
         destination.focus();
         return;
@@ -1364,7 +1365,7 @@
         to.toLowerCase()
       ) {
         alert(
-          "Pickup and destination cannot be the same."
+          "Pickup আর Destination একই হতে পারবে না।"
         );
         return;
       }
@@ -1373,7 +1374,7 @@
 
       if (!currentUser) {
         alert(
-          "Connecting to the booking service. Please try again in a moment."
+          "অ্যাপ সংযোগ হচ্ছে। একটু পরে আবার চেষ্টা করুন।"
         );
         return;
       }
@@ -1419,7 +1420,7 @@
       if (!currentUser) {
 
         alert(
-          "Firebase is not connected yet."
+          "অ্যাপের সঙ্গে সংযোগ হচ্ছে না। একটু পরে আবার চেষ্টা করুন।"
         );
 
         return;
@@ -1434,7 +1435,7 @@
         true;
 
       confirmRequestBtn.textContent =
-        "⏳ Submitting booking request...";
+        "⏳ রিকোয়েস্ট পাঠানো হচ্ছে...";
 
 
       try {
@@ -1550,7 +1551,7 @@
 
 
         alert(
-          "Unable to submit booking request.\n\n" +
+          "রিকোয়েস্ট পাঠানো যায়নি।\n\n" +
           error.message
         );
 
