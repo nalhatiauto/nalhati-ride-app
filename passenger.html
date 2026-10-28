@@ -341,38 +341,38 @@
     .map-legend { font-size:12px; color:#666; margin-top:7px; line-height:1.5; }
 
   
-  /* Simplified passenger experience: only ride type, pickup and destination. */
-  .simple-only-hidden,
-  .reserve-only,
+  /* Minimal booking form: pickup, destination, passengers, date and time only. */
+  #homePage,
+  #shareBookingStatus,
+  #shareFareDisplay,
+  #locationMessage,
   .map-tools,
   #rideMap,
   .map-legend,
   #calculateRouteBtn,
   #routeEstimate,
   #fareEstimate,
-  #shareFareDisplay,
-  #shareBookingStatus,
-  #locationMessage,
-  label[for="passengers"],
-  #passengers,
-  label[for="rideDate"],
-  #rideDate,
-  label[for="rideTime"],
-  #rideTime,
   label[for="rideNote"],
-  #rideNote {
-    display: none !important;
+  #rideNote,
+  #passengerInfoCard,
+  #helpLineCard,
+  #myBookingsCard {
+    display:none !important;
   }
-  .page-wrap { max-width: 520px; padding: 10px; }
-  .header { padding: 16px 12px; margin-bottom: 10px; }
-  .header p { margin-bottom: 0; }
-  .hero-line { margin: 8px 0 12px; }
-  #bookingPage > .card { padding: 16px; }
-  #bookingPage label { display:block; margin: 12px 0 6px; font-weight:700; }
-  #pickup, #destination { width:100%; min-height:48px; font-size:16px; }
-  #confirmRequestBtn { width:100%; min-height:50px; font-size:17px; margin-top:18px; }
-  .booking-card .summary-row { display:none !important; }
-
+  .page-wrap { max-width:520px; padding:10px; }
+  .header { padding:14px 10px; margin-bottom:10px; }
+  .header p { margin-bottom:0; }
+  #bookingPage { display:block !important; }
+  #bookingPage > .card { padding:16px; }
+  #bookingModeTitle { margin-top:0 !important; }
+  #bookingPage label { display:block; margin:14px 0 6px; font-weight:700; }
+  #pickup, #destination, #passengers, #rideDate, #rideTime {
+    width:100%; min-height:48px; font-size:16px; box-sizing:border-box;
+  }
+  #confirmRequestBtn { width:100%; min-height:50px; font-size:17px; margin-top:20px; }
+  #bookingPage .reserve-only { display:block; }
+  #bookingPage .new-booking-title { display:none !important; }
+  #bookingPage .address-suggestions { z-index:20; }
 </style>
 </head>
 
@@ -406,7 +406,7 @@
        PASSENGER INFORMATION
        ===================================================== -->
 
-  <div class="card reserve-only">
+  <div id="passengerInfoCard" class="card reserve-only">
 
     <label for="passengerPhone">
       Mobile Number
@@ -521,7 +521,7 @@
        HELP LINE
        ===================================================== -->
 
-  <div class="card" style="text-align:center;">
+  <div id="helpLineCard" class="card" style="text-align:center;">
     <h2>☎️ Help Line</h2>
     <div class="small">For booking assistance or any other issue, please call us directly.</div>
     <a href="tel:8348294299" style="display:block;text-decoration:none;">
@@ -535,7 +535,7 @@
        At the bottom of the page
        ===================================================== -->
 
-  <div class="card">
+  <div id="myBookingsCard" class="card">
 
     <h2>📌 My Bookings</h2>
 
@@ -735,7 +735,7 @@
     selectedRideType = mode;
     homePage.classList.add("hidden");
     bookingPage.classList.remove("hidden");
-    bookingModeTitle.textContent = mode === "share" ? "👥 শেয়ার অটো" : "🚕 রিজার্ভ অটো";
+    bookingModeTitle.textContent = "অটো বুকিং";
     document.querySelectorAll(".reserve-only").forEach(el => el.classList.toggle("share-mode-hidden", mode === "share"));
     shareBookingStatus.classList.add("hidden");
     shareBookingStatus.textContent = "";
@@ -756,6 +756,9 @@
     bookingPage.classList.add("hidden");
     homePage.classList.remove("hidden");
   });
+
+  // One simple booking screen; no Share/Reserve selection.
+  openBookingMode("reserve");
 
   const locationListeners =
     new Map();
@@ -1379,20 +1382,36 @@
         return;
       }
 
+      if (!passengers.value || Number(passengers.value) < 1) {
+        alert("যাত্রীসংখ্যা বেছে নিন।");
+        passengers.focus();
+        return;
+      }
+      if (!rideDate.value) {
+        alert("যাত্রার তারিখ বেছে নিন।");
+        rideDate.focus();
+        return;
+      }
+      if (!rideTime.value) {
+        alert("যাত্রার সময় বেছে নিন।");
+        rideTime.focus();
+        return;
+      }
+
       selectedRide = {
         type: "booking",
-        rideType: selectedRideType,
+        rideType: "reserve",
         from: from,
         to: to,
-        passengers: 1,
-        date: "",
-        time: "",
+        passengers: Number(passengers.value),
+        date: rideDate.value,
+        time: rideTime.value,
         note: "",
         farePerPassenger: null,
         estimatedFare: 0,
-        pickupLocation: pickupCoordinates ? { lat: pickupCoordinates.lat, lon: pickupCoordinates.lon } : null,
-        destinationLocation: destinationCoordinates ? { lat: destinationCoordinates.lat, lon: destinationCoordinates.lon } : null,
-        estimatedRoadDistanceKm: estimatedRoadDistanceKm
+        pickupLocation: null,
+        destinationLocation: null,
+        estimatedRoadDistanceKm: null
       };
 
       await sendBookingRequest();
