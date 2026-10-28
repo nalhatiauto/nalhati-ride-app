@@ -372,6 +372,7 @@
   #confirmRequestBtn { width:100%; min-height:50px; font-size:17px; margin-top:20px; }
   #bookingPage .reserve-only { display:block; }
   #bookingPage #passengerInfoCard { display:none !important; }
+  #backToHomeBtn { display:none !important; }
   #bookingPage .new-booking-title { display:none !important; }
   #bookingPage .address-suggestions { z-index:20; }
 </style>
@@ -1556,9 +1557,7 @@
         );
 
 
-        bookingsList.scrollIntoView({
-          behavior: "smooth"
-        });
+        // Booking history is hidden in the simplified passenger interface.
 
       }
 
