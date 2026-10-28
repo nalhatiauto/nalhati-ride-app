@@ -372,7 +372,6 @@
   #confirmRequestBtn { width:100%; min-height:50px; font-size:17px; margin-top:20px; }
   #bookingPage .reserve-only { display:block; }
   #bookingPage #passengerInfoCard { display:none !important; }
-  #backToHomeBtn { display:none !important; }
   #bookingPage .new-booking-title { display:none !important; }
   #bookingPage .address-suggestions { z-index:20; }
 </style>
@@ -399,7 +398,6 @@
       </div>
     </div>
     <div id="bookingPage" class="hidden">
-      <button id="backToHomeBtn" type="button" class="location-btn">← ফিরে যান</button>
       <div id="bookingModeTitle" class="hero-line" style="margin-top:12px;">অটো বুকিং</div>
       <div id="shareBookingStatus" class="route-estimate hidden" aria-live="polite"></div>
 
@@ -728,7 +726,6 @@
   const bookingPage = document.getElementById("bookingPage");
   const shareRideOption = document.getElementById("shareRideOption");
   const reserveRideOption = document.getElementById("reserveRideOption");
-  const backToHomeBtn = document.getElementById("backToHomeBtn");
   const bookingModeTitle = document.getElementById("bookingModeTitle");
   const shareBookingStatus = document.getElementById("shareBookingStatus");
   const shareFareDisplay = document.getElementById("shareFareDisplay");
@@ -752,12 +749,6 @@
 
   shareRideOption.addEventListener("click", () => openBookingMode("share"));
   reserveRideOption.addEventListener("click", () => openBookingMode("reserve"));
-  backToHomeBtn.addEventListener("click", () => {
-    hideSuggestions("pickup");
-    hideSuggestions("destination");
-    bookingPage.classList.add("hidden");
-    homePage.classList.remove("hidden");
-  });
 
   // One simple booking screen; no Share/Reserve selection.
   openBookingMode("reserve");
