@@ -340,32 +340,64 @@
     .map-tools button { flex:1; font-size:13px; padding:10px 6px; margin-top:0; }
     .map-legend { font-size:12px; color:#666; margin-top:7px; line-height:1.5; }
 
-  </style>
+  
+  /* Simplified passenger experience: only ride type, pickup and destination. */
+  .simple-only-hidden,
+  .reserve-only,
+  .map-tools,
+  #rideMap,
+  .map-legend,
+  #calculateRouteBtn,
+  #routeEstimate,
+  #fareEstimate,
+  #shareFareDisplay,
+  #locationMessage,
+  label[for="passengers"],
+  #passengers,
+  label[for="rideDate"],
+  #rideDate,
+  label[for="rideTime"],
+  #rideTime,
+  label[for="rideNote"],
+  #rideNote {
+    display: none !important;
+  }
+  .page-wrap { max-width: 520px; padding: 10px; }
+  .header { padding: 16px 12px; margin-bottom: 10px; }
+  .header p { margin-bottom: 0; }
+  .hero-line { margin: 8px 0 12px; }
+  #bookingPage > .card { padding: 16px; }
+  #bookingPage label { display:block; margin: 12px 0 6px; font-weight:700; }
+  #pickup, #destination { width:100%; min-height:48px; font-size:16px; }
+  #confirmRequestBtn { width:100%; min-height:50px; font-size:17px; margin-top:18px; }
+  .booking-card .summary-row { display:none !important; }
+
+</style>
 </head>
 
 <body>
 
   <div class="header">
     <h1>🚕 বন্দে ভারত এক্সপ্রেস</h1>
-    <p>Your local auto ride</p>
+    <p>সহজ অটো বুকিং</p>
   </div>
   <div class="page-wrap">
     <div id="homePage">
-      <div class="hero-line">Choose your ride <span style="font-size:15px;font-weight:500;color:#666;">আপনার যাত্রা বেছে নিন</span></div>
+      <div class="hero-line">আপনি কোন অটো চান?</div>
       <div class="card" style="padding:18px; text-align:center;">
         <button id="shareRideOption" type="button" style="width:100%; min-height:110px; background:#e8f3ff; color:#124b83; border:2px solid #b7d8fb; margin:0 0 14px; font-size:20px;">
           <span style="font-size:32px;display:block;margin-bottom:6px;">👥</span>
-          Share Ride<br><span style="font-size:14px;font-weight:500;">শেয়ার রাইড</span>
+          শেয়ার অটো<br><span style="font-size:14px;font-weight:500;">Share Ride</span>
         </button>
         <button id="reserveRideOption" type="button" style="width:100%; min-height:110px; background:#e9f8ef; color:#17663a; border:2px solid #b8e3c8; margin:0; font-size:20px;">
           <span style="font-size:32px;display:block;margin-bottom:6px;">🚕</span>
-          Reserve Auto<br><span style="font-size:14px;font-weight:500;">রিজার্ভ অটো</span>
+          রিজার্ভ অটো<br><span style="font-size:14px;font-weight:500;">Reserve Auto</span>
         </button>
       </div>
     </div>
     <div id="bookingPage" class="hidden">
-      <button id="backToHomeBtn" type="button" class="location-btn">← Back to ride options</button>
-      <div id="bookingModeTitle" class="hero-line" style="margin-top:12px;">Book your ride</div>
+      <button id="backToHomeBtn" type="button" class="location-btn">← ফিরে যান</button>
+      <div id="bookingModeTitle" class="hero-line" style="margin-top:12px;">অটো বুকিং</div>
       <div id="shareBookingStatus" class="route-estimate hidden" aria-live="polite"></div>
 
 
@@ -397,20 +429,20 @@
   <div class="card">
 
     <h2 class="new-booking-title reserve-only">
-      ➕ New Booking
+      আপনার যাত্রার তথ্য
     </h2>
 
 
-    <label for="pickup">Pickup Address</label>
+    <label for="pickup">কোথা থেকে উঠবেন? (Pickup)</label>
     <div class="address-field-wrap">
-      <input id="pickup" type="text" maxlength="200" placeholder="Enter pickup address manually" autocomplete="off">
+      <input id="pickup" type="text" maxlength="200" placeholder="যেখান থেকে উঠবেন লিখুন" autocomplete="off">
       <div id="pickupSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Pickup address suggestions"></div>
     </div>
     <div id="locationMessage" class="muted" aria-live="polite"></div>
 
-    <label for="destination">Destination Address</label>
+    <label for="destination">কোথায় যাবেন? (Destination)</label>
     <div class="address-field-wrap">
-      <input id="destination" type="text" maxlength="200" placeholder="Start typing a place or address" autocomplete="off">
+      <input id="destination" type="text" maxlength="200" placeholder="যেখানে যাবেন লিখুন" autocomplete="off">
       <div id="destinationSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Destination address suggestions"></div>
     </div>
     <div id="shareFareDisplay" class="route-estimate hidden" aria-live="polite" style="font-size:20px;font-weight:700;margin-top:12px;"></div>
@@ -477,7 +509,7 @@
       id="confirmRequestBtn"
       class="success"
     >
-      🚕 Send Booking Request
+      রিকোয়েস্ট পাঠান
     </button>
 
   </div>
@@ -702,15 +734,15 @@
     selectedRideType = mode;
     homePage.classList.add("hidden");
     bookingPage.classList.remove("hidden");
-    bookingModeTitle.textContent = mode === "share" ? "👥 Share Ride" : "🚕 Reserve Auto Booking";
+    bookingModeTitle.textContent = mode === "share" ? "👥 শেয়ার অটো" : "🚕 রিজার্ভ অটো";
     document.querySelectorAll(".reserve-only").forEach(el => el.classList.toggle("share-mode-hidden", mode === "share"));
     shareBookingStatus.classList.add("hidden");
     shareBookingStatus.textContent = "";
     shareFareDisplay.classList.toggle("hidden", mode !== "share");
     confirmRequestBtn.disabled = false;
-    confirmRequestBtn.textContent = mode === "share" ? "📨 Send Share Booking" : "🚕 Send Reserve Request";
-    pickup.placeholder = mode === "share" ? "Boarding / Pickup কোথা থেকে" : "Enter pickup address";
-    destination.placeholder = mode === "share" ? "Destination কোথায় যাবেন" : "Enter destination address";
+    confirmRequestBtn.textContent = "রিকোয়েস্ট পাঠান";
+    pickup.placeholder = "যেখান থেকে উঠবেন লিখুন";
+    destination.placeholder = "যেখানে যাবেন লিখুন";
     updateKnownFareEstimate();
     if (map && mode !== "share") setTimeout(() => map.invalidateSize(), 100);
   }
@@ -1303,9 +1335,7 @@
   confirmRequestBtn.onclick =
     async () => {
 
-      if (selectedRideType !== "share" && !validatePassenger()) {
-        return;
-      }
+      
 
       const from =
         pickup.value.trim();
@@ -1339,23 +1369,7 @@
         return;
       }
 
-      if (selectedRideType !== "share" && !rideDate.value) {
-        alert("Please select a date.");
-        rideDate.focus();
-        return;
-      }
-
-      if (selectedRideType !== "share" && !rideTime.value) {
-        alert("Please select a time.");
-        rideTime.focus();
-        return;
-      }
-
-      const shareFare = getShareRouteFare(from, to);
-      if (selectedRideType === "share" && shareFare === null) {
-        alert("এই রুটের শেয়ার ভাড়া জানা নেই। Pickup ও Destination ঠিক করে দিন।");
-        return;
-      }
+      
 
       if (!currentUser) {
         alert(
@@ -1369,14 +1383,12 @@
         rideType: selectedRideType,
         from: from,
         to: to,
-        passengers: Number(passengers.value),
-        date: selectedRideType === "share" ? "" : rideDate.value,
-        time: selectedRideType === "share" ? "" : rideTime.value,
-        note: selectedRideType === "share" ? "" : rideNote.value.trim(),
-        farePerPassenger: selectedRideType === "share" ? getShareRouteFare(from, to) : null,
-        estimatedFare: selectedRideType === "share"
-          ? getShareRouteFare(from, to) * Number(passengers.value)
-          : getKnownRouteFare(from, to),
+        passengers: 1,
+        date: "",
+        time: "",
+        note: "",
+        farePerPassenger: null,
+        estimatedFare: 0,
         pickupLocation: pickupCoordinates ? { lat: pickupCoordinates.lat, lon: pickupCoordinates.lon } : null,
         destinationLocation: destinationCoordinates ? { lat: destinationCoordinates.lat, lon: destinationCoordinates.lon } : null,
         estimatedRoadDistanceKm: estimatedRoadDistanceKm
@@ -1415,9 +1427,7 @@
       }
 
 
-      if (selectedRideType !== "share" && !validatePassenger()) {
-        return;
-      }
+      
 
 
       confirmRequestBtn.disabled =
@@ -1466,25 +1476,25 @@
               estimatedRoadDistanceKm || null,
 
             farePerPassenger:
-              selectedRide.rideType === "share" ? selectedRide.farePerPassenger : null,
+              null,
 
             estimatedFare:
-              selectedRide.estimatedFare,
+              0,
 
             fare:
-              selectedRide.rideType === "share" ? selectedRide.estimatedFare : 0,
+              0,
 
             originalFare:
-              selectedRide.rideType === "share" ? selectedRide.estimatedFare : 0,
+              0,
 
             discountAmount:
               0,
 
             fareType:
-              selectedRide.rideType === "share" ? "fixed_share_fare" : "driver_quote",
+              "driver_quote",
 
             fareStatus:
-              selectedRide.rideType === "share" ? "share_pending_driver" : "waiting",
+              "waiting",
 
             status:
               "searching",
@@ -1493,7 +1503,7 @@
               currentUser.uid,
 
             passengerPhone:
-              passengerPhone.value.trim(),
+              passengerPhone.value.trim() || "",
 
             driverId:
               "",
@@ -1515,16 +1525,13 @@
         );
 
 
-        if (selectedRide && selectedRide.rideType === "share") {
-          shareBookingStatus.classList.remove("hidden");
-          shareBookingStatus.textContent = "⏳ শেয়ার বুকিং ড্রাইভারের কাছে পাঠানো হয়েছে। চালকের উত্তরের জন্য অপেক্ষা করুন।";
-        }
+        
 
         clearBookingForm();
 
 
         alert(
-          "✅ Booking request sent successfully."
+          "✅ রিকোয়েস্ট পাঠানো হয়েছে। চালক ভাড়া জানালে এখানে দেখতে পাবেন।"
         );
 
 
@@ -1555,7 +1562,7 @@
           false;
 
         confirmRequestBtn.textContent =
-          selectedRideType === "share" ? "📨 Send Share Booking" : "🚕 Send Reserve Request";
+          "রিকোয়েস্ট পাঠান";
 
       }
 
