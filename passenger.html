@@ -371,6 +371,7 @@
   }
   #confirmRequestBtn { width:100%; min-height:50px; font-size:17px; margin-top:20px; }
   #bookingPage .reserve-only { display:block; }
+  #bookingPage #passengerInfoCard { display:none !important; }
   #bookingPage .new-booking-title { display:none !important; }
   #bookingPage .address-suggestions { z-index:20; }
 </style>
@@ -461,22 +462,22 @@
     <div id="fareEstimate" class="route-estimate hidden reserve-only" aria-live="polite"></div>
 
     <label for="passengers">
-      👥 Number of Passengers
+      👥 যাত্রীসংখ্যা
     </label>
 
     <select id="passengers">
-      <option value="1">1 Passenger</option>
-      <option value="2">2 Passengers</option>
-      <option value="3">3 Passengers</option>
-      <option value="4">4 Passengers</option>
-      <option value="5">5 Passengers</option>
-      <option value="6">6 Passengers</option>
-      <option value="7">7 Passengers</option>
-      <option value="8">8 Passengers</option>
+      <option value="1">১ জন</option>
+      <option value="2">২ জন</option>
+      <option value="3">৩ জন</option>
+      <option value="4">৪ জন</option>
+      <option value="5">৫ জন</option>
+      <option value="6">৬ জন</option>
+      <option value="7">৭ জন</option>
+      <option value="8">৮ জন</option>
     </select>
 
     <label class="reserve-only" for="rideDate">
-      📅 Date
+      📅 যাত্রার তারিখ
     </label>
 
     <input
@@ -486,7 +487,7 @@
     >
 
     <label class="reserve-only" for="rideTime">
-      ⏰ Time
+      ⏰ যাত্রার সময়
     </label>
 
     <input
