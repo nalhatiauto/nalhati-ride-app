@@ -751,7 +751,7 @@
   reserveRideOption.addEventListener("click", () => openBookingMode("reserve"));
 
   // One simple booking screen; no Share/Reserve selection.
-  openBookingMode("reserve");
+  // Booking screen is opened after all dependent variables are initialized.
 
   const locationListeners =
     new Map();
@@ -2845,6 +2845,9 @@
 
   }
 
+
+  // Open the simplified booking screen only after all const variables it uses are initialized.
+  openBookingMode("reserve");
 
   // =====================================================
   // ANONYMOUS LOGIN
