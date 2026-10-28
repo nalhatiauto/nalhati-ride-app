@@ -509,6 +509,7 @@
     <button
       id="confirmRequestBtn"
       class="success"
+      type="button"
     >
       রিকোয়েস্ট পাঠান
     </button>
@@ -1368,11 +1369,18 @@
 
       
 
+      // Wait for Firebase anonymous sign-in instead of failing if the user taps quickly.
       if (!currentUser) {
-        alert(
-          "অ্যাপ সংযোগ হচ্ছে। একটু পরে আবার চেষ্টা করুন।"
-        );
-        return;
+        try {
+          await anonymousSignInPromise;
+          currentUser = auth.currentUser;
+        } catch (authError) {
+          console.error("Booking auth readiness error:", authError);
+        }
+        if (!currentUser) {
+          alert("অ্যাপের সঙ্গে সংযোগ করা যাচ্ছে না। ইন্টারনেট চালু আছে কি না দেখুন, তারপর পেজটি রিফ্রেশ করে আবার চেষ্টা করুন।");
+          return;
+        }
       }
 
       if (!passengers.value || Number(passengers.value) < 1) {
@@ -2853,37 +2861,18 @@
   // ANONYMOUS LOGIN
   // =====================================================
 
-  signInAnonymously(
-    auth
-  )
-
-    .catch(
-      error => {
-
-        console.error(
-          "Anonymous Login Error:",
-          error
-        );
-
-
-        bookingsList.innerHTML = `
-
-          <div class="error">
-
-            ❌ Unable to connect to the booking service.
-
-            <br><br>
-
-            ${escapeHtml(
-              error.message
-            )}
-
-          </div>
-
-        `;
-
-      }
-    );
+  const anonymousSignInPromise = signInAnonymously(auth)
+    .catch(error => {
+      console.error("Anonymous Login Error:", error);
+      bookingsList.innerHTML = `
+        <div class="error">
+          ❌ বুকিং সার্ভিসে সংযোগ করা যাচ্ছে না।
+          <br><br>
+          ${escapeHtml(error.message)}
+        </div>
+      `;
+      return null;
+    });
 
 
   // =====================================================
