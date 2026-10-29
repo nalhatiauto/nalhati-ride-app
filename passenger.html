@@ -1542,6 +1542,11 @@
 
         clearBookingForm();
 
+        // Bring the live booking status and driver fare into view after submission.
+        document.getElementById("myBookingsCard")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
 
         alert(
           "✅ রিকোয়েস্ট পাঠানো হয়েছে। নিচে বুকিংয়ের অবস্থা ও চালকের পাঠানো ভাড়া দেখতে পাবেন।"
