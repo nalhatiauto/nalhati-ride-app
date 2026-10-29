@@ -719,8 +719,6 @@
   // =====================================================
 
   let currentUser = null;
-  let resolveAuthReady;
-  const authReadyPromise = new Promise(resolve => { resolveAuthReady = resolve; });
 
   let selectedRide = null;
   let selectedRideType = "reserve";
@@ -1443,9 +1441,7 @@
       confirmRequestBtn.disabled = true;
       confirmRequestBtn.textContent = "⏳ রিকোয়েস্ট পাঠানো হচ্ছে...";
 
-      if (!currentUser) {
-        currentUser = await authReadyPromise;
-      }
+      if (!currentUser) currentUser = auth.currentUser;
       if (!currentUser) {
         alert("অ্যাপের সঙ্গে সংযোগ হচ্ছে না। ইন্টারনেট পরীক্ষা করে আবার চেষ্টা করুন।");
         confirmRequestBtn.disabled = false;
@@ -1548,11 +1544,11 @@
 
 
         alert(
-          "✅ রিকোয়েস্ট পাঠানো হয়েছে। চালক ভাড়া জানালে এখানে দেখতে পাবেন।"
+          "✅ রিকোয়েস্ট পাঠানো হয়েছে। নিচে বুকিংয়ের অবস্থা ও চালকের পাঠানো ভাড়া দেখতে পাবেন।"
         );
 
 
-        // Booking history is hidden in the simplified passenger interface.
+        // Live booking status and the driver's fare are shown below the form.
 
       }
 
@@ -1729,7 +1725,7 @@
           bookingsList.innerHTML = `
 
             <div class="error">
-              ❌ Unable to load bookings.
+              ❌ বুকিং লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।
             </div>
 
           `;
@@ -1782,7 +1778,7 @@
       bookingsList.innerHTML = `
 
         <div class="empty-booking">
-          There are no active bookings right now.
+          এখনো কোনো বুকিং নেই। রিকোয়েস্ট পাঠালে এখানে দেখা যাবে।
         </div>
 
       `;
@@ -2886,7 +2882,6 @@
 
 
       currentUser = user;
-      resolveAuthReady(user);
       listenToAllBookings();
 
     }
