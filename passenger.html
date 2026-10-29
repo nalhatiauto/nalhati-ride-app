@@ -355,14 +355,15 @@
   label[for="rideNote"],
   #rideNote,
   #passengerInfoCard,
-  #helpLineCard,
-  #myBookingsCard {
+  #helpLineCard {
     display:none !important;
   }
   .page-wrap { max-width:520px; padding:10px; }
   .header { padding:14px 10px; margin-bottom:10px; }
   .header p { margin-bottom:0; }
   #bookingPage { display:block !important; }
+  #myBookingsCard { display:block !important; margin-top:12px; }
+  #myBookingsCard h2 { font-size:19px; }
   #bookingPage > .card { padding:16px; }
   #bookingModeTitle { margin-top:0 !important; }
   #bookingPage label { display:block; margin:14px 0 6px; font-weight:700; }
@@ -538,7 +539,7 @@
 
   <div id="myBookingsCard" class="card">
 
-    <h2>📌 My Bookings</h2>
+    <h2>📌 আপনার বুকিং ও ভাড়া</h2>
 
     <div id="bookingsList">
 
@@ -718,6 +719,8 @@
   // =====================================================
 
   let currentUser = null;
+  let resolveAuthReady;
+  const authReadyPromise = new Promise(resolve => { resolveAuthReady = resolve; });
 
   let selectedRide = null;
   let selectedRideType = "reserve";
@@ -1437,25 +1440,18 @@
       }
 
 
+      confirmRequestBtn.disabled = true;
+      confirmRequestBtn.textContent = "⏳ রিকোয়েস্ট পাঠানো হচ্ছে...";
+
       if (!currentUser) {
-
-        alert(
-          "অ্যাপের সঙ্গে সংযোগ হচ্ছে না। একটু পরে আবার চেষ্টা করুন।"
-        );
-
-        return;
-
+        currentUser = await authReadyPromise;
       }
-
-
-      
-
-
-      confirmRequestBtn.disabled =
-        true;
-
-      confirmRequestBtn.textContent =
-        "⏳ রিকোয়েস্ট পাঠানো হচ্ছে...";
+      if (!currentUser) {
+        alert("অ্যাপের সঙ্গে সংযোগ হচ্ছে না। ইন্টারনেট পরীক্ষা করে আবার চেষ্টা করুন।");
+        confirmRequestBtn.disabled = false;
+        confirmRequestBtn.textContent = "রিকোয়েস্ট পাঠান";
+        return;
+      }
 
 
       try {
@@ -2029,12 +2025,11 @@
       statusElement.innerHTML = `
 
         <div class="waiting">
-          🔎 Waiting for the driver’s response...
+          🔎 চালকের উত্তরের অপেক্ষায়...
         </div>
 
         <div class="small">
-          The driver will review your booking
-          and send a fare quote.
+          চালক বুকিং দেখে এখানে ভাড়া পাঠাবেন।
         </div>
 
       `;
@@ -2049,11 +2044,11 @@
       statusElement.innerHTML = `
 
         <div class="waiting">
-          💰 The driver has sent a fare quote.
+          💰 চালক ভাড়া পাঠিয়েছেন।
         </div>
 
         <div class="small">
-          Review the fare below to confirm your booking.
+          নিচে ভাড়া দেখে বুকিং নিশ্চিত করুন।
         </div>
 
       `;
@@ -2071,11 +2066,11 @@
       statusElement.innerHTML = `
 
         <div class="success-text">
-          ✅ Booking Confirmed
+          ✅ বুকিং নিশ্চিত হয়েছে
         </div>
 
         <div class="small">
-          The driver has confirmed your booking.
+          চালক আপনার বুকিং নিশ্চিত করেছেন।
         </div>
 
       `;
@@ -2090,11 +2085,11 @@
       statusElement.innerHTML = `
 
         <div class="success-text">
-          🚕 Ride Started
+          🚕 যাত্রা শুরু হয়েছে
         </div>
 
         <div class="small">
-          Your ride is now in progress.
+          আপনার যাত্রা চলছে।
         </div>
 
       `;
@@ -2129,7 +2124,7 @@
       fareBox.innerHTML = `
 
         <div>
-          💰 Driver’s Fare
+          💰 চালকের পাঠানো ভাড়া
         </div>
 
         <div class="fare-price">
@@ -2890,10 +2885,8 @@
       }
 
 
-      currentUser =
-        user;
-
-
+      currentUser = user;
+      resolveAuthReady(user);
       listenToAllBookings();
 
     }
