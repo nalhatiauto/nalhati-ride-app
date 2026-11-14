@@ -410,7 +410,7 @@
   <div id="passengerInfoCard" class="card reserve-only">
 
     <label for="passengerPhone">
-      মোবাইল নম্বর
+      Mobile Number
     </label>
 
     <input
@@ -418,7 +418,7 @@
       type="tel"
       inputmode="numeric"
       maxlength="10"
-      placeholder="১০ সংখ্যার মোবাইল নম্বর লিখুন"
+      placeholder="Enter 10-digit mobile number"
     >
 
   </div>
@@ -809,7 +809,8 @@
 
       passengerPhone.value =
         passengerPhone.value
-          .replace(/\D/g, "")
+          .replace(/[০-৯]/g, digit => String("০১২৩৪৫৬৭৮৯".indexOf(digit)))
+          .replace(/[^0-9]/g, "")
           .slice(0, 10);
 
     }
