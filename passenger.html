@@ -372,7 +372,7 @@
   }
   #confirmRequestBtn { width:100%; min-height:50px; font-size:17px; margin-top:20px; }
   #bookingPage .reserve-only { display:block; }
-  #bookingPage #passengerInfoCard { display:none !important; }
+  #bookingPage #passengerInfoCard { display:block !important; }
   #bookingPage .new-booking-title { display:none !important; }
   #bookingPage .address-suggestions { z-index:20; }
 </style>
@@ -410,7 +410,7 @@
   <div id="passengerInfoCard" class="card reserve-only">
 
     <label for="passengerPhone">
-      Mobile Number
+      মোবাইল নম্বর
     </label>
 
     <input
@@ -418,7 +418,7 @@
       type="tel"
       inputmode="numeric"
       maxlength="10"
-      placeholder="Enter 10-digit mobile number"
+      placeholder="১০ সংখ্যার মোবাইল নম্বর লিখুন"
     >
 
   </div>
@@ -1369,6 +1369,9 @@
       }
 
       
+
+      // Require a valid mobile number so the driver can contact the passenger.
+      if (!validatePassenger()) return;
 
       // Wait for Firebase anonymous sign-in instead of failing if the user taps quickly.
       if (!currentUser) {
