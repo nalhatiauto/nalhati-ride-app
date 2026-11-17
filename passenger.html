@@ -372,7 +372,7 @@
   }
   #confirmRequestBtn { width:100%; min-height:50px; font-size:17px; margin-top:20px; }
   #bookingPage .reserve-only { display:block; }
-  #bookingPage #passengerInfoCard { display:block !important; }
+  #bookingPage #passengerInfoCard { display:none !important; }
   #bookingPage .new-booking-title { display:none !important; }
   #bookingPage .address-suggestions { z-index:20; }
 </style>
@@ -435,16 +435,16 @@
     </h2>
 
 
-    <label for="pickup">Pickup Location</label>
+    <label for="pickup">কোথা থেকে উঠবেন? / Pickup Location</label>
     <div class="address-field-wrap">
-      <input id="pickup" type="text" maxlength="200" placeholder="Enter pickup location" autocomplete="off">
+      <input id="pickup" type="text" maxlength="200" placeholder="কোথা থেকে উঠবেন লিখুন / Enter pickup location" autocomplete="off">
       <div id="pickupSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Pickup address suggestions"></div>
     </div>
     <div id="locationMessage" class="muted" aria-live="polite"></div>
 
-    <label for="destination">Destination</label>
+    <label for="destination">কোথায় যাবেন? / Destination</label>
     <div class="address-field-wrap">
-      <input id="destination" type="text" maxlength="200" placeholder="Enter destination" autocomplete="off">
+      <input id="destination" type="text" maxlength="200" placeholder="গন্তব্য লিখুন / Enter destination" autocomplete="off">
       <div id="destinationSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Destination address suggestions"></div>
     </div>
     <div id="shareFareDisplay" class="route-estimate hidden" aria-live="polite" style="font-size:20px;font-weight:700;margin-top:12px;"></div>
@@ -484,22 +484,22 @@
     </div>
 
     <label for="passengers">
-      👥 Number of Passengers
+      👥 যাত্রীসংখ্যা / Number of Passengers
     </label>
 
     <select id="passengers">
-      <option value="1">1 Passenger</option>
-      <option value="2">2 Passengers</option>
-      <option value="3">3 Passengers</option>
-      <option value="4">4 Passengers</option>
-      <option value="5">5 Passengers</option>
-      <option value="6">6 Passengers</option>
-      <option value="7">7 Passengers</option>
-      <option value="8">8 Passengers</option>
+      <option value="1">১ জন / 1 Passenger</option>
+      <option value="2">২ জন / 2 Passengers</option>
+      <option value="3">৩ জন / 3 Passengers</option>
+      <option value="4">৪ জন / 4 Passengers</option>
+      <option value="5">৫ জন / 5 Passengers</option>
+      <option value="6">৬ জন / 6 Passengers</option>
+      <option value="7">৭ জন / 7 Passengers</option>
+      <option value="8">৮ জন / 8 Passengers</option>
     </select>
 
     <label class="reserve-only" for="rideDate">
-      📅 Travel Date
+      📅 যাত্রার তারিখ / Travel Date
     </label>
 
     <input
@@ -509,7 +509,7 @@
     >
 
     <label class="reserve-only" for="rideTime">
-      ⏰ Travel Time
+      ⏰ যাত্রার সময় / Travel Time
     </label>
 
     <input
@@ -534,7 +534,7 @@
       class="success"
       type="button"
     >
-      Submit Booking Request
+      রিকুয়েস্ট পাঠান / Send Request
     </button>
 
   </div>
@@ -775,7 +775,7 @@
     shareBookingStatus.textContent = "";
     shareFareDisplay.classList.toggle("hidden", mode !== "share");
     confirmRequestBtn.disabled = false;
-    confirmRequestBtn.textContent = "Submit Booking Request";
+    confirmRequestBtn.textContent = "রিকুয়েস্ট পাঠান / Send Request";
     pickup.placeholder = "Enter pickup location";
     destination.placeholder = "Enter destination";
     updateKnownFareEstimate();
@@ -864,7 +864,7 @@
     if (!/^\d{10}$/.test(phone)) {
 
       alert(
-        "Please enter a valid 10-digit mobile number."
+        "সঠিক ১০ সংখ্যার মোবাইল নম্বর দিন / Please enter a valid 10-digit mobile number."
       );
 
       passengerPhone.focus();
@@ -1378,7 +1378,7 @@
 
       if (!from) {
         alert(
-          "Please enter your pickup location."
+          "কোথা থেকে উঠবেন লিখুন / Please enter your pickup location."
         );
         pickup.focus();
         return;
@@ -1386,7 +1386,7 @@
 
       if (!to) {
         alert(
-          "Please enter your destination."
+          "গন্তব্য লিখুন / Please enter your destination."
         );
         destination.focus();
         return;
@@ -1397,15 +1397,13 @@
         to.toLowerCase()
       ) {
         alert(
-          "Pickup and destination cannot be the same."
+          "যাত্রার শুরু ও গন্তব্য এক হতে পারবে না / Pickup and destination cannot be the same."
         );
         return;
       }
 
       
 
-      // Require a valid mobile number so the driver can contact the passenger.
-      if (!validatePassenger()) return;
 
       // Wait for Firebase anonymous sign-in instead of failing if the user taps quickly.
       if (!currentUser) {
@@ -1422,17 +1420,17 @@
       }
 
       if (!passengers.value || Number(passengers.value) < 1) {
-        alert("Please select the number of passengers.");
+        alert("যাত্রীসংখ্যা বেছে নিন / Please select the number of passengers.");
         passengers.focus();
         return;
       }
       if (!rideDate.value) {
-        alert("Please select your travel date.");
+        alert("যাত্রার তারিখ বেছে নিন / Please select your travel date.");
         rideDate.focus();
         return;
       }
       if (!rideTime.value) {
-        alert("Please select your travel time.");
+        alert("যাত্রার সময় বেছে নিন / Please select your travel time.");
         rideTime.focus();
         return;
       }
@@ -1484,13 +1482,13 @@
 
 
       confirmRequestBtn.disabled = true;
-      confirmRequestBtn.textContent = "⏳ Sending booking request...";
+      confirmRequestBtn.textContent = "⏳ রিকুয়েস্ট পাঠানো হচ্ছে / Sending Request...";
 
       if (!currentUser) currentUser = auth.currentUser;
       if (!currentUser) {
         alert("Unable to connect to the app. Check your internet connection and try again.");
         confirmRequestBtn.disabled = false;
-        confirmRequestBtn.textContent = "Submit Booking Request";
+        confirmRequestBtn.textContent = "রিকুয়েস্ট পাঠান / Send Request";
         return;
       }
 
@@ -1617,7 +1615,7 @@
 
 
         alert(
-          "Unable to submit booking request.\n\n" +
+          "রিকুয়েস্ট পাঠানো যায়নি / Unable to submit booking request.\n\n" +
           error.message
         );
 
@@ -1629,7 +1627,7 @@
           false;
 
         confirmRequestBtn.textContent =
-          "Submit Booking Request";
+          "রিকুয়েস্ট পাঠান / Send Request";
 
       }
 
