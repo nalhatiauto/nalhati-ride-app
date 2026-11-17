@@ -461,6 +461,28 @@
     <div class="muted reserve-only">Distance is an estimate. The driver will confirm the final fare.</div>
     <div id="fareEstimate" class="route-estimate hidden reserve-only" aria-live="polite"></div>
 
+    <label for="tripType">🚕 যাত্রার ধরন</label>
+    <select id="tripType">
+      <option value="one_way">শুধু যাওয়া</option>
+      <option value="round_trip">যাওয়া–আসা (আপ-ডাউন)</option>
+    </select>
+
+    <div id="returnWaitGroup" style="display:none;">
+      <label for="returnAfterHours">⏳ সেখানে কতক্ষণ থাকবেন, তারপর ফিরবেন?</label>
+      <select id="returnAfterHours">
+        <option value="">কতক্ষণ থাকবেন বেছে নিন</option>
+        <option value="1">১ ঘণ্টা</option>
+        <option value="2">২ ঘণ্টা</option>
+        <option value="3">৩ ঘণ্টা</option>
+        <option value="4">৪ ঘণ্টা</option>
+        <option value="5">৫ ঘণ্টা</option>
+        <option value="6">৬ ঘণ্টা</option>
+        <option value="8">৮ ঘণ্টা</option>
+        <option value="12">১২ ঘণ্টা</option>
+        <option value="24">পরের দিন (২৪ ঘণ্টা)</option>
+      </select>
+    </div>
+
     <label for="passengers">
       👥 Number of Passengers
     </label>
@@ -665,6 +687,17 @@
     document.getElementById(
       "passengers"
     );
+
+  const tripType = document.getElementById("tripType");
+  const returnWaitGroup = document.getElementById("returnWaitGroup");
+  const returnAfterHours = document.getElementById("returnAfterHours");
+
+  tripType.addEventListener("change", () => {
+    const isRoundTrip = tripType.value === "round_trip";
+    returnWaitGroup.style.display = isRoundTrip ? "block" : "none";
+    returnAfterHours.required = isRoundTrip;
+    if (!isRoundTrip) returnAfterHours.value = "";
+  });
 
   const rideDate =
     document.getElementById(
@@ -1404,9 +1437,17 @@
         return;
       }
 
+      if (tripType.value === "round_trip" && !returnAfterHours.value) {
+        alert("ফেরার আগে কতক্ষণ অপেক্ষা করবেন, সেটি বেছে নিন।");
+        returnAfterHours.focus();
+        return;
+      }
+
       selectedRide = {
         type: "booking",
         rideType: "reserve",
+        tripType: tripType.value,
+        returnAfterHours: tripType.value === "round_trip" ? Number(returnAfterHours.value) : null,
         from: from,
         to: to,
         passengers: Number(passengers.value),
@@ -1470,6 +1511,12 @@
 
             rideType:
               selectedRide.rideType,
+
+            tripType:
+              selectedRide.tripType,
+
+            returnAfterHours:
+              selectedRide.returnAfterHours,
 
             from:
               selectedRide.from,
